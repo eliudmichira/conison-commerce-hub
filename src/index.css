@@ -1,16 +1,68 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Theme transition */
+:root {
+  --transition-duration: 0.2s;
 }
 
-.animate-fade-in {
+/* Apply smooth transitions to all elements when theme changes */
+*,
+*::before,
+*::after {
+  transition: background-color var(--transition-duration) ease-in-out, 
+              border-color var(--transition-duration) ease-in-out,
+              color var(--transition-duration) ease-in-out,
+              box-shadow var(--transition-duration) ease-in-out;
+}
+
+/* Prevent transition on initial page load */
+.no-transitions * {
+  transition: none !important;
+}
+
+/* Exclude specific elements from transitions if needed */
+.no-theme-transition {
+  transition: none !important;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInZoom {
+  from { 
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
   animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-delay-100 {
+  animation-delay: 100ms;
+}
+
+.animate-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animate-delay-700 {
+  animation-delay: 700ms;
+}
+
+.animate-delay-1000 {
+  animation-delay: 1000ms;
 }
 
 /* Conison theme colors */
@@ -26,6 +78,26 @@
   --conison-800: #332ab2;
   --conison-900: #2d258d;
   --conison-950: #1c164d;
+}
+
+/* Dark mode support */
+.dark {
+  --background: #1a202c;
+  --foreground: #f7fafc;
+  --text-color: #e2e8f0;
+  --border-color: #2d3748;
+}
+
+.dark .bg-white {
+  background-color: var(--background);
+}
+
+.dark .text-gray-700 {
+  color: var(--text-color);
+}
+
+.dark .border-gray-100 {
+  border-color: var(--border-color);
 }
 
 /* Context aware navigation styles */
@@ -62,4 +134,39 @@
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
+}
+
+/* Add these animation styles to your existing index.css */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Fix for NumberFlow component */
+.font-variant-numeric\: {
+  font-variant-numeric: tabular-nums;
 }

@@ -1,4 +1,3 @@
-
 import React from "react";
 
 // Service types
@@ -35,9 +34,13 @@ export interface Package {
 
 // Order types
 export interface CartItem {
-  packageId: string;
+  id: string;
+  name: string;
+  price: number;
   quantity: number;
-  customizations?: Record<string, any>;
+  image?: string;
+  packageId?: string;
+  // Add any other properties that are necessary
 }
 
 export interface Order {
