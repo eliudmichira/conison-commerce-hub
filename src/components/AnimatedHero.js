@@ -60,7 +60,7 @@ function AnimatedHero() {
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center">
+            <p className="text-lg md:text-xl leading-relaxed tracking-tight text-conison-gray dark:text-muted-foreground max-w-2xl text-center font-medium">
               We deliver cutting-edge solutions tailored to your business needs.
               Our expertise spans across web development, mobile applications,
               and digital transformation strategies.

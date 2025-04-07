@@ -28,36 +28,6 @@ const HeroTagline = ({ className }) => {
         animate="show"
         className="relative"
       >
-        <motion.h2 
-          variants={item}
-          className={`text-2xl md:text-3xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-conison-gray'}`}
-        >
-          We deliver <span className="text-conison-magenta">cutting-edge solutions</span> tailored to your business needs.
-        </motion.h2>
-        
-        <motion.div 
-          variants={item}
-          className={`
-            p-6 md:p-8 
-            rounded-lg
-            shadow-lg
-            ${isDarkMode 
-              ? 'bg-gradient-to-r from-gray-800 to-gray-900 shadow-conison-magenta/20' 
-              : 'bg-gradient-to-r from-white to-gray-50 shadow-conison-cyan/20'
-            }
-            border-l-4 border-conison-magenta
-            max-w-3xl mx-auto
-          `}
-        >
-          <p className={`text-xl md:text-2xl leading-relaxed ${isDarkMode ? 'text-gray-200' : 'text-conison-gray'}`}>
-            Our expertise spans across 
-            <span className="font-bold text-conison-cyan mx-1 whitespace-nowrap">web development</span>, 
-            <span className="font-bold text-conison-magenta mx-1 whitespace-nowrap">mobile applications</span>, and 
-            <span className="font-bold text-conison-yellow mx-1 whitespace-nowrap bg-conison-gray px-2 py-0.5 rounded-md">digital transformation</span> 
-            strategies.
-          </p>
-        </motion.div>
-        
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
