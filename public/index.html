@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/images/conison_logo_large.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Conison Technologies - Professional IT Services"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/images/conison_logo_large.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    <!-- Preload critical assets -->
+    <link rel="preload" href="%PUBLIC_URL%/images/conison_logo_large.png" as="image" />
+    
+    <!-- Inline critical CSS to eliminate render blocking -->
+    <style>
+      /* Critical styles for LCP content */
+      .text-conison-gray { color: #4a5568; }
+      .inline-block { display: inline-block; }
+      .font-bold { font-weight: 700; }
+      .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+      .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+      .text-5xl { font-size: 3rem; line-height: 1; }
+      .text-center { text-align: center; }
+      .flex { display: flex; }
+      .items-center { align-items: center; }
+      .justify-center { justify-content: center; }
+      .animate-spin { animation: spin 1s linear infinite; }
+      @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      
+      /* Dark mode styles */
+      .dark { color-scheme: dark; }
+      .dark .text-conison-white { color: #fff; }
+      .dark .bg-gray-900 { background-color: #1a202c; }
+      
+      /* Initial loading indicator */
+      #root-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100%;
+      }
+      #root-loading-spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #38b2ac;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        animation: spin 1s linear infinite;
+      }
+    </style>
+    
+    <title>Conison Technologies</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- Add initial loading state that will show before JS loads -->
+    <div id="root">
+      <div id="root-loading">
+        <div id="root-loading-spinner"></div>
+      </div>
+    </div>
+    
+    <!-- Use defer to not block rendering -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
+  </body>
+</html> 

@@ -1,0 +1,320 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import './styles/colors.css';
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 279 1% 27%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 279 1% 27%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 279 1% 27%;
+ 
+    --primary: 326 100% 46%;
+    --primary-foreground: 0 0% 100%;
+ 
+    --secondary: 197 100% 47%;
+    --secondary-foreground: 0 0% 100%;
+ 
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+ 
+    --accent: 52 100% 49%;
+    --accent-foreground: 279 1% 27%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 326 100% 46%;
+ 
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 222.2 14% 13%;
+    --foreground: 0 0% 100%;
+ 
+    --card: 222.2 14% 18%;
+    --card-foreground: 0 0% 100%;
+ 
+    --popover: 222.2 14% 13%;
+    --popover-foreground: 0 0% 100%;
+ 
+    --primary: 326 100% 46%;
+    --primary-foreground: 0 0% 100%;
+ 
+    --secondary: 197 100% 47%;
+    --secondary-foreground: 0 0% 100%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 52 100% 49%;
+    --accent-foreground: 0 0% 100%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 326 100% 46%;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: white;
+    color: var(--conison-gray);
+  }
+
+  /* Dark mode overrides */
+  .dark body {
+    background-color: #1f2023;
+    color: var(--conison-white);
+  }
+
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+  }
+
+  /* Particles container */
+  .particles-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+
+  /* Animation classes */
+  .animate-fadeIn {
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  /* Transitions */
+  body, .nav-sticky, a, span, button, .mobile-menu, .mobile-menu-overlay {
+    transition: all 0.3s ease;
+  }
+
+  /* Accessibility class for visually hidden elements */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Service cards */
+  .service-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    border: 1px solid var(--conison-gray-light);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .service-card .service-content {
+    flex-grow: 1;
+  }
+
+  .service-card .service-footer {
+    margin-top: auto;
+  }
+
+  .dark .service-card {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Custom Focus Styles */
+  .focus-outline:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--conison-cyan-50);
+  }
+
+  /* Custom Button Styles */
+  .btn {
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+
+  .btn-primary {
+    background-color: var(--conison-magenta);
+    color: white;
+    border: 1px solid var(--conison-magenta);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--conison-magenta-dark);
+    border-color: var(--conison-magenta-dark);
+  }
+
+  .btn-secondary {
+    background-color: var(--conison-cyan);
+    color: white;
+    border: 1px solid var(--conison-cyan);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--conison-cyan-dark);
+    border-color: var(--conison-cyan-dark);
+  }
+
+  .btn-accent {
+    background-color: var(--conison-yellow);
+    color: var(--conison-gray);
+    border: 1px solid var(--conison-yellow);
+  }
+
+  .btn-accent:hover {
+    background-color: var(--conison-yellow-dark);
+    border-color: var(--conison-yellow-dark);
+  }
+
+  /* Form elements with proper contrast */
+  input, textarea, select {
+    background-color: var(--conison-white);
+    border: 2px solid var(--conison-gray);
+    color: var(--conison-gray);
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--conison-cyan);
+    box-shadow: 0 0 0 3px var(--conison-cyan-20);
+  }
+
+  .dark input, .dark textarea, .dark select {
+    background-color: #2a2a2a;
+    border-color: var(--conison-cyan);
+    color: var(--conison-white);
+  }
+
+  /* Highlight text */
+  .highlight {
+    color: var(--conison-yellow);
+    background-color: transparent;
+  }
+
+  .dark .highlight {
+    color: var(--conison-yellow);
+  }
+
+  /* Links */
+  a {
+    color: var(--conison-cyan);
+    text-decoration: none;
+    transition: color 0.15s ease-in-out;
+  }
+
+  a:hover {
+    color: var(--conison-cyan-dark);
+    text-decoration: underline;
+  }
+
+  .dark a {
+    color: #38b2fb; /* Lighter cyan for dark mode */
+  }
+
+  .dark a:hover {
+    color: #5dc2fb;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    color: #555356; /* Gray */
+    font-weight: 600;
+  }
+
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5,
+  .dark h6 {
+    color: #f7fafc;
+  }
+
+  /* Animation Classes */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Add dark mode visibility improvements */
+  .dark .particles-container {
+    z-index: 0;
+    mix-blend-mode: lighten;
+  }
+  
+  /* Enhance dark mode text contrast */
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: white;
+  }
+  
+  /* Add subtle borders to cards in dark mode for better visibility */
+  .dark .bg-gray-800 {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Enhance button visibility in dark mode */
+  .dark button, .dark a.bg-conison-cyan, .dark a.bg-conison-magenta {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.02em;
+  }
+  
+  /* Improve hover states for dark mode */
+  .dark a.bg-conison-cyan:hover {
+    background-color: #00c8ff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.35);
+  }
+  
+  .dark a.bg-conison-magenta:hover {
+    background-color: #ff0aa0 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.35);
+  }
+  
+  /* Improve service card visibility */
+  .dark .service-card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  }
+} 

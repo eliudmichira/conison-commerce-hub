@@ -1,0 +1,55 @@
+:root {
+  /* Main brand colors */
+  --conison-yellow: #fce300;
+  --conison-cyan: #00adee;
+  --conison-magenta: #ec008c;
+  --conison-gray: #555356;
+  --conison-white: #ffffff;
+
+  /* Dark variants for hover states */
+  --conison-magenta-dark: #c9007a;
+  --conison-cyan-dark: #0098d1;
+  --conison-yellow-dark: #d9c200;
+
+  /* Light variants for backgrounds */
+  --conison-magenta-light: #ffd6ef;
+  --conison-cyan-light: #d6f5ff;
+  --conison-yellow-light: #fffbd6;
+  --conison-gray-light: #e6e6e6;
+
+  /* Transparent variants for overlays */
+  --conison-magenta-10: rgba(236, 0, 140, 0.1);
+  --conison-magenta-20: rgba(236, 0, 140, 0.2);
+  --conison-magenta-50: rgba(236, 0, 140, 0.5);
+  
+  --conison-cyan-10: rgba(0, 173, 238, 0.1);
+  --conison-cyan-20: rgba(0, 173, 238, 0.2);
+  --conison-cyan-50: rgba(0, 173, 238, 0.5);
+  
+  --conison-yellow-10: rgba(252, 227, 0, 0.1);
+  --conison-yellow-20: rgba(252, 227, 0, 0.2);
+  --conison-yellow-50: rgba(252, 227, 0, 0.5);
+  
+  --conison-gray-10: rgba(85, 83, 86, 0.1);
+  --conison-gray-20: rgba(85, 83, 86, 0.2);
+  --conison-gray-50: rgba(85, 83, 86, 0.5);
+
+  /* Functional colors */
+  --color-text: var(--conison-gray);
+  --color-heading: var(--conison-gray);
+  --color-background: var(--conison-white);
+  --color-primary: var(--conison-magenta);
+  --color-secondary: var(--conison-cyan);
+  --color-accent: var(--conison-yellow);
+  --color-link: var(--conison-cyan);
+  --color-link-hover: var(--conison-cyan-dark);
+  --color-button: var(--conison-magenta);
+  --color-button-hover: var(--conison-magenta-dark);
+  --color-border: var(--conison-gray-light);
+  
+  /* Dark mode colors */
+  --color-text-dark: var(--conison-white);
+  --color-heading-dark: var(--conison-white);
+  --color-background-dark: #1f2023;
+  --color-border-dark: rgba(255, 255, 255, 0.1);
+} 
