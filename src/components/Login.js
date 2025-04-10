@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
+import { FaEnvelope, FaLock } from 'react-icons/fa';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDarkMode } from '../context/DarkModeContext';
-import { FaEnvelope, FaLock } from 'react-icons/fa';
 
 const Login = () => {
+  const { isDarkMode } = useDarkMode();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { isDarkMode } = useDarkMode();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setError('');
 
     try {
-      // Here you would typically make an API call to your backend
-      // For now, we'll simulate a successful login
+      // Check credentials
       if (email === 'admin@conison.com' && password === 'admin123') {
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('userRole', 'admin');
@@ -30,6 +31,8 @@ const Login = () => {
       }
     } catch (err) {
       setError('An error occurred during login');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,9 +94,10 @@ const Login = () => {
           <div>
             <button
               type="submit"
+              disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-conison-magenta hover:bg-conison-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-conison-magenta"
             >
-              Sign in
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
         </form>

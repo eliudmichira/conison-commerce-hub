@@ -3,17 +3,45 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDarkMode } from '../../context/DarkModeContext';
 import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaHome, FaUser, FaBriefcase, FaFileAlt, FaTag, FaCogs, FaSun, FaMoon, FaBars, FaTimes } from 'react-icons/fa';
-import { IconContext } from 'react-icons';
+import { FaHome, FaUser, FaBriefcase, FaFileAlt, FaTag, FaCogs, FaSun, FaMoon, FaBars, FaTimes, FaUserCircle, FaCode, FaMobile, FaPalette, FaGlobe, FaRobot, FaCloud, FaShieldAlt, FaPaintBrush, FaVideo, FaHandshake, FaEnvelope } from 'react-icons/fa';
 
-const NavBar = ({ items }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+const NavBar = ({ items = [] }) => {
+  const [, setActiveIndex] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const { isAuthenticated, logout } = useAuth();
+
+  // Default navigation items if none are provided
+  const defaultItems = [
+    { name: 'Home', path: '/', icon: 'FaHome' },
+    { 
+      name: 'Services', 
+      path: '/services', 
+      icon: 'FaCogs',
+      dropdown: [
+        { name: 'Web Development', path: '/services/web-development', icon: 'FaCode' },
+        { name: 'Mobile Development', path: '/services/mobile-development', icon: 'FaMobile' },
+        { name: 'UI/UX Design', path: '/services/ui-ux-design', icon: 'FaPalette' },
+        { name: 'Digital Marketing', path: '/services/digital-marketing', icon: 'FaGlobe' },
+        { name: 'AI & ML', path: '/services/ai-ml', icon: 'FaRobot' },
+        { name: 'Cloud Solutions', path: '/services/cloud-solutions', icon: 'FaCloud' },
+        { name: 'Animation & Video', path: '/services/animation-video-production', icon: 'FaVideo' },
+        { name: 'Cybersecurity', path: '/services/cybersecurity', icon: 'FaShieldAlt' },
+        { name: 'Consulting', path: '/services/consulting', icon: 'FaHandshake' }
+      ]
+    },
+    { name: 'Portfolio', path: '/portfolio', icon: 'FaBriefcase' },
+    { name: 'Rate Card', path: '/rate-card', icon: 'FaTag' },
+    { name: 'Quote Request', path: '/quote-request', icon: 'FaFileAlt' },
+    { name: 'About', path: '/about', icon: 'FaUser' },
+    { name: 'Contact', path: '/contact', icon: 'FaFileAlt' }
+  ];
+
+  // Use provided items or default items
+  const navItems = items.length > 0 ? items : defaultItems;
 
   // Map of icon names to actual components
   const iconMap = {
@@ -22,16 +50,28 @@ const NavBar = ({ items }) => {
     FaBriefcase: <FaBriefcase />,
     FaFileAlt: <FaFileAlt />,
     FaTag: <FaTag />,
-    FaCogs: <FaCogs />
+    FaCogs: <FaCogs />,
+    FaUserCircle: <FaUserCircle />,
+    FaCode: <FaCode />,
+    FaMobile: <FaMobile />,
+    FaPalette: <FaPalette />,
+    FaGlobe: <FaGlobe />,
+    FaRobot: <FaRobot />,
+    FaCloud: <FaCloud />,
+    FaShieldAlt: <FaShieldAlt />,
+    FaPaintBrush: <FaPaintBrush />,
+    FaVideo: <FaVideo />,
+    FaHandshake: <FaHandshake />,
+    FaEnvelope: <FaEnvelope />
   };
 
   useEffect(() => {
     const currentPath = location.pathname;
-    const index = items.findIndex(item => item.path === currentPath);
+    const index = navItems.findIndex(item => item.path === currentPath);
     if (index !== -1) {
       setActiveIndex(index);
     }
-  }, [location, items]);
+  }, [location, navItems]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,12 +83,12 @@ const NavBar = ({ items }) => {
   }, []);
 
   const handleLogout = async () => {
+    // Logging out logic
     try {
-      console.log('Logging out...');
       logout();
       navigate('/');
     } catch (error) {
-      console.error('Logout failed:', error);
+      // Logout failed logic
     }
   };
 
@@ -77,29 +117,45 @@ const NavBar = ({ items }) => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {items.map((item, index) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`relative flex items-center space-x-2 text-sm font-medium transition-colors duration-200 ${
-                  location.pathname === item.path
-                    ? 'text-conison-magenta'
-                    : isDarkMode
-                      ? 'text-gray-300 hover:text-conison-magenta'
-                      : 'text-gray-600 hover:text-conison-magenta'
-                }`}
-                onClick={() => setActiveIndex(index)}
-              >
-                <span className="w-5 h-5">{getIcon(item.icon)}</span>
-                <span>{item.name}</span>
-                {activeIndex === index && (
-                  <motion.div
-                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-conison-magenta"
-                    layoutId="underline"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
+            {navItems.map((item, index) => (
+              <div key={item.name} className="relative group">
+                <Link
+                  to={item.path}
+                  className={`relative flex items-center space-x-2 text-sm font-medium transition-colors duration-200 ${
+                    location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+                      ? 'text-conison-magenta'
+                      : isDarkMode
+                        ? 'text-gray-300 hover:text-conison-magenta'
+                        : 'text-gray-600 hover:text-conison-magenta'
+                  }`}
+                  onClick={() => setActiveIndex(index)}
+                >
+                  <span className="w-5 h-5">{getIcon(item.icon)}</span>
+                  <span>{item.name}</span>
+                </Link>
+                
+                {item.dropdown && (
+                  <div className="absolute left-0 mt-2 w-56 origin-top-left rounded-md shadow-lg overflow-hidden z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                    <div className={`py-1 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                      {item.dropdown.map((subItem, subIndex) => (
+                        <Link
+                          key={subIndex}
+                          to={subItem.path}
+                          className={`flex items-center space-x-2 px-4 py-2 text-sm ${
+                            isDarkMode
+                              ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                              : 'text-gray-700 hover:bg-gray-100 hover:text-conison-magenta'
+                          }`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {subItem.icon && <span className="text-conison-magenta">{getIcon(subItem.icon)}</span>}
+                          <span>{subItem.name}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
                 )}
-              </Link>
+              </div>
             ))}
           </div>
 
@@ -114,14 +170,14 @@ const NavBar = ({ items }) => {
               {isDarkMode ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
             </button>
 
-            {/* Auth Buttons */}
+            {/* Profile/Auth Button */}
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <Link
                   to="/client"
                   className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-conison-magenta transition-colors"
                 >
-                  <FaUser className="w-5 h-5" />
+                  <FaUserCircle className="w-5 h-5" />
                   <span>Dashboard</span>
                 </Link>
                 <button
@@ -132,20 +188,13 @@ const NavBar = ({ items }) => {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center space-x-4">
-                <Link
-                  to="/login"
-                  className="text-sm font-medium text-white bg-conison-magenta hover:bg-conison-magenta-dark px-4 py-2 rounded-md transition-colors duration-200"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="text-sm font-medium text-conison-magenta border border-conison-magenta hover:bg-conison-magenta hover:text-white px-4 py-2 rounded-md transition-colors duration-200"
-                >
-                  Register
-                </Link>
-              </div>
+              <Link
+                to="/login"
+                className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-conison-magenta transition-colors"
+              >
+                <FaUserCircle className="w-5 h-5" />
+                <span>Login</span>
+              </Link>
             )}
 
             {/* Mobile Menu Button */}
@@ -169,23 +218,49 @@ const NavBar = ({ items }) => {
               transition={{ duration: 0.3 }}
               className="md:hidden mt-4 pb-4 space-y-4"
             >
-              {items.map((item, index) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                    location.pathname === item.path
-                      ? 'bg-conison-magenta/10 text-conison-magenta'
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-                  onClick={() => {
-                    setActiveIndex(index);
-                    setIsMobileMenuOpen(false);
-                  }}
-                >
-                  <span className="w-5 h-5">{getIcon(item.icon)}</span>
-                  <span>{item.name}</span>
-                </Link>
+              {navItems.map((item, index) => (
+                <div key={item.name}>
+                  <Link
+                    to={item.path}
+                    className={`flex items-center justify-between px-4 py-2 rounded-lg transition-colors ${
+                      location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+                        ? 'bg-conison-magenta/10 text-conison-magenta'
+                        : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                    }`}
+                    onClick={() => {
+                      if (!item.dropdown) {
+                        setActiveIndex(index);
+                        setIsMobileMenuOpen(false);
+                      }
+                    }}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="w-5 h-5">{getIcon(item.icon)}</span>
+                      <span>{item.name}</span>
+                    </div>
+                  </Link>
+                  
+                  {/* Mobile dropdown items */}
+                  {item.dropdown && (
+                    <div className="ml-6 mt-1 space-y-1">
+                      {item.dropdown.map((subItem, subIndex) => (
+                        <Link
+                          key={subIndex}
+                          to={subItem.path}
+                          className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm ${
+                            isDarkMode
+                              ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                              : 'text-gray-700 hover:bg-gray-100 hover:text-conison-magenta'
+                          }`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {subItem.icon && <span className="text-conison-magenta">{getIcon(subItem.icon)}</span>}
+                          <span>{subItem.name}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
 
               {isAuthenticated ? (
@@ -195,7 +270,7 @@ const NavBar = ({ items }) => {
                     className="flex items-center space-x-2 w-full px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <FaUser className="w-5 h-5" />
+                    <FaUserCircle className="w-5 h-5" />
                     <span>Dashboard</span>
                   </Link>
                   <button
@@ -206,22 +281,14 @@ const NavBar = ({ items }) => {
                   </button>
                 </div>
               ) : (
-                <div className="space-y-4 px-4">
-                  <Link
-                    to="/login"
-                    className="block text-center w-full bg-conison-magenta text-white px-4 py-2 rounded-lg hover:bg-conison-magenta-dark transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="block text-center w-full text-conison-magenta border border-conison-magenta px-4 py-2 rounded-lg hover:bg-conison-magenta hover:text-white transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Register
-                  </Link>
-                </div>
+                <Link
+                  to="/login"
+                  className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <FaUserCircle className="w-5 h-5" />
+                  <span>Login</span>
+                </Link>
               )}
             </motion.div>
           )}

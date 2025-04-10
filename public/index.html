@@ -11,18 +11,46 @@
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/images/conison_logo_large.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!-- Preconnect to external domains -->
+    
+    <!-- Resource hints for faster loading -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- Preload critical assets -->
-    <link rel="preload" href="%PUBLIC_URL%/images/conison_logo_large.png" as="image" />
+    <link rel="preload" href="%PUBLIC_URL%/images/conison_logo_large.png" as="image" imagesizes="32px" />
+    <link rel="preload" href="%PUBLIC_URL%/static/css/main.chunk.css" as="style" />
+    <link rel="preload" href="%PUBLIC_URL%/static/js/main.chunk.js" as="script" />
     
     <!-- Inline critical CSS to eliminate render blocking -->
     <style>
       /* Critical styles for LCP content */
+      body { 
+        margin: 0; 
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+        -webkit-font-smoothing: antialiased; 
+        -moz-osx-font-smoothing: grayscale;
+        letter-spacing: -0.01em;
+        color: #2d3748;
+      }
+      .text-primary { color: #8a1a9c; }
+      .text-primary-dark { color: #6a0d7a; }
+      .text-primary-light { color: #b356c2; }
+      .text-dark { color: #1a1a2e; }
+      .text-medium { color: #2d3748; }
+      .text-light { color: #4a5568; }
+      
+      .text-conison-magenta { color: #ec008c; }
+      .text-conison-cyan { color: #00adee; }
       .text-conison-gray { color: #4a5568; }
       .inline-block { display: inline-block; }
       .font-bold { font-weight: 700; }
+      .font-semibold { font-weight: 600; }
+      .text-2xl { font-size: 1.5rem; line-height: 2rem; }
       .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
       .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
       .text-5xl { font-size: 3rem; line-height: 1; }
@@ -30,12 +58,16 @@
       .flex { display: flex; }
       .items-center { align-items: center; }
       .justify-center { justify-content: center; }
+      .flex-col { flex-direction: column; }
+      .min-h-screen { min-height: 100vh; }
+      .w-full { width: 100%; }
+      .mx-auto { margin-left: auto; margin-right: auto; }
       .animate-spin { animation: spin 1s linear infinite; }
       @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       
       /* Dark mode styles */
       .dark { color-scheme: dark; }
-      .dark .text-conison-white { color: #fff; }
+      .dark .text-white { color: #fff; }
       .dark .bg-gray-900 { background-color: #1a202c; }
       
       /* Initial loading indicator */
@@ -45,14 +77,33 @@
         align-items: center;
         height: 100vh;
         width: 100%;
+        background-color: #f8fafc;
       }
+      
+      .dark #root-loading {
+        background-color: #1a202c;
+      }
+      
       #root-loading-spinner {
         border: 4px solid rgba(0, 0, 0, 0.1);
-        border-left-color: #38b2ac;
+        border-left-color: #8a1a9c;
         border-radius: 50%;
         width: 36px;
         height: 36px;
         animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+      
+      .dark #root-loading-spinner {
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        border-left-color: #b356c2;
+      }
+      
+      /* Add dimension to LCP element to prevent layout shift */
+      a.text-2xl.font-bold.text-primary {
+        display: inline-block;
+        min-height: 32px;
+        min-width: 120px;
       }
     </style>
     
@@ -67,7 +118,7 @@
       </div>
     </div>
     
-    <!-- Use defer to not block rendering -->
+    <!-- Defer non-critical resources -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
   </body>
 </html> 

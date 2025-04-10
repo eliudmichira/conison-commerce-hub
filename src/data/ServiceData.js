@@ -4,7 +4,7 @@ import React from 'react';
 const services = [
   {
     id: 'graphic-design',
-    path: ['graphic-design'],
+    path: ['graphic-design', 'ui-ux-design'],
     category: 'Design & Creative',
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -116,7 +116,7 @@ const services = [
   },
   {
     id: 'motion-graphics',
-    path: ['motion-graphics', 'animation', 'video'],
+    path: ['motion-graphics', 'animation', 'video', 'animation-video-production'],
     category: 'Design & Creative',
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -170,7 +170,7 @@ const services = [
   },
   {
     id: 'it-solutions',
-    path: ['it-solutions', 'software', 'it'],
+    path: ['it-solutions', 'software', 'it', 'mobile-development'],
     category: 'Development',
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -249,7 +249,7 @@ const services = [
   },
   {
     id: 'ai-automation',
-    path: ['ai-automation', 'artificial-intelligence', 'automation'],
+    path: ['ai-automation', 'artificial-intelligence', 'automation', 'ai-ml'],
     category: 'IT Services',
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">

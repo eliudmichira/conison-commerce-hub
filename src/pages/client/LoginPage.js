@@ -1,183 +1,205 @@
-import React, { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDarkMode } from '../../context/DarkModeContext';
-import { motion } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import InputField from '../../components/auth/InputField';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
 const LoginPage = () => {
+  const { isDarkMode } = useDarkMode();
+  const auth = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Form state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { login, currentUser } = useAuth();
-  const { isDarkMode } = useDarkMode();
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
+  const [loginError, setLoginError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // If user is already logged in, redirect to dashboard
-  if (currentUser) {
-    return <Navigate to="/client" />;
-  }
+  // Check for redirect path from location state
+  const redirectPath = location.state?.from?.pathname || '/client';
 
+  // Clear errors when inputs change
+  useEffect(() => {
+    if (email || password) {
+      setLoginError('');
+      auth?.clearError?.();
+    }
+  }, [email, password, auth]);
+
+  // Handle auth errors
+  useEffect(() => {
+    if (auth?.error) {
+      setLoginError(auth.error);
+    }
+  }, [auth?.error]);
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setLoginError('');
     
-    // Basic validation
-    if (!email || !password) {
-      setError('Please enter both email and password');
-      return;
-    }
-    
-    // Clear previous errors
-    setError('');
-    setLoading(true);
+    // Disable the button for at least 500ms to prevent double-clicking
+    const startTime = Date.now();
     
     try {
-      await login(email, password);
-      // Redirect happens automatically due to currentUser state change
+      if (auth?.login) {
+        // Login with Firebase Auth
+        await auth.login(email, password, rememberMe);
+        navigate(redirectPath);
+      } else {
+        // Fallback for when auth context is not available
+        console.warn('Auth context not available, using localStorage fallback');
+        if (email === 'admin@conison.com' && password === 'admin123') {
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userRole', 'admin');
+          navigate('/admin');
+        } else if (email === 'client@conison.com' && password === 'client123') {
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userRole', 'client');
+          navigate('/client');
+        } else {
+          setLoginError('Invalid email or password');
+        }
+      }
     } catch (err) {
-      setError('Failed to log in. Please check your credentials.');
       console.error('Login error:', err);
+      setLoginError(err.message || 'An error occurred during login');
     } finally {
-      setLoading(false);
+      // Ensure the button is disabled for at least 500ms for better UX
+      const elapsedTime = Date.now() - startTime;
+      if (elapsedTime < 500) {
+        setTimeout(() => {
+          setIsSubmitting(false);
+        }, 500 - elapsedTime);
+      } else {
+        setIsSubmitting(false);
+      }
     }
   };
 
   return (
-    <div className={`min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900 ${isDarkMode ? 'dark' : ''}`}>
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Link to="/">
-          <motion.div 
-            className="flex items-center justify-center"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <span className="text-3xl font-bold text-center text-conison-magenta">Conison</span>
-            <span className="ml-2 text-3xl font-bold text-center text-conison-gray dark:text-white">Portal</span>
-          </motion.div>
-        </Link>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-          Sign in to your account
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-          Or{' '}
-          <Link to="/signup" className="font-medium text-conison-magenta hover:text-conison-cyan">
-            create a new account
-          </Link>
-        </p>
-      </div>
-
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <motion.div 
-          className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          {error && (
-            <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-              <span className="block sm:inline">{error}</span>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div className="px-6 py-8">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Welcome Back</h1>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">
+              Log in to access your dashboard
+            </p>
+          </div>
+          
+          {/* Display error message */}
+          {loginError && (
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-md text-sm">
+              {loginError}
             </div>
           )}
           
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email input */}
+            <InputField
+              label="Email Address"
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              required={true}
+            />
+            
+            {/* Password input */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-conison-magenta focus:border-conison-magenta dark:bg-gray-700 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Password
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-conison-magenta focus:border-conison-magenta dark:bg-gray-700 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-conison-magenta focus:ring-conison-cyan border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
-                  Remember me
+              <div className="flex items-center justify-between mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Password
                 </label>
-              </div>
-
-              <div className="text-sm">
                 <button
                   type="button"
-                  onClick={() => alert('Password reset functionality coming soon!')}
-                  className="font-medium text-conison-magenta hover:text-conison-cyan text-left"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-xs text-conison-magenta flex items-center gap-1"
                 >
-                  Forgot your password?
+                  {showPassword ? (
+                    <>
+                      <FaEyeSlash className="h-4 w-4" />
+                      Hide
+                    </>
+                  ) : (
+                    <>
+                      <FaEye className="h-4 w-4" />
+                      Show
+                    </>
+                  )}
                 </button>
               </div>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-conison-magenta focus:border-conison-magenta bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
             </div>
-
+            
+            {/* Remember me checkbox */}
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300 rounded"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                Remember me
+              </label>
+              <Link 
+                to="/forgot-password" 
+                className="ml-auto text-sm font-medium text-conison-magenta hover:text-conison-magenta-dark"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            
+            {/* Submit button */}
             <div>
               <button
                 type="submit"
-                disabled={loading}
-                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-conison-magenta hover:bg-conison-cyan focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-conison-yellow ${
-                  loading ? 'opacity-70 cursor-not-allowed' : ''
-                }`}
+                disabled={isSubmitting}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-conison-magenta hover:bg-conison-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-conison-magenta disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Signing in...' : 'Sign in'}
+                {isSubmitting ? (
+                  <span className="flex items-center">
+                    <LoadingSpinner size="sm" className="mr-2" />
+                    Signing in...
+                  </span>
+                ) : 'Sign in'}
               </button>
             </div>
           </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-                  Or continue with demo account
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <button
-                onClick={() => {
-                  setEmail('demo@conison.com');
-                  setPassword('password123');
-                }}
-                className="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+          
+          {/* Sign up link */}
+          <div className="mt-6 text-center">
+            <span className="text-sm">
+              Don't have an account?{" "}
+              <Link
+                to="/signup"
+                className="font-medium text-primary-600 hover:underline dark:text-primary-500"
               >
-                Use Demo Account
-              </button>
-            </div>
+                Sign up
+              </Link>
+            </span>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

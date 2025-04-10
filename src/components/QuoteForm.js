@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
 import services from '../data/ServiceData';
 import { useDarkMode } from '../context/DarkModeContext';
+import { useAuth } from '../context/AuthContext';
+import { createQuote } from '../api/clientApi';
 
 // Form field components for reusability
 const FormInput = ({ id, label, type = "text", register, errors, validation = {}, placeholder = "", required = false }) => (
@@ -250,31 +252,34 @@ const IMPORTANCE_RATING_OPTIONS = [
   { value: '5', label: 'Critical' }
 ];
 
-const QuoteForm = () => {
+const QuoteForm = ({ prefilledValues = {} }) => {
+  const { register, handleSubmit, watch, formState: { errors }, setValue, getValues, trigger } = useForm();
+  const { isDarkMode } = useDarkMode();
+  const { currentUser, userData } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isDarkMode } = useDarkMode();
   const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState('');
-  const [projectTypes, setProjectTypes] = useState([]);
+  const totalSteps = 3;
   const [prefilled, setPrefilled] = useState(false);
   const [prefilledService, setPrefilledService] = useState('');
   const [prefilledPrice, setPrefilledPrice] = useState('');
   const initialService = new URLSearchParams(location.search).get('service');
+  const [selectedService, setSelectedService] = useState(prefilledValues.serviceCategory || '');
+  const [estimatedAmount, setEstimatedAmount] = useState(0);
 
   const { 
-    register, 
-    handleSubmit, 
-    watch, 
-    setValue, 
-    formState: { errors } 
+    register: formRegister, 
+    handleSubmit: formHandleSubmit, 
+    watch: formWatch, 
+    setValue: formSetValue, 
+    formState: { errors: formErrors } 
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      name: '',
-      email: '',
+      name: currentUser?.displayName || '',
+      email: currentUser?.email || '',
       phone: '',
       company: '',
       industry: '',
@@ -282,14 +287,14 @@ const QuoteForm = () => {
       website: '',
       preferredCommunication: '',
       hearAboutUs: '',
-      serviceCategory: initialService || '',
-      serviceType: '',
+      serviceCategory: prefilledValues.serviceCategory || '',
+      serviceType: prefilledValues.serviceType || '',
       projectGoals: '',
       projectDescription: '',
       currentChallenges: '',
       targetAudience: '',
       successMetrics: '',
-      budget: '',
+      budget: prefilledValues.budget || '',
       timeline: '',
       priority: '',
       projectStartDate: '',
@@ -309,118 +314,125 @@ const QuoteForm = () => {
     }
   });
 
-  const watchServiceCategory = watch('serviceCategory');
-  const watchServiceType = watch('serviceType');
+  const watchServiceCategory = formWatch('serviceCategory');
+  const watchServiceType = formWatch('serviceType');
 
-  // Check URL for service parameter
+  // Watch values for conditional rendering
+  const serviceCategory = watch('serviceCategory');
+  const budget = watch('budget');
+
+  // Check URL for service parameter and get location state data
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const serviceParam = params.get('service');
     const priceParam = params.get('price');
     
+    // Check location state (passed from ServiceDetailPage) first
+    const locationState = location.state || {};
+    const { service: stateService, serviceId, category } = locationState;
+    
     // Flag to track if we should auto-advance to step 2
     let shouldAdvanceToStep2 = false;
     let fieldsWerePrefilled = false;
     
-    if (serviceParam) {
-      setPrefilledService(serviceParam);
+    // Prefer state data over URL parameters
+    const serviceToUse = stateService || serviceParam;
+    
+    if (serviceToUse) {
+      setPrefilledService(serviceToUse);
       
       try {
-        // Find the service and set the form values - first try exact match with id or path
-        let foundService = services.find(s => 
-          s.id === serviceParam || 
-          (s.path && s.path.includes(serviceParam))
-        );
+        console.log("Looking for service match for:", serviceToUse);
+        console.log("Service ID from state:", serviceId);
+        console.log("Service category from state:", category);
         
-        // If no exact match by id or path, try title match
+        // First try to use the serviceId from state if available
+        let foundService = null;
+        if (serviceId) {
+          foundService = services.find(s => s.id === serviceId);
+          console.log("Matched by ID:", foundService ? "yes" : "no");
+        }
+        
+        // If no service found by ID, try exact match with service name or path
         if (!foundService) {
           foundService = services.find(s => 
-            s.title && s.title.toLowerCase().replace(/\s+/g, '-') === serviceParam.toLowerCase()
+            (s.title && s.title.toLowerCase() === serviceToUse.toLowerCase().replace(/-/g, ' ')) ||
+            s.id === serviceToUse.toLowerCase().replace(/\s+/g, '-') || 
+            (s.path && s.path.includes(serviceToUse.toLowerCase().replace(/\s+/g, '-')))
           );
+          console.log("Matched by title/path:", foundService ? "yes" : "no");
+        }
+        
+        // Try special case for Logo Design
+        if (!foundService && (serviceToUse.toLowerCase().includes('logo') || 
+                             (serviceId && serviceId.toLowerCase().includes('logo')))) {
+          foundService = services.find(s => 
+            s.id === 'graphic-design' || 
+            (s.subServices && s.subServices.some(sub => sub.toLowerCase().includes('logo')))
+          );
+          console.log("Matched Logo Design special case:", foundService ? "yes" : "no");
         }
         
         // If still no match, try partial match
         if (!foundService) {
           foundService = services.find(s => 
-            (s.title && s.title.toLowerCase().includes(serviceParam.toLowerCase().replace(/-/g, ' '))) ||
-            (serviceParam.toLowerCase().replace(/-/g, ' ').includes(s.title && s.title.toLowerCase()))
+            (s.title && serviceToUse && s.title.toLowerCase().includes(serviceToUse.toLowerCase().replace(/-/g, ' '))) ||
+            (s.id && serviceToUse && s.id.toLowerCase().includes(serviceToUse.toLowerCase().replace(/\s+/g, '-')))
           );
-        }
-        
-        // Last resort fallback for 'digital-marketing'
-        if (!foundService && serviceParam.toLowerCase().includes('digital-marketing')) {
-          // Find the actual digital marketing service
-          foundService = services.find(s => 
-            s.id === 'digital-marketing' || 
-            (s.title && s.title.toLowerCase().includes('digital marketing'))
-          );
-          
-          // If still not found, use a hardcoded fallback
-          if (!foundService) {
-            foundService = services.find(s => s.category === 'Marketing');
-            
-            // Ultimate fallback
-            if (!foundService) {
-              foundService = {
-                id: 'digital-marketing',
-                title: 'Digital Marketing & SEO',
-                category: 'Marketing',
-                features: [
-                  'Social Media Management',
-                  'SEO Optimization',
-                  'Content Marketing',
-                  'Email Marketing',
-                  'PPC Advertising'
-                ]
-              };
-            }
-          }
+          console.log("Matched by partial match:", foundService ? "yes" : "no");
         }
         
         if (foundService) {
           console.log("Found matching service:", foundService);
           setPrefilledService(foundService.title);
-          setValue('serviceCategory', foundService.category || 'Marketing');
           
-          // Find service types based on the category
-          const serviceWithSameCategory = services.filter(s => 
-            s.category === (foundService.category || 'Marketing')
-          );
+          // Use category from state if available, otherwise from foundService
+          const serviceCategory = category || foundService.category || 'Design & Creative';
+          formSetValue('serviceCategory', serviceCategory);
+          
+          // Set project types based on the category
+          const servicesWithSameCategory = services.filter(s => s.category === serviceCategory);
           
           // Set project types
-          const types = serviceWithSameCategory.map(s => s.title);
-          setProjectTypes(types.length > 0 ? types : [foundService.title]);
-          
-          // Set the selected service type
-          setValue('serviceType', foundService.title);
+          const types = servicesWithSameCategory.map(s => s.title);
+          formSetValue('serviceType', foundService.title);
           
           // Auto-fill required fields in step 1 to allow advancing to step 2
           shouldAdvanceToStep2 = true;
           fieldsWerePrefilled = true;
         } else {
           // If no matching service found, create a generic entry with the param
-          console.log("No matching service found for:", serviceParam);
-          setPrefilledService(serviceParam.replace(/-/g, ' '));
+          console.log("No matching service found for:", serviceToUse);
+          setPrefilledService(serviceToUse.replace(/-/g, ' '));
           
           // Try to extract a category from the service param
-          let categoryGuess = 'Other';
-          if (serviceParam.includes('web') || serviceParam.includes('app')) {
-            categoryGuess = 'Development';
-          } else if (serviceParam.includes('design') || serviceParam.includes('brand')) {
-            categoryGuess = 'Design & Creative';
-          } else if (serviceParam.includes('market') || serviceParam.includes('seo')) {
-            categoryGuess = 'Marketing';
+          let categoryGuess = category || 'Other';
+          if (!category) {
+            if (serviceToUse.toLowerCase().includes('web') || serviceToUse.toLowerCase().includes('app')) {
+              categoryGuess = 'Development';
+            } else if (serviceToUse.toLowerCase().includes('design') || 
+                     serviceToUse.toLowerCase().includes('brand') || 
+                     serviceToUse.toLowerCase().includes('logo')) {
+              categoryGuess = 'Design & Creative';
+            } else if (serviceToUse.toLowerCase().includes('market') || 
+                     serviceToUse.toLowerCase().includes('seo')) {
+              categoryGuess = 'Marketing';
+            }
           }
           
-          setValue('serviceCategory', categoryGuess);
-          setValue('serviceType', serviceParam.replace(/-/g, ' '));
+          formSetValue('serviceCategory', categoryGuess);
+          
+          // Set service type
+          const serviceTypeGuess = serviceToUse.replace(/-/g, ' ');
+          formSetValue('serviceType', serviceTypeGuess);
+          
           fieldsWerePrefilled = true;
           shouldAdvanceToStep2 = true;
         }
       } catch (error) {
         console.error("Error processing service parameter:", error);
         // Still set the service name for display
-        setPrefilledService(serviceParam.replace(/-/g, ' '));
+        setPrefilledService(serviceToUse.replace(/-/g, ' '));
       }
     }
     
@@ -435,7 +447,7 @@ const QuoteForm = () => {
         );
         
         if (matchingBudget) {
-          setValue('budget', matchingBudget.value);
+          formSetValue('budget', matchingBudget.value);
         } else {
           // If no exact match, create a custom budget option based on the URL parameter
           // First, add the custom price to the budget options
@@ -444,7 +456,7 @@ const QuoteForm = () => {
             BUDGET_OPTIONS.push({ value: customBudget, label: customBudget });
           }
           // Then set the budget value
-          setValue('budget', customBudget);
+          formSetValue('budget', customBudget);
         }
         
         shouldAdvanceToStep2 = true;
@@ -466,20 +478,50 @@ const QuoteForm = () => {
         setCurrentStep(2);
       }, 100);
     }
-  }, [location.search, prefilled, setValue]);
+  }, [location.search, location.state, prefilled, formSetValue, services]);
 
   // Update project types when service category changes
   useEffect(() => {
     if (watchServiceCategory) {
       const serviceWithSameCategory = services.filter(s => s.category === watchServiceCategory);
       const types = serviceWithSameCategory.map(s => s.title);
-      setProjectTypes(types);
+      formSetValue('serviceType', types[0]);
+    }
+  }, [watchServiceCategory, formSetValue, watchServiceType]);
+
+  // Set initial values from prefilledValues when component mounts
+  useEffect(() => {
+    if (prefilledValues && Object.keys(prefilledValues).length > 0) {
+      // Set form values based on prefilled values
+      Object.entries(prefilledValues).forEach(([key, value]) => {
+        setValue(key, value);
+      });
+
+      // Update any dependent states
+      if (prefilledValues.serviceCategory) {
+        setSelectedService(prefilledValues.serviceCategory);
+      }
       
-      if (types.length > 0 && (!watchServiceType || !types.includes(watchServiceType))) {
-        setValue('serviceType', types[0]);
+      if (prefilledValues.budget) {
+        setEstimatedAmount(getEstimatedAmount(prefilledValues.budget));
       }
     }
-  }, [watchServiceCategory, setValue, watchServiceType]);
+  }, [prefilledValues, setValue]);
+
+  // Update selectedService when serviceCategory changes
+  useEffect(() => {
+    if (watchServiceCategory) {
+      setSelectedService(watchServiceCategory);
+    }
+  }, [watchServiceCategory]);
+
+  // Update estimated amount when budget changes
+  useEffect(() => {
+    const currentBudget = formWatch('budget');
+    if (currentBudget) {
+      setEstimatedAmount(getEstimatedAmount(currentBudget));
+    }
+  }, [formWatch]);
 
   // Form navigation functions
   const nextStep = () => {
@@ -495,10 +537,10 @@ const QuoteForm = () => {
   // Check if current step is valid before allowing next step
   const canProceedToNextStep = () => {
     if (currentStep === 1) {
-      return !errors.name && !errors.email && !errors.phone;
+      return !formErrors.name && !formErrors.email && !formErrors.phone;
     }
     if (currentStep === 2) {
-      return !errors.serviceCategory && !errors.serviceType && !errors.timeline && !errors.budget;
+      return !formErrors.serviceCategory && !formErrors.serviceType && !formErrors.timeline && !formErrors.budget;
     }
     return true;
   };
@@ -513,128 +555,216 @@ const QuoteForm = () => {
       if (!watchServiceType) return [];
       
       console.log("Getting features for service type:", watchServiceType);
-      console.log("Available services:", services);
       
-      // Find the selected service object
-      const selectedServiceObj = services.find(s => s && s.title === watchServiceType);
+      // Special direct handling for common service types
+      const serviceTypeLower = watchServiceType.toLowerCase();
       
-      // If no exact match, try finding by partial match or related service
-      if (!selectedServiceObj) {
-        console.log("No exact service match found, trying alternatives");
-        
-        // Try to find a service with a similar title (case insensitive)
-        const similarService = services.find(s => 
-          s && s.title && watchServiceType && 
-          s.title.toLowerCase().includes(watchServiceType.toLowerCase())
-        );
-        
-        // Try to find by partial match in the other direction
-        const partialMatch = !similarService && services.find(s => 
-          s && s.title && watchServiceType && 
-          watchServiceType.toLowerCase().includes(s.title.toLowerCase())
-        );
-
-        // For Package Design specifically
-        if (watchServiceType.includes("Package Design")) {
-          console.log("Package Design detected, looking for graphic design features");
-          const graphicDesignService = services.find(s => 
-            s && s.title && s.title.toLowerCase().includes("graphic")
-          );
-          
-          if (graphicDesignService && graphicDesignService.features) {
-            console.log("Using graphic design features for package design");
-            return graphicDesignService.features;
-          }
-        }
-        
-        // Return features from any matching service found
-        if (similarService && similarService.features) {
-          console.log("Using features from similar service:", similarService.title);
-          return similarService.features;
-        }
-        
-        if (partialMatch && partialMatch.features) {
-          console.log("Using features from partial match:", partialMatch.title);
-          return partialMatch.features;
-        }
-        
-        // Default design-related features if nothing specific is found
-        if (watchServiceType.toLowerCase().includes("design")) {
-          console.log("Using default design features");
-          return [
-            "Brand Guidelines Compliance",
-            "Multiple Design Concepts",
-            "Print-Ready Files",
-            "Source Files Included",
-            "3D Mockups",
-            "High Resolution",
-            "Revisions Included",
-            "Rush Delivery"
-          ];
-        }
-        
-        // Return empty array as last resort
-        console.log("No matching features found, returning empty array");
-        return [];
+      // Special handling for Logo Design
+      if (serviceTypeLower.includes('logo')) {
+        console.log("Logo Design detected, providing logo design features");
+        return [
+          "Multiple Design Concepts",
+          "Unlimited Revisions",
+          "All File Formats (JPG, PNG, PDF, SVG)",
+          "Color Variations",
+          "Brand Guidelines",
+          "Source Files",
+          "High Resolution",
+          "Vector Files",
+          "3D Mockups",
+          "Social Media Versions"
+        ];
       }
       
-      // Return features if they exist, otherwise return an empty array
-      console.log("Service found:", selectedServiceObj.title, "Features:", selectedServiceObj.features);
-      return (selectedServiceObj.features) ? selectedServiceObj.features : [];
-    } catch (error) {
-      console.error("Error in getServiceFeatures:", error);
-      // Return default features for common service types as fallback
-      if (watchServiceType && watchServiceType.toLowerCase().includes("design")) {
+      // Direct handling for web development
+      if (serviceTypeLower.includes('web') && (serviceTypeLower.includes('development') || serviceTypeLower.includes('design'))) {
         return [
-          "Brand Guidelines Compliance", 
+          "Responsive Design",
+          "Custom Design",
+          "Content Management System",
+          "SEO Optimization",
+          "User Experience Design",
+          "Mobile Friendly",
+          "Fast Loading Speed",
+          "Contact Forms",
+          "Social Media Integration",
+          "Google Analytics"
+        ];
+      }
+      
+      // Find the selected service object by exact title match
+      const selectedServiceObj = services.find(s => s && s.title === watchServiceType);
+      
+      // If found and has features, return them
+      if (selectedServiceObj && selectedServiceObj.features) {
+        console.log("Service found:", selectedServiceObj.title, "Features:", selectedServiceObj.features);
+        return selectedServiceObj.features;
+      }
+      
+      // If no exact match, try finding by partial match or related service
+      console.log("No exact service match found, trying alternatives");
+      
+      // Try to find a service with a similar title (case insensitive)
+      const similarService = services.find(s => 
+        s && s.title && watchServiceType && 
+        s.title.toLowerCase().includes(serviceTypeLower) || 
+        serviceTypeLower.includes(s.title.toLowerCase())
+      );
+      
+      // Return features from the similar service
+      if (similarService && similarService.features) {
+        console.log("Using features from similar service:", similarService.title);
+        return similarService.features;
+      }
+      
+      // Try finding a service that contains this as a subService
+      const parentService = services.find(s => 
+        s && s.subServices && s.subServices.some(sub => 
+          sub.toLowerCase() === serviceTypeLower || 
+          sub.toLowerCase().includes(serviceTypeLower) || 
+          serviceTypeLower.includes(sub.toLowerCase())
+        )
+      );
+      
+      if (parentService && parentService.features) {
+        console.log("Using features from parent service:", parentService.title);
+        return parentService.features;
+      }
+      
+      // Fallback based on service type keywords
+      // Graphics & Design services
+      if (serviceTypeLower.includes('design') || 
+          serviceTypeLower.includes('brand') || 
+          serviceTypeLower.includes('graphic')) {
+        console.log("Using default design features");
+        return [
+          "Brand Guidelines Compliance",
           "Multiple Design Concepts",
           "Print-Ready Files",
           "Source Files Included",
-          "Revisions"
+          "High Resolution",
+          "Revisions Included",
+          "Express Delivery Available",
+          "Commercial Use Rights"
         ];
       }
+      
+      // Development services
+      if (serviceTypeLower.includes('develop') || 
+          serviceTypeLower.includes('code') || 
+          serviceTypeLower.includes('app')) {
+        console.log("Using default development features");
+        return [
+          "Custom Development",
+          "Responsive Design",
+          "Cross-Browser Compatibility",
+          "Clean Code",
+          "Documentation",
+          "Testing & QA",
+          "Deployment",
+          "Support & Maintenance"
+        ];
+      }
+      
+      // Marketing services
+      if (serviceTypeLower.includes('market') || 
+          serviceTypeLower.includes('seo') || 
+          serviceTypeLower.includes('social')) {
+        console.log("Using default marketing features");
+        return [
+          "Strategy Development",
+          "Performance Tracking",
+          "Regular Reporting",
+          "Content Creation",
+          "Audience Targeting",
+          "Analytics Integration",
+          "Optimization",
+          "ROI Focus"
+        ];
+      }
+      
+      // Return empty array as last resort
+      console.log("No matching features found, returning empty array");
+      return [];
+    } catch (error) {
+      console.error("Error in getServiceFeatures:", error);
+      // Return empty array on error
       return [];
     }
   };
 
-  // Handle form submission
+  // Update the onSubmit function to include isQuickQuote flag
   const onSubmit = async (data) => {
     setIsSubmitting(true);
-    setSubmitError('');
+    setFormData({ ...formData, ...data });
     
     try {
-      // In a real application, you would send data to your API here
-      // For demonstration, we're using a timeout to simulate an API call
-      console.log('Form data to be submitted:', data);
+      console.log('Submitting quote request:', data);
       
-      // Simulate API request with timeout
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Get the user ID from Firebase auth or create a temporary ID for non-logged-in users
+      const userId = userData?.uid || currentUser?.uid || `temp-${Date.now()}`;
       
-      // Show success message
-      setIsSuccess(true);
-      
-      // Store submission data in localStorage for the thank you page if needed
-      localStorage.setItem('quoteSubmission', JSON.stringify({
-        name: data.name,
-        email: data.email,
-        serviceType: data.serviceType,
+      // Create a structured quote object
+      const quoteData = {
+        userId,
+        service: data.serviceType || data.serviceCategory,
+        category: data.category || getServiceCategory(data.serviceType || data.serviceCategory),
+        description: data.projectDescription,
+        requirements: data.projectRequirements || [],
+        budget: data.budget,
+        timeline: data.timeline,
+        features: data.features || [],
+        priority: data.priority,
+        contactDetails: {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          company: data.company
+        },
+        amount: estimatedAmount || getEstimatedAmount(data.budget),
+        status: 'pending',
+        isQuickQuote: Object.keys(prefilledValues).length > 0,
+        additionalRequirements: data.additionalRequirements,
+        contactName: data.name,
+        contactEmail: data.email,
+        contactPhone: data.phone,
         submittedAt: new Date().toISOString()
-      }));
+      };
       
-      // Redirect after showing success message
-      setTimeout(() => {
-        navigate('/thank-you');
-      }, 2000);
+      // Save the quote to our storage
+      await createQuote(quoteData);
+      
+      // Navigate to thank you page
+      navigate('/thank-you');
     } catch (error) {
-      console.error('Error submitting form:', error);
-      setSubmitError(error.message || 'An unexpected error occurred. Please try again later.');
+      console.error('Error submitting quote:', error);
+      alert('There was an error submitting your quote. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
+  
+  // Helper function to estimate an amount based on budget range
+  const getEstimatedAmount = (budget) => {
+    switch(budget) {
+      case 'under-1000': return Math.floor(Math.random() * 1000);
+      case '1000-5000': return Math.floor(Math.random() * 4000) + 1000;
+      case '5000-10000': return Math.floor(Math.random() * 5000) + 5000;
+      case '10000-20000': return Math.floor(Math.random() * 10000) + 10000;
+      case '20000-50000': return Math.floor(Math.random() * 30000) + 20000;
+      case '50000-plus': return Math.floor(Math.random() * 50000) + 50000;
+      default: return 0;
+    }
+  };
+  
+  // Helper function to get service category
+  const getServiceCategory = (serviceName) => {
+    const service = services.find(s => s.title === serviceName);
+    return service?.category || 'Other';
+  };
 
   // Success state UI
-  if (isSuccess) {
+  if (isSubmitting) {
     return (
       <div className="text-center p-8 bg-green-50 dark:bg-green-900 rounded-lg">
         <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-green-100 dark:bg-green-800">
@@ -753,8 +883,8 @@ const QuoteForm = () => {
         <FormInput 
           id="name"
           label="Full Name"
-          register={register}
-          errors={errors}
+          register={formRegister}
+          errors={formErrors}
           validation={{ required: "Name is required" }}
           placeholder="Your full name"
           required={true}
@@ -764,8 +894,8 @@ const QuoteForm = () => {
           id="email"
           label="Email Address"
           type="email"
-          register={register}
-          errors={errors}
+          register={formRegister}
+          errors={formErrors}
           validation={{ 
             required: "Email is required",
             pattern: {
@@ -783,8 +913,8 @@ const QuoteForm = () => {
           id="phone"
           label="Phone Number"
           type="tel"
-          register={register}
-          errors={errors}
+          register={formRegister}
+          errors={formErrors}
           validation={{ 
             required: "Phone number is required",
             pattern: {
@@ -799,8 +929,8 @@ const QuoteForm = () => {
         <FormInput 
           id="company"
           label="Company/Organization"
-          register={register}
-          errors={errors}
+          register={formRegister}
+          errors={formErrors}
           placeholder="Your company or organization"
         />
       </div>
@@ -811,8 +941,8 @@ const QuoteForm = () => {
             id="industry"
             label="Industry/Business Type"
             options={INDUSTRY_OPTIONS}
-            register={register}
-            errors={errors}
+            register={formRegister}
+            errors={formErrors}
             placeholder="Select your industry"
           />
         )}
@@ -822,8 +952,8 @@ const QuoteForm = () => {
             id="businessScale"
             label="Business Scale"
             options={BUSINESS_SCALE_OPTIONS}
-            register={register}
-            errors={errors}
+            register={formRegister}
+            errors={formErrors}
             placeholder="Select your business size"
           />
         )}
@@ -832,8 +962,8 @@ const QuoteForm = () => {
       <FormInput 
         id="website"
         label="Website or Social Media URL"
-        register={register}
-        errors={errors}
+        register={formRegister}
+        errors={formErrors}
         placeholder="https://"
         validation={{
           pattern: {
@@ -848,8 +978,8 @@ const QuoteForm = () => {
           id="preferredCommunication"
           label="Preferred Method of Communication"
           options={COMMUNICATION_OPTIONS}
-          register={register}
-          errors={errors}
+          register={formRegister}
+          errors={formErrors}
           validation={{ required: "Please select a preferred communication method" }}
           required={true}
         />
@@ -860,8 +990,8 @@ const QuoteForm = () => {
           id="hearAboutUs"
           label="How did you hear about us?"
           options={HEAR_ABOUT_US_OPTIONS}
-          register={register}
-          errors={errors}
+          register={formRegister}
+          errors={formErrors}
           placeholder="Please select"
         />
       )}
@@ -880,8 +1010,8 @@ const QuoteForm = () => {
           id="serviceCategory"
           label="Service Category"
           options={serviceCategories || []}
-          register={register}
-          errors={errors}
+          register={formRegister}
+          errors={formErrors}
           validation={{ required: "Please select a service category" }}
           placeholder="Select service category"
           required={true}
@@ -890,9 +1020,9 @@ const QuoteForm = () => {
         <FormSelect
           id="serviceType"
           label="Project Type"
-          options={projectTypes || []}
-          register={register}
-          errors={errors}
+          options={getServiceFeatures() || []}
+          register={formRegister}
+          errors={formErrors}
           validation={{ required: "Please select a project type" }}
           placeholder="Select project type"
           disabled={!watchServiceCategory}
@@ -903,8 +1033,8 @@ const QuoteForm = () => {
       <FormTextarea
         id="projectGoals"
         label="Project Goals & Objectives"
-        register={register}
-        errors={errors}
+        register={formRegister}
+        errors={formErrors}
         validation={{ 
           required: "Please provide your project goals",
           minLength: {
@@ -920,8 +1050,8 @@ const QuoteForm = () => {
       <FormTextarea
         id="currentChallenges"
         label="Current Challenges"
-        register={register}
-        errors={errors}
+        register={formRegister}
+        errors={formErrors}
         placeholder="What challenges are you currently facing with your existing solution or process?"
         helpText="Understanding your pain points helps us address them specifically in our solution."
       />
@@ -929,8 +1059,8 @@ const QuoteForm = () => {
       <FormTextarea
         id="projectDescription"
         label="Project Description"
-        register={register}
-        errors={errors}
+        register={formRegister}
+        errors={formErrors}
         validation={{ 
           required: "Please provide a description of your project",
           minLength: {
@@ -946,8 +1076,8 @@ const QuoteForm = () => {
       <FormTextarea
         id="targetAudience"
         label="Target Audience"
-        register={register}
-        errors={errors}
+        register={formRegister}
+        errors={formErrors}
         placeholder="Describe who will be using your product/service (age, demographics, needs, etc.)"
         helpText="Understanding your audience helps us design the perfect solution for them."
       />
@@ -955,8 +1085,8 @@ const QuoteForm = () => {
       <FormTextarea
         id="successMetrics"
         label="Success Metrics"
-        register={register}
-        errors={errors}
+        register={formRegister}
+        errors={formErrors}
         placeholder="How will you measure the success of this project? What specific goals or metrics are important?"
         helpText="Defining clear success metrics helps us focus on delivering outcomes that matter to you."
       />
@@ -973,40 +1103,40 @@ const QuoteForm = () => {
               id="increaseSales"
               label="Increase Sales/Conversions"
               options={IMPORTANCE_RATING_OPTIONS || []}
-              register={register}
-              errors={errors}
+              register={formRegister}
+              errors={formErrors}
             />
               
             <FormRating
               id="improveUserExperience"
               label="Improve User Experience"
               options={IMPORTANCE_RATING_OPTIONS || []}
-              register={register}
-              errors={errors}
+              register={formRegister}
+              errors={formErrors}
             />
               
             <FormRating
               id="enhanceBrandImage"
               label="Enhance Brand Image"
               options={IMPORTANCE_RATING_OPTIONS || []}
-              register={register}
-              errors={errors}
+              register={formRegister}
+              errors={formErrors}
             />
               
             <FormRating
               id="expandMarketReach"
               label="Expand Market Reach"
               options={IMPORTANCE_RATING_OPTIONS || []}
-              register={register}
-              errors={errors}
+              register={formRegister}
+              errors={formErrors}
             />
               
             <FormRating
               id="reduceOperationalCosts"
               label="Reduce Operational Costs"
               options={IMPORTANCE_RATING_OPTIONS || []}
-              register={register}
-              errors={errors}
+              register={formRegister}
+              errors={formErrors}
             />
           </div>
         </div>
@@ -1017,8 +1147,8 @@ const QuoteForm = () => {
           id="budget"
           label="Budget Range"
           options={BUDGET_OPTIONS || []}
-          register={register}
-          errors={errors}
+          register={formRegister}
+          errors={formErrors}
           validation={{ required: "Please select a budget range" }}
           placeholder="Select your budget range"
           required={true}
@@ -1028,8 +1158,8 @@ const QuoteForm = () => {
           id="timeline"
           label="Timeline"
           options={TIMELINE_OPTIONS || []}
-          register={register}
-          errors={errors}
+          register={formRegister}
+          errors={formErrors}
           placeholder="Select preferred timeline"
         />
       </div>
@@ -1039,8 +1169,8 @@ const QuoteForm = () => {
           id="projectStartDate"
           label="Preferred Start Date"
           type="date"
-          register={register}
-          errors={errors}
+          register={formRegister}
+          errors={formErrors}
           helpText="When would you like to start the project?"
         />
         
@@ -1048,8 +1178,8 @@ const QuoteForm = () => {
           id="projectEndDate"
           label="Target Completion Date"
           type="date"
-          register={register}
-          errors={errors}
+          register={formRegister}
+          errors={formErrors}
           helpText="When do you need the project completed by?"
         />
       </div>
@@ -1058,8 +1188,8 @@ const QuoteForm = () => {
         id="priority"
         label="Project Priority"
         options={PRIORITY_OPTIONS || []}
-        register={register}
-        errors={errors}
+        register={formRegister}
+        errors={formErrors}
         placeholder="Select project priority"
       />
       
@@ -1082,15 +1212,15 @@ const QuoteForm = () => {
           label="Features Needed"
           name="features"
           options={getServiceFeatures()}
-          register={register}
+          register={formRegister}
         />
       )}
       
       <FormTextarea
         id="competitors"
         label="Competitors"
-        register={register}
-        errors={errors}
+        register={formRegister}
+        errors={formErrors}
         placeholder="List any competitors whose products/services are similar to what you're looking for. Include their websites if available."
         helpText="This helps us understand the market and ensure your solution stands out."
         rows={3}
@@ -1099,8 +1229,8 @@ const QuoteForm = () => {
       <FormTextarea
         id="designReferences"
         label="Design References"
-        register={register}
-        errors={errors}
+        register={formRegister}
+        errors={formErrors}
         placeholder="Share links to websites, apps, or designs that you like. Explain what aspects you appreciate about each."
         helpText="Visual references help us understand your aesthetic preferences."
         rows={3}
@@ -1109,8 +1239,8 @@ const QuoteForm = () => {
       <FormTextarea
         id="brandColors"
         label="Brand Colors & Style Preferences"
-        register={register}
-        errors={errors}
+        register={formRegister}
+        errors={formErrors}
         placeholder="Describe your brand colors, style preferences, or attach your brand guidelines if available."
         helpText="Understanding your brand identity helps us create designs that align with your overall brand image."
         rows={3}
@@ -1129,7 +1259,7 @@ const QuoteForm = () => {
                   type="radio"
                   id="existing-website-yes"
                   value="yes"
-                  {...register("existingWebsite")}
+                  {...formRegister("existingWebsite")}
                   className="h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300 dark:bg-gray-700 dark:border-gray-600"
                 />
                 <label htmlFor="existing-website-yes" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
@@ -1141,7 +1271,7 @@ const QuoteForm = () => {
                   type="radio"
                   id="existing-website-no"
                   value="no"
-                  {...register("existingWebsite")}
+                  {...formRegister("existingWebsite")}
                   className="h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300 dark:bg-gray-700 dark:border-gray-600"
                 />
                 <label htmlFor="existing-website-no" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
@@ -1155,8 +1285,8 @@ const QuoteForm = () => {
             id="contentReadiness"
             label="Content Readiness"
             options={CONTENT_READINESS_OPTIONS}
-            register={register}
-            errors={errors}
+            register={formRegister}
+            errors={formErrors}
             placeholder="Select content status"
             helpText="Let us know if you need help with content creation (text, images, videos, etc.)"
           />
@@ -1164,8 +1294,8 @@ const QuoteForm = () => {
           <FormInput
             id="domainName"
             label="Domain Name (if you have one)"
-            register={register}
-            errors={errors}
+            register={formRegister}
+            errors={formErrors}
             placeholder="e.g., example.com"
             helpText="If you already own a domain name, please provide it here"
           />
@@ -1192,8 +1322,8 @@ const QuoteForm = () => {
       <FormTextarea
         id="additionalNotes"
         label="Additional Notes"
-        register={register}
-        errors={errors}
+        register={formRegister}
+        errors={formErrors}
         placeholder="Any other details or questions you'd like to share..."
         rows={3}
       />
@@ -1204,15 +1334,15 @@ const QuoteForm = () => {
           <input
             type="checkbox"
             id="terms"
-            {...register("terms", { required: "You must agree to the terms and privacy policy" })}
+            {...formRegister("terms", { required: "You must agree to the terms and privacy policy" })}
             className="mt-1 h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="terms" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
             I agree to the <a href="/terms" className="text-conison-cyan hover:underline dark:text-conison-cyan">Terms of Service</a> and <a href="/privacy" className="text-conison-cyan hover:underline dark:text-conison-cyan">Privacy Policy</a>
           </label>
         </div>
-        {errors.terms && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.terms.message}</p>
+        {formErrors.terms && (
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{formErrors.terms.message}</p>
         )}
       </div>
       
@@ -1296,15 +1426,7 @@ const QuoteForm = () => {
         </div>
       )}
 
-      {/* Display any form submission errors */}
-      {submitError && (
-        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900 border-l-4 border-red-500 text-red-700 dark:text-red-200">
-          <p className="font-medium">Error:</p>
-          <p>{submitError}</p>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={formHandleSubmit(onSubmit)}>
         {currentStep === 1 && <ContactInfoStep />}
         {currentStep === 2 && <ProjectRequirementsStep />}
         {currentStep === 3 && <ProjectDetailsStep />}

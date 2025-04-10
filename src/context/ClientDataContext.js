@@ -1,152 +1,205 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import {
+  getQuotes,
+  createQuote,
+  updateQuote,
+  getProjects,
+  createProject,
+  updateProject,
+  getPayments,
+  createPayment,
+  updatePayment
+} from '../api/clientApi';
 
 // Create context
 const ClientDataContext = createContext();
 
 // Custom hook to use client data context
 export const useClientData = () => {
-  return useContext(ClientDataContext);
+  const context = useContext(ClientDataContext);
+  if (!context) {
+    throw new Error('useClientData must be used within a ClientDataProvider');
+  }
+  return context;
 };
 
 export const ClientDataProvider = ({ children }) => {
+  const { currentUser, userData } = useAuth();
   const [quotes, setQuotes] = useState([]);
   const [projects, setProjects] = useState([]);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { currentUser } = useAuth();
+  const [error, setError] = useState(null);
 
-  // Load client data based on authenticated user
-  useEffect(() => {
-    if (currentUser) {
-      loadClientData(currentUser.id);
-    } else {
-      // Reset data if no user is logged in
-      setQuotes([]);
-      setProjects([]);
-      setPayments([]);
+  // Helper to get user ID safely
+  const getUserId = () => {
+    return userData?.uid || currentUser?.uid;
+  };
+
+  // Load all client data
+  const loadClientData = async () => {
+    const userId = getUserId();
+    if (!userId) {
+      setLoading(false);
+      setError('User ID not found. Please log out and log in again.');
+      return;
     }
-    setLoading(false);
-  }, [currentUser]);
-
-  // Function to load client data from localStorage
-  const loadClientData = (userId) => {
+    
     try {
-      // Get existing data from localStorage or create empty arrays
-      const storedQuotes = localStorage.getItem(`quotes_${userId}`);
-      const storedProjects = localStorage.getItem(`projects_${userId}`);
-      const storedPayments = localStorage.getItem(`payments_${userId}`);
+      setLoading(true);
+      setError(null);
       
-      // Parse stored data or use empty arrays
-      setQuotes(storedQuotes ? JSON.parse(storedQuotes) : generateSampleQuotes(userId));
-      setProjects(storedProjects ? JSON.parse(storedProjects) : generateSampleProjects(userId));
-      setPayments(storedPayments ? JSON.parse(storedPayments) : generateSamplePayments(userId));
-      
-      // If no data exists, initialize with sample data to demonstrate functionality
-      if (!storedQuotes) {
-        const samples = generateSampleQuotes(userId);
-        localStorage.setItem(`quotes_${userId}`, JSON.stringify(samples));
-      }
-      
-      if (!storedProjects) {
-        const samples = generateSampleProjects(userId);
-        localStorage.setItem(`projects_${userId}`, JSON.stringify(samples));
-      }
-      
-      if (!storedPayments) {
-        const samples = generateSamplePayments(userId);
-        localStorage.setItem(`payments_${userId}`, JSON.stringify(samples));
-      }
-      
-    } catch (error) {
-      console.error('Error loading client data:', error);
-      // Initialize with empty arrays if error
+      // Load data from API
+      const quotesData = await getQuotes(userId);
+      const projectsData = await getProjects(userId);
+      const paymentsData = await getPayments(userId);
+
+      setQuotes(quotesData || []);
+      setProjects(projectsData || []);
+      setPayments(paymentsData || []);
+    } catch (err) {
+      setError('Failed to load data from server. Please try again later.');
+      // Initialize with empty arrays
       setQuotes([]);
       setProjects([]);
       setPayments([]);
+    } finally {
+      setLoading(false);
     }
-  };
-  
-  // Functions to update client data in localStorage
-  const updateQuotes = (newQuotes) => {
-    if (currentUser) {
-      setQuotes(newQuotes);
-      localStorage.setItem(`quotes_${currentUser.id}`, JSON.stringify(newQuotes));
-    }
-  };
-  
-  const updateProjects = (newProjects) => {
-    if (currentUser) {
-      setProjects(newProjects);
-      localStorage.setItem(`projects_${currentUser.id}`, JSON.stringify(newProjects));
-    }
-  };
-  
-  const updatePayments = (newPayments) => {
-    if (currentUser) {
-      setPayments(newPayments);
-      localStorage.setItem(`payments_${currentUser.id}`, JSON.stringify(newPayments));
-    }
-  };
-  
-  // Add a new quote
-  const addQuote = (quote) => {
-    const newQuotes = [...quotes, { ...quote, id: Date.now().toString() }];
-    updateQuotes(newQuotes);
-    return newQuotes[newQuotes.length - 1];
-  };
-  
-  // Add a new project
-  const addProject = (project) => {
-    const newProjects = [...projects, { ...project, id: Date.now().toString() }];
-    updateProjects(newProjects);
-    return newProjects[newProjects.length - 1];
-  };
-  
-  // Add a new payment
-  const addPayment = (payment) => {
-    const newPayments = [...payments, { ...payment, id: Date.now().toString() }];
-    updatePayments(newPayments);
-    return newPayments[newPayments.length - 1];
-  };
-  
-  // Update existing items
-  const updateQuote = (id, updates) => {
-    const newQuotes = quotes.map(quote => 
-      quote.id === id ? { ...quote, ...updates } : quote
-    );
-    updateQuotes(newQuotes);
-    return newQuotes.find(q => q.id === id);
-  };
-  
-  const updateProject = (id, updates) => {
-    const newProjects = projects.map(project => 
-      project.id === id ? { ...project, ...updates } : project
-    );
-    updateProjects(newProjects);
-    return newProjects.find(p => p.id === id);
-  };
-  
-  const updatePayment = (id, updates) => {
-    const newPayments = payments.map(payment => 
-      payment.id === id ? { ...payment, ...updates } : payment
-    );
-    updatePayments(newPayments);
-    return newPayments.find(p => p.id === id);
   };
 
-  // Provide context value
+  // Load data when user changes
+  useEffect(() => {
+    if (currentUser || userData) {
+      loadClientData();
+    } else {
+      // Clear data when not authenticated
+      setQuotes([]);
+      setProjects([]);
+      setPayments([]);
+      setLoading(false);
+    }
+  }, [currentUser, userData]);
+
+  // Quotes functions
+  const addQuote = async (quoteData) => {
+    try {
+      const userId = getUserId();
+      if (!userId) {
+        throw new Error('User ID not found');
+      }
+      
+      const newQuote = await createQuote({
+        ...quoteData,
+        userId,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      });
+      setQuotes(prev => [...prev, newQuote]);
+      return newQuote;
+    } catch (err) {
+      console.error('Error creating quote:', err);
+      throw err;
+    }
+  };
+
+  const updateQuoteStatus = async (quoteId, status) => {
+    try {
+      const updatedQuote = await updateQuote(quoteId, { status });
+      setQuotes(prev => prev.map(q => 
+        q.id === quoteId ? updatedQuote : q
+      ));
+      return updatedQuote;
+    } catch (err) {
+      console.error('Error updating quote:', err);
+      throw err;
+    }
+  };
+
+  // Projects functions
+  const addProject = async (projectData) => {
+    try {
+      const userId = getUserId();
+      if (!userId) {
+        throw new Error('User ID not found');
+      }
+      
+      const newProject = await createProject({
+        ...projectData,
+        userId,
+        status: 'active',
+        createdAt: new Date().toISOString()
+      });
+      setProjects(prev => [...prev, newProject]);
+      return newProject;
+    } catch (err) {
+      console.error('Error creating project:', err);
+      throw err;
+    }
+  };
+
+  const updateProjectStatus = async (projectId, status) => {
+    try {
+      const updatedProject = await updateProject(projectId, { status });
+      setProjects(prev => prev.map(p => 
+        p.id === projectId ? updatedProject : p
+      ));
+      return updatedProject;
+    } catch (err) {
+      console.error('Error updating project:', err);
+      throw err;
+    }
+  };
+
+  // Payments functions
+  const addPayment = async (paymentData) => {
+    try {
+      const userId = getUserId();
+      if (!userId) {
+        throw new Error('User ID not found');
+      }
+      
+      const newPayment = await createPayment({
+        ...paymentData,
+        userId,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      });
+      setPayments(prev => [...prev, newPayment]);
+      return newPayment;
+    } catch (err) {
+      console.error('Error creating payment:', err);
+      throw err;
+    }
+  };
+
+  const updatePaymentStatus = async (paymentId, status) => {
+    try {
+      const updatedPayment = await updatePayment(paymentId, { status });
+      setPayments(prev => prev.map(p => 
+        p.id === paymentId ? updatedPayment : p
+      ));
+      return updatedPayment;
+    } catch (err) {
+      console.error('Error updating payment:', err);
+      throw err;
+    }
+  };
+
   const value = {
     quotes,
     projects,
     payments,
     loading,
+    error,
     addQuote,
+    updateQuoteStatus,
     addProject,
+    updateProjectStatus,
     addPayment,
-    updateQuote,
-    updateProject,
-    updatePayment
+    updatePaymentStatus,
+    refreshData: loadClientData
   };
 
   return (
@@ -154,117 +207,6 @@ export const ClientDataProvider = ({ children }) => {
       {children}
     </ClientDataContext.Provider>
   );
-};
-
-// Helper functions to generate sample data
-const generateSampleQuotes = (userId) => {
-  const now = new Date();
-  const oneWeekAgo = new Date(now);
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  const twoWeeksAgo = new Date(now);
-  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-  
-  return [
-    {
-      id: '1',
-      userId,
-      service: 'Web Development',
-      description: 'E-commerce website with payment integration',
-      amount: 2500,
-      status: 'approved',
-      createdAt: twoWeeksAgo.toISOString(),
-      updatedAt: oneWeekAgo.toISOString()
-    },
-    {
-      id: '2',
-      userId,
-      service: 'Digital Marketing',
-      description: 'Social media marketing campaign',
-      amount: 1200,
-      status: 'pending',
-      createdAt: oneWeekAgo.toISOString(),
-      updatedAt: oneWeekAgo.toISOString()
-    }
-  ];
-};
-
-const generateSampleProjects = (userId) => {
-  const now = new Date();
-  const oneMonthAgo = new Date(now);
-  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  const twoMonthsAgo = new Date(now);
-  twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
-  
-  const threeMonthsFromNow = new Date(now);
-  threeMonthsFromNow.setMonth(threeMonthsFromNow.getMonth() + 3);
-  
-  return [
-    {
-      id: '1',
-      userId,
-      name: 'E-commerce Website',
-      description: 'Online store with product catalog and payment processing',
-      status: 'in_progress',
-      progress: 65,
-      startDate: oneMonthAgo.toISOString(),
-      endDate: threeMonthsFromNow.toISOString(),
-      milestones: [
-        { id: '1', name: 'Project Planning', completed: true },
-        { id: '2', name: 'Design Mockups', completed: true },
-        { id: '3', name: 'Frontend Development', completed: true },
-        { id: '4', name: 'Backend Development', completed: false },
-        { id: '5', name: 'Payment Integration', completed: false },
-        { id: '6', name: 'Testing & Launch', completed: false }
-      ]
-    },
-    {
-      id: '2',
-      userId,
-      name: 'Brand Identity',
-      description: 'Logo design and brand guidelines',
-      status: 'completed',
-      progress: 100,
-      startDate: twoMonthsAgo.toISOString(),
-      endDate: oneMonthAgo.toISOString(),
-      milestones: [
-        { id: '1', name: 'Brand Strategy', completed: true },
-        { id: '2', name: 'Logo Concepts', completed: true },
-        { id: '3', name: 'Logo Refinement', completed: true },
-        { id: '4', name: 'Brand Guidelines', completed: true }
-      ]
-    }
-  ];
-};
-
-const generateSamplePayments = (userId) => {
-  const now = new Date();
-  const oneMonthAgo = new Date(now);
-  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  const twoMonthsAgo = new Date(now);
-  twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
-  
-  return [
-    {
-      id: '1',
-      userId,
-      quoteId: '1',
-      amount: 1250, // First payment (50%)
-      currency: 'USD',
-      method: 'card',
-      status: 'completed',
-      date: twoMonthsAgo.toISOString()
-    },
-    {
-      id: '2',
-      userId,
-      quoteId: '1',
-      amount: 1250, // Second payment (50%)
-      currency: 'USD',
-      method: 'bank',
-      status: 'completed',
-      date: oneMonthAgo.toISOString()
-    }
-  ];
 };
 
 export default ClientDataContext; 

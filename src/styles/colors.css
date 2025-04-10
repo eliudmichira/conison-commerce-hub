@@ -1,55 +1,139 @@
+/* colors.css - Enhanced Conison Color System
+ * This file defines the comprehensive color system for the Conison brand
+ * To use along with the Tailwind configuration
+ */
+
 :root {
-  /* Main brand colors */
-  --conison-yellow: #fce300;
-  --conison-cyan: #00adee;
-  --conison-magenta: #ec008c;
-  --conison-gray: #555356;
-  --conison-white: #ffffff;
-
-  /* Dark variants for hover states */
-  --conison-magenta-dark: #c9007a;
-  --conison-cyan-dark: #0098d1;
-  --conison-yellow-dark: #d9c200;
-
-  /* Light variants for backgrounds */
-  --conison-magenta-light: #ffd6ef;
-  --conison-cyan-light: #d6f5ff;
-  --conison-yellow-light: #fffbd6;
-  --conison-gray-light: #e6e6e6;
-
-  /* Transparent variants for overlays */
-  --conison-magenta-10: rgba(236, 0, 140, 0.1);
-  --conison-magenta-20: rgba(236, 0, 140, 0.2);
-  --conison-magenta-50: rgba(236, 0, 140, 0.5);
+  /* 
+   * MODERN COLOR SYSTEM
+   * Primary brand colors
+   */
   
-  --conison-cyan-10: rgba(0, 173, 238, 0.1);
-  --conison-cyan-20: rgba(0, 173, 238, 0.2);
-  --conison-cyan-50: rgba(0, 173, 238, 0.5);
+  /* Primary Brand Colors */
+  --primary-blue: #2563eb;       /* Vibrant blue that draws attention */
+  --primary-purple: #8b5cf6;     /* Rich purple for gradient effects */
+  --primary-teal: #0d9488;       /* Teal for accents and highlights */
   
-  --conison-yellow-10: rgba(252, 227, 0, 0.1);
-  --conison-yellow-20: rgba(252, 227, 0, 0.2);
-  --conison-yellow-50: rgba(252, 227, 0, 0.5);
+  /* Gradients */
+  --gradient-primary: linear-gradient(to right, var(--primary-blue), var(--primary-purple));
+  --gradient-secondary: linear-gradient(to right, var(--primary-teal), var(--primary-blue));
   
-  --conison-gray-10: rgba(85, 83, 86, 0.1);
-  --conison-gray-20: rgba(85, 83, 86, 0.2);
-  --conison-gray-50: rgba(85, 83, 86, 0.5);
+  /* Text Colors */
+  --text-primary: #111827;       /* Near-black for headings and important text */
+  --text-secondary: #374151;     /* Dark gray for body text */
+  --text-tertiary: #6b7280;      /* Medium gray for less important text */
+  
+  /* Background Colors */
+  --bg-light: #ffffff;           /* Pure white */
+  --bg-off-white: #f9fafb;       /* Off-white for section backgrounds */
+  --bg-light-accent: #f3f4f6;    /* Light gray for cards and accent areas */
+  
+  /* Dark Mode Colors */
+  --dark-bg-primary: #111827;    /* Dark background */
+  --dark-bg-secondary: #1f2937;  /* Slightly lighter dark background */
+  --dark-bg-accent: #374151;     /* Dark mode card/component background */
+  --dark-text-primary: #f9fafb;  /* White text for dark mode */
+  --dark-text-secondary: #e5e7eb; /* Light gray text for dark mode */
 
-  /* Functional colors */
-  --color-text: var(--conison-gray);
-  --color-heading: var(--conison-gray);
-  --color-background: var(--conison-white);
-  --color-primary: var(--conison-magenta);
-  --color-secondary: var(--conison-cyan);
-  --color-accent: var(--conison-yellow);
-  --color-link: var(--conison-cyan);
-  --color-link-hover: var(--conison-cyan-dark);
-  --color-button: var(--conison-magenta);
-  --color-button-hover: var(--conison-magenta-dark);
-  --color-border: var(--conison-gray-light);
+  /* Button Styles */
+  --btn-border-radius: 9999px;
+  --btn-transition: all 0.3s;
+  --btn-primary-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+  --btn-primary-hover-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
   
-  /* Dark mode colors */
-  --color-text-dark: var(--conison-white);
-  --color-heading-dark: var(--conison-white);
-  --color-background-dark: #1f2023;
-  --color-border-dark: rgba(255, 255, 255, 0.1);
-} 
+  /* Card Styles */
+  --card-border-radius: 16px;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --card-hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --card-border: 1px solid rgba(0, 0, 0, 0.05);
+  --card-dark-border: 1px solid rgba(255, 255, 255, 0.05);
+  
+  /* Conison Legacy Colors (updated to modern palette) */
+  --conison-cyan: var(--primary-blue);     /* Updated to primary blue */
+  --conison-magenta: var(--primary-purple); /* Updated to primary purple */
+  --conison-yellow: var(--primary-teal);    /* Updated to primary teal */
+  --conison-gray: var(--text-secondary);
+  --conison-white: var(--bg-light);
+  --conison-black: var(--text-primary);
+  
+  /* Transparent variants for overlays, shadows, etc. */
+  --conison-magenta-10: rgba(139, 92, 246, 0.1);  /* Based on primary-purple */
+  --conison-magenta-20: rgba(139, 92, 246, 0.2);
+  --conison-magenta-50: rgba(139, 92, 246, 0.5);
+  
+  --conison-cyan-10: rgba(37, 99, 235, 0.1);  /* Based on primary-blue */
+  --conison-cyan-20: rgba(37, 99, 235, 0.2);
+  --conison-cyan-50: rgba(37, 99, 235, 0.5);
+  
+  --conison-yellow-10: rgba(13, 148, 136, 0.1);  /* Based on primary-teal */
+  --conison-yellow-20: rgba(13, 148, 136, 0.2);
+  --conison-yellow-50: rgba(13, 148, 136, 0.5);
+}
+
+/* Button Styles */
+.btn-primary {
+  background-image: var(--gradient-primary);
+  color: white;
+  box-shadow: var(--btn-primary-shadow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--btn-primary-hover-shadow);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary-blue);
+  border: 2px solid var(--primary-blue);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(37, 99, 235, 0.1);
+}
+
+/* Card Styles */
+.card {
+  background: var(--bg-light);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-shadow);
+  border: var(--card-border);
+  transition: var(--btn-transition);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-hover-shadow);
+}
+
+.dark .card {
+  background: var(--dark-bg-secondary);
+  border: var(--card-dark-border);
+}
+
+/* Navigation Styles */
+.nav-link {
+  color: var(--text-secondary);
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.nav-link:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background: var(--gradient-primary);
+  transition: width 0.3s;
+}
+
+.nav-link:hover:after,
+.nav-link.active:after {
+  width: 100%;
+}
+
+.dark .nav-link {
+  color: var(--dark-text-secondary);
+}

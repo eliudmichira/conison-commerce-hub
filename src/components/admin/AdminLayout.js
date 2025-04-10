@@ -1,78 +1,56 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import AdminSidebar from './AdminSidebar';
 import { useDarkMode } from '../../context/DarkModeContext';
-import { 
-  FaHome, 
-  FaUsers, 
-  FaChartBar, 
-  FaCog, 
-  FaSignOutAlt,
-  FaFileAlt,
-  FaMoneyBillWave,
-  FaEnvelope
-} from 'react-icons/fa';
 
-const AdminLayout = ({ children }) => {
+const AdminLayout = () => {
+  const [loading, setLoading] = useState(true);
   const { isDarkMode } = useDarkMode();
-  const location = useLocation();
+  const navigate = useNavigate();
 
-  const menuItems = [
-    { path: '/admin', label: 'Dashboard', icon: <FaHome /> },
-    { path: '/admin/users', label: 'Users', icon: <FaUsers /> },
-    { path: '/admin/quotes', label: 'Quotes', icon: <FaFileAlt /> },
-    { path: '/admin/projects', label: 'Projects', icon: <FaChartBar /> },
-    { path: '/admin/payments', label: 'Payments', icon: <FaMoneyBillWave /> },
-    { path: '/admin/messages', label: 'Messages', icon: <FaEnvelope /> },
-    { path: '/admin/settings', label: 'Settings', icon: <FaCog /> },
-  ];
+  // Check authentication from localStorage
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    const userRole = localStorage.getItem('userRole');
+    
+    console.log('AdminLayout - Checking authentication:', { isAuthenticated, userRole });
+    
+    if (!isAuthenticated) {
+      console.log('AdminLayout - Not authenticated, redirecting to login');
+      navigate('/login');
+    } else if (userRole !== 'admin') {
+      console.log('AdminLayout - Not an admin, redirecting to appropriate dashboard');
+      navigate(`/${userRole}`);
+    }
+    
+    // Simulate loading delay to show spinner
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    window.location.href = '/';
-  };
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-conison-magenta"></div>
+          <p className="mt-4 text-conison-magenta">Loading admin dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 w-64 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
-        <div className="p-6">
-          <h1 className="text-2xl font-bold text-conison-magenta">Admin Panel</h1>
-        </div>
-        <nav className="mt-6">
-          {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center px-6 py-3 text-sm font-medium transition-colors duration-200 ${
-                location.pathname === item.path
-                  ? 'bg-conison-magenta text-white'
-                  : isDarkMode
-                    ? 'text-gray-300 hover:bg-gray-700'
-                    : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <span className="mr-3">{item.icon}</span>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="absolute bottom-0 w-full p-4">
-          <button
-            onClick={handleLogout}
-            className="flex items-center w-full px-6 py-3 text-sm font-medium text-red-500 hover:text-red-600 transition-colors duration-200"
-          >
-            <FaSignOutAlt className="mr-3" />
-            Logout
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="ml-64 p-8">
-        <div className={`max-w-7xl mx-auto ${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg p-6`}>
-          {children}
-        </div>
-      </main>
+    <div className={`flex h-screen bg-gray-50 ${isDarkMode ? 'dark bg-gray-900' : ''}`}>
+      <AdminSidebar />
+      <div className="flex-1 overflow-auto">
+        <main className="p-6">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };

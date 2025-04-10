@@ -17,7 +17,6 @@ export const getAllUsers = () => {
     const usersJson = localStorage.getItem(USERS_STORAGE_KEY);
     return usersJson ? JSON.parse(usersJson) : [];
   } catch (error) {
-    console.error('Error getting users from storage:', error);
     return [];
   }
 };
@@ -57,7 +56,6 @@ export const saveUser = (userData) => {
     
     return newUser;
   } catch (error) {
-    console.error('Error saving user:', error);
     throw error;
   }
 };
@@ -72,7 +70,6 @@ export const findUserByEmail = (email) => {
     const users = getAllUsers();
     return users.find(user => user.email.toLowerCase() === email.toLowerCase()) || null;
   } catch (error) {
-    console.error('Error finding user:', error);
     return null;
   }
 };
@@ -85,61 +82,24 @@ export const findUserByEmail = (email) => {
  */
 export const validateCredentials = (email, password) => {
   try {
-    console.log('Validating credentials for:', email);
-    
-    // Check for admin test account
-    if (email === 'admin@conison.com' && password === 'admin123') {
-      console.log('Admin credentials validated');
-      return {
-        id: 'admin-1',
-        name: 'Admin User',
-        email: 'admin@conison.com',
-        role: 'admin'
-      };
-    }
-    
-    // Check for client test account
-    if (email === 'client@conison.com' && password === 'client123') {
-      console.log('Client credentials validated');
-      return {
-        id: 'client-1',
-        name: 'Test Client',
-        email: 'client@conison.com',
-        company: 'Client Company',
-        role: 'client'
-      };
-    }
-    
-    // For other users, check localStorage
+    // For users, check localStorage
     const users = getAllUsers();
     const user = users.find(user => user.email.toLowerCase() === email.toLowerCase());
     
     if (!user) {
-      console.log('User not found for email:', email);
       throw new Error('Invalid credentials');
     }
     
     if (user.password === password) {
-      console.log('Password validated for user:', email);
       // Return user without password for security
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     } else {
-      console.log('Invalid password for user:', email);
       throw new Error('Invalid credentials');
     }
   } catch (error) {
-    console.error('Error in validateCredentials:', error);
     throw new Error('Invalid credentials');
   }
-};
-
-/**
- * Clear all users from storage (for testing/development)
- */
-export const clearAllUsers = () => {
-  localStorage.removeItem(USERS_STORAGE_KEY);
-  localStorage.removeItem('users.json');
 };
 
 /**
@@ -152,13 +112,11 @@ export const getUsersJson = () => {
 
 /**
  * Initialize the database with default users if empty
- * This ensures there is at least one admin user for testing
  */
 export const initializeDefaultUsers = () => {
   try {
     // Check if localStorage is available
     if (typeof localStorage === 'undefined') {
-      console.error('localStorage is not available');
       return;
     }
     
@@ -166,41 +124,10 @@ export const initializeDefaultUsers = () => {
     if (!localStorage.getItem(USERS_STORAGE_KEY)) {
       localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify([]));
     }
-    
-    const users = getAllUsers();
-    console.log('Current users in storage:', users);
-    
-    // Only add default users if the database is empty
-    if (users.length === 0) {
-      console.log('Initializing default users...');
-      
-      try {
-        // Add admin user
-        saveUser({
-          email: 'admin@conison.com',
-          password: 'admin123',
-          name: 'Admin User',
-          role: 'admin'
-        });
-        
-        // Add a test client user
-        saveUser({
-          email: 'client@conison.com',
-          password: 'client123',
-          name: 'Test Client',
-          company: 'Client Company',
-          role: 'client'
-        });
-        
-        console.log('Default users initialized successfully');
-        console.log('Updated users:', getAllUsers());
-      } catch (error) {
-        console.error('Error creating default users:', error.message);
-      }
-    } else {
-      console.log(`Found ${users.length} existing users, skipping initialization`);
-    }
   } catch (error) {
-    console.error('Error in initializeDefaultUsers:', error);
+    // Silent fail for production
   }
-}; 
+};
+
+// Auto-initialize on load
+initializeDefaultUsers(); 

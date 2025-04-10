@@ -1,0 +1,26 @@
+:root {
+  /* Primary Brand Colors */
+  --primary: #8a1a9c;
+  --primary-dark: #6a0d7a;
+  --primary-light: #b356c2;
+  
+  /* Text Colors */
+  --text-dark: #1a1a2e;
+  --text-medium: #2d3748;
+  --text-light: #4a5568;
+  
+  /* UI Colors */
+  --ui-light-bg: #f8fafc;
+  --ui-light-accent: #edf2f7;
+  --ui-border: #cbd5e0;
+}
+
+/* Dark mode overrides */
+.dark {
+  --text-dark: #f7fafc;
+  --text-medium: #e2e8f0;
+  --text-light: #a0aec0;
+  --ui-light-bg: #1a202c;
+  --ui-light-accent: #2d3748;
+  --ui-border: #4a5568;
+} 

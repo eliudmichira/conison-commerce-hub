@@ -1,139 +1,73 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  ChevronDown, 
-  CheckCircle, 
-  Send, 
-  Loader2,
-  Facebook,
-  Instagram,
-  Twitter,
-  Linkedin,
-  ArrowRight
-} from 'lucide-react';
 import { useDarkMode } from '../context/DarkModeContext';
+import { motion } from 'framer-motion';
+import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
 
 const ContactPage = () => {
   const { isDarkMode } = useDarkMode();
   const [formData, setFormData] = useState({
-    firstname: '',
-    lastname: '',
+    name: '',
     email: '',
-    phone: '',
-    service: '',
+    subject: '',
     message: ''
   });
-  const [formStatus, setFormStatus] = useState({
-    submitted: false,
-    success: false,
-    message: ''
-  });
-  const [selectedFAQ, setSelectedFAQ] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormStatus({ submitted: true, success: false, message: 'Sending your message...' });
-    
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
     try {
-      // Simulated API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setFormStatus({ 
-        submitted: true, 
-        success: true, 
-        message: 'Thank you! Your message has been sent successfully.' 
-      });
+      // TODO: Implement actual form submission logic
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated API call
+      setSubmitStatus('success');
       setFormData({
-        firstname: '',
-        lastname: '',
+        name: '',
         email: '',
-        phone: '',
-        service: '',
+        subject: '',
         message: ''
       });
     } catch (error) {
-      setFormStatus({ 
-        submitted: true, 
-        success: false, 
-        message: 'Message sending failed. Please try again.' 
-      });
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const contactMethods = [
+  const contactInfo = [
     {
-      icon: <Mail className="w-8 h-8 text-blue-600" />,
-      title: 'Email Support',
-      description: 'Respond within 24 hours',
-      contact: 'support@conison.tech',
-      bgColor: 'bg-blue-50 dark:bg-blue-900/30'
-    },
-    {
-      icon: <Phone className="w-8 h-8 text-green-600" />,
-      title: 'Phone Consultation',
-      description: 'Mon-Fri, 9AM-5PM',
-      contact: '+211 92 668 5125',
-      bgColor: 'bg-green-50 dark:bg-green-900/30'
+      icon: FaPhone,
+      title: 'Phone',
+      content: '+211 92 668 5125',
+      link: 'tel:+211926685125'
     },
     {
-      icon: <MapPin className="w-8 h-8 text-purple-600" />,
-      title: 'Office Location',
-      description: 'Visit our main office',
-      contact: 'Ministries Road, Juba',
-      bgColor: 'bg-purple-50 dark:bg-purple-900/30'
-    }
-  ];
-
-  const socialLinks = [
-    { 
-      icon: <Facebook className="w-6 h-6" />, 
-      href: "https://facebook.com/conison",
-      color: "hover:text-blue-600"
-    },
-    { 
-      icon: <Instagram className="w-6 h-6" />, 
-      href: "https://instagram.com/conison",
-      color: "hover:text-pink-600"
-    },
-    { 
-      icon: <Twitter className="w-6 h-6" />, 
-      href: "https://twitter.com/conison",
-      color: "hover:text-sky-500"
-    },
-    { 
-      icon: <Linkedin className="w-6 h-6" />, 
-      href: "https://linkedin.com/company/conison",
-      color: "hover:text-blue-700"
-    }
-  ];
-
-  const FAQItems = [
-    {
-      question: "What services do you offer?",
-      answer: "We provide comprehensive technology solutions including digital marketing, web and mobile app development, IT consulting, branding, and video production."
+      icon: FaEnvelope,
+      title: 'Email',
+      content: 'info@conisontechnologies.com',
+      link: 'mailto:info@conisontechnologies.com'
     },
     {
-      question: "How long does a typical project take?",
-      answer: "Project timelines vary based on complexity. Typically, web projects take 4-8 weeks, mobile apps 8-12 weeks, and comprehensive digital transformations 3-6 months."
+      icon: FaMapMarkerAlt,
+      title: 'Address',
+      content: 'Juba Town, Near Baping Insurance Company, South Sudan',
+      link: 'https://maps.google.com/?q=Baping+Insurance+Company+Juba+South+Sudan'
     },
     {
-      question: "Do you work with international clients?",
-      answer: "Absolutely! We have experience working with clients globally, offering flexible communication and project management approaches."
-    },
-    {
-      question: "What is your pricing model?",
-      answer: "We offer transparent pricing with fixed-price, hourly, and retainer models. Each project is custom-quoted after understanding your specific requirements."
+      icon: FaClock,
+      title: 'Working Hours',
+      content: 'Mon-Fri: 9:00 AM - 6:00 PM',
+      link: null
     }
   ];
 
@@ -142,90 +76,198 @@ const ContactPage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}
+      className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}
     >
-      {/* Hero Section with Enhanced Layout */}
-      <motion.section 
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="relative bg-gradient-to-r from-blue-600 to-purple-600 py-24 overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-black opacity-40"></div>
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 max-w-3xl mx-auto">
-            Connect with Conison Technologies
-          </h1>
-          <p className="text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed">
-            Ready to transform your business with cutting-edge technology solutions? We're here to listen, understand, and deliver excellence.
+      <div className="container mx-auto px-4 py-16">
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300">
+            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
           </p>
-        </div>
-      </motion.section>
+        </motion.div>
 
-      {/* Contact Methods Grid */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-800">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8">
-            {contactMethods.map((method, index) => (
+        <div className="grid md:grid-cols-2 gap-12">
+          {/* Contact Information */}
+          <motion.div
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-8"
+          >
+            {contactInfo.map((item, index) => (
               <motion.div
-                key={method.title}
-                initial={{ opacity: 0, y: 50 }}
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-                className="bg-white dark:bg-gray-750 rounded-2xl shadow-lg p-8 text-center transform transition-all hover:-translate-y-2"
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className={`flex items-start space-x-4 p-6 rounded-lg ${
+                  isDarkMode ? 'bg-gray-800' : 'bg-white'
+                } shadow-lg`}
               >
-                <div className={`
-                  inline-flex 
-                  items-center 
-                  justify-center 
-                  w-20 
-                  h-20 
-                  ${method.bgColor} 
-                  rounded-full 
-                  mb-6
-                `}>
-                  {method.icon}
+                <div className={`p-3 rounded-full ${
+                  isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+                }`}>
+                  <item.icon className="w-6 h-6 text-conison-magenta" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{method.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">{method.description}</p>
-                <p className="text-blue-600 dark:text-blue-400 font-medium">{method.contact}</p>
+                <div>
+                  <h3 className="text-lg font-semibold mb-1">{item.title}</h3>
+                  {item.link ? (
+                    <a
+                      href={item.link}
+                      className="text-gray-600 dark:text-gray-300 hover:text-conison-magenta transition-colors"
+                      target={item.title === 'Address' ? '_blank' : undefined}
+                      rel={item.title === 'Address' ? 'noopener noreferrer' : undefined}
+                    >
+                      {item.content}
+                    </a>
+                  ) : (
+                    <p className="text-gray-600 dark:text-gray-300">{item.content}</p>
+                  )}
+                </div>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
 
-      {/* REST OF THE PREVIOUS CONTACT PAGE REMAINS THE SAME */}
-      
-      {/* Social Media Section with Enhanced Icons */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-800">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-8">Stay Connected</h2>
-          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-12">
-            Follow our journey, get insights, and stay updated with the latest technology trends and innovations.
-          </p>
-          <div className="flex justify-center space-x-8">
-            {socialLinks.map((social, index) => (
-              <a
-                key={index}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`
-                  text-gray-600 
-                  dark:text-gray-400 
-                  ${social.color} 
-                  transition-all 
-                  duration-300 
-                  hover:scale-110
-                `}
+            {/* Map Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className={`rounded-lg overflow-hidden shadow-lg ${
+                isDarkMode ? 'bg-gray-800' : 'bg-white'
+              }`}
+            >
+              <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold flex items-center">
+                  <FaMapMarkerAlt className="mr-2 text-conison-magenta" />
+                  Our Office Location
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 mt-1 text-sm">
+                  Find us at Juba Town, Near Baping Insurance Company, South Sudan
+                </p>
+              </div>
+              <div className="h-80 w-full">
+                <iframe
+                  title="Conison Office Location"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3980.093310925561!2d31.57726857557633!3d4.850291840992982!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1712d22a68a7d6bd%3A0x8e4b1fa3e4a5ffed!2sJuba%2C%20South%20Sudan!5e0!3m2!1sen!2sus!4v1649765431012!5m2!1sen!2sus"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Contact Form */}
+          <motion.div
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className={`p-8 rounded-lg shadow-lg ${
+              isDarkMode ? 'bg-gray-800' : 'bg-white'
+            }`}
+          >
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    isDarkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'
+                  } focus:ring-2 focus:ring-conison-magenta focus:border-transparent`}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    isDarkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'
+                  } focus:ring-2 focus:ring-conison-magenta focus:border-transparent`}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="subject" className="block text-sm font-medium mb-1">
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  required
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    isDarkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'
+                  } focus:ring-2 focus:ring-conison-magenta focus:border-transparent`}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium mb-1">
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  rows="4"
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    isDarkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'
+                  } focus:ring-2 focus:ring-conison-magenta focus:border-transparent`}
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full py-3 px-4 rounded-lg font-medium text-white bg-conison-magenta hover:bg-conison-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-conison-magenta transition-colors ${
+                  isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+                }`}
               >
-                {social.icon}
-              </a>
-            ))}
-          </div>
+                {isSubmitting ? 'Sending...' : 'Send Message'}
+              </button>
+
+              {submitStatus === 'success' && (
+                <div className="p-4 bg-green-100 text-green-700 rounded-lg">
+                  Message sent successfully! We'll get back to you soon.
+                </div>
+              )}
+
+              {submitStatus === 'error' && (
+                <div className="p-4 bg-red-100 text-red-700 rounded-lg">
+                  Something went wrong. Please try again later.
+                </div>
+              )}
+            </form>
+          </motion.div>
         </div>
-      </section>
+      </div>
     </motion.div>
   );
 };

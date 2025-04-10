@@ -83,7 +83,7 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4 text-conison-cyan dark:text-conison-cyan">Contact Us</h3>
             <address className="not-italic">
-              <p className="mb-2">Ministries Road, Thongpiny</p>
+              <p className="mb-2">Juba Town, Near Baping Insurance Company</p>
               <p className="mb-2">Juba, South Sudan</p>
               <p className="mb-2">
                 <a href="tel:+211926685125" className="hover:text-conison-magenta transition-colors">+211 92 668 5125</a>

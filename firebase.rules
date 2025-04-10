@@ -1,0 +1,66 @@
+// Firestore rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Common functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isUser(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // User profiles can be read by the owner or admins, and created/updated by the owner
+    match /users/{userId} {
+      allow read: if isUser(userId) || isAdmin();
+      allow create: if isUser(userId);
+      allow update: if isUser(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Client profiles are protected
+    match /clients/{clientId} {
+      allow read: if isUser(clientId) || isAdmin();
+      allow write: if isAdmin() || isUser(clientId);
+    }
+    
+    // Service data is public to read, but only admins can modify
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Quote requests can be created by authenticated users and read by that user or admin
+    match /quotes/{quoteId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Projects can be read by the assigned client and admins, and updated by admins
+    match /projects/{projectId} {
+      allow read: if isAuthenticated() && (resource.data.clientId == request.auth.uid || isAdmin());
+      allow write: if isAdmin();
+    }
+    
+    // General content is public
+    match /content/{contentId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+} 

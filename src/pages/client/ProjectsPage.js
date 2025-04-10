@@ -12,17 +12,19 @@ import {
 } from 'react-icons/fa';
 
 const ProjectsPage = () => {
-  const { projects, loading } = useClientData();
+  const { projects = [], loading } = useClientData();
   const [filter, setFilter] = useState('all');
 
   const filteredProjects = filter === 'all' 
     ? projects 
-    : projects.filter(project => project.status === filter);
+    : (projects || []).filter(project => project.status === filter);
   
   // Sort by date (newest first)
-  const sortedProjects = [...filteredProjects].sort((a, b) => 
-    new Date(b.startDate) - new Date(a.startDate)
-  );
+  const sortedProjects = filteredProjects && filteredProjects.length > 0 
+    ? [...filteredProjects].sort((a, b) => 
+        new Date(b.startDate) - new Date(a.startDate)
+      )
+    : [];
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -83,7 +85,7 @@ const ProjectsPage = () => {
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
-              All Projects ({projects.length})
+              All Projects ({projects ? projects.length : 0})
             </button>
             <button
               onClick={() => setFilter('starting')}
@@ -93,7 +95,7 @@ const ProjectsPage = () => {
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
-              Starting ({projects.filter(p => p.status === 'starting').length})
+              Starting ({projects ? projects.filter(p => p.status === 'starting').length : 0})
             </button>
             <button
               onClick={() => setFilter('in_progress')}
@@ -103,7 +105,7 @@ const ProjectsPage = () => {
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
-              In Progress ({projects.filter(p => p.status === 'in_progress').length})
+              In Progress ({projects ? projects.filter(p => p.status === 'in_progress').length : 0})
             </button>
             <button
               onClick={() => setFilter('completed')}
@@ -113,13 +115,13 @@ const ProjectsPage = () => {
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
-              Completed ({projects.filter(p => p.status === 'completed').length})
+              Completed ({projects ? projects.filter(p => p.status === 'completed').length : 0})
             </button>
           </nav>
         </div>
 
         <div className="p-6">
-          {sortedProjects.length > 0 ? (
+          {sortedProjects && sortedProjects.length > 0 ? (
             <div className="space-y-8">
               {sortedProjects.map((project) => (
                 <motion.div 

@@ -2,18 +2,62 @@
 import React, { useState, useEffect } from 'react';
 import QuoteForm from '../components/QuoteForm';
 import { useDarkMode } from '../context/DarkModeContext';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ParticleBackground from '../components/ParticleBackground';
 
 const QuoteRequestPage = () => {
   const { isDarkMode } = useDarkMode();
   const [currentTab, setCurrentTab] = useState('form');
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const location = useLocation();
+  
+  // Get query parameters from URL
+  const queryParams = new URLSearchParams(location.search);
+  const serviceParam = queryParams.get('service');
+  const typeParam = queryParams.get('type');
+
+  // Pre-fill values based on query params
+  const getPrefilledValues = () => {
+    // Default values
+    const prefilledValues = {};
+
+    // Service mappings based on URL parameters
+    if (serviceParam) {
+      switch(serviceParam) {
+        case 'web-development':
+          prefilledValues.serviceCategory = 'Web Development';
+          prefilledValues.serviceType = typeParam === 'basic-business' ? 'Basic Website (5-7 pages)' : '';
+          prefilledValues.budget = '1000-5000';
+          break;
+        case 'e-commerce':
+          prefilledValues.serviceCategory = 'Web Development';
+          prefilledValues.serviceType = 'E-commerce Website';
+          prefilledValues.budget = '5000-10000';
+          break;
+        case 'digital-marketing':
+          prefilledValues.serviceCategory = 'Digital Marketing';
+          prefilledValues.budget = '1000-5000';
+          break;
+        default:
+          break;
+      }
+    }
+
+    return prefilledValues;
+  };
+
+  // Pass these pre-filled values to the QuoteForm component
+  const prefilledValues = getPrefilledValues();
 
   // Animate elements on page load
   useEffect(() => {
     setIsPageLoaded(true);
-  }, []);
+    
+    // If we have query parameters, automatically focus on the form tab
+    if (serviceParam || typeParam) {
+      setCurrentTab('form');
+    }
+  }, [serviceParam, typeParam]);
 
   // Service categories for pricing
   const serviceCategories = [
@@ -251,7 +295,7 @@ const QuoteRequestPage = () => {
                     </div>
                     
                     <div className="p-8">
-                      <QuoteForm />
+                      <QuoteForm prefilledValues={prefilledValues} />
                     </div>
                   </div>
                 )}
@@ -513,75 +557,6 @@ const QuoteRequestPage = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Trust Indicators Section */}
-      <div className={`bg-white dark:bg-gray-800 py-16 ${isPageLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`} style={{ transitionDelay: '0.4s' }}>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-4">Trusted by Businesses Across Kenya</h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Join hundreds of satisfied clients who have trusted us with their digital needs
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
-            {['Company A', 'Company B', 'Company C', 'Company D'].map((company, index) => (
-              <div key={index} className="grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
-                <div className={`h-16 w-32 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center`}>
-                  <span className="text-gray-500 dark:text-gray-400 font-medium">{company}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-conison-yellow/10 flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-conison-yellow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M16.0303 10.0303C16.3232 9.73744 16.3232 9.26256 16.0303 8.96967C15.7374 8.67678 15.2626 8.67678 14.9697 8.96967L10.5 13.4393L9.03033 11.9697C8.73744 11.6768 8.26256 11.6768 7.96967 11.9697C7.67678 12.2626 7.67678 12.7374 7.96967 13.0303L9.96967 15.0303C10.2626 15.3232 10.7374 15.3232 11.0303 15.0303L16.0303 10.0303Z" fill="currentColor" />
-                  <path fillRule="evenodd" clipRule="evenodd" d="M12 1C5.92487 1 1 5.92487 1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1ZM3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" fill="currentColor" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold mb-2 dark:text-white">100% Satisfaction</h3>
-              <p className="text-gray-600 dark:text-gray-400">We guarantee your satisfaction with our work.</p>
-            </div>
-            
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-conison-magenta/10 flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-conison-magenta" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M6 2C4.34315 2 3 3.34315 3 5V19C3 20.6569 4.34315 22 6 22H18C19.6569 22 21 20.6569 21 19V9C21 5.13401 17.866 2 14 2H6ZM5 5C5 4.44772 5.44772 4 6 4H14C16.7614 4 19 6.23858 19 9V19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V5Z" fill="currentColor" />
-                  <path d="M7 10C7 9.44772 7.44772 9 8 9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H8C7.44772 11 7 10.5523 7 10Z" fill="currentColor" />
-                  <path d="M7 14C7 13.4477 7.44772 13 8 13H16C16.5523 13 17 13.4477 17 14C17 14.5523 16.5523 15 16 15H8C7.44772 15 7 14.5523 7 14Z" fill="currentColor" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold mb-2 dark:text-white">Detailed Proposals</h3>
-              <p className="text-gray-600 dark:text-gray-400">We provide comprehensive proposals with clear timelines.</p>
-            </div>
-            
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-conison-cyan/10 flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-conison-cyan" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M8.5 14C8.5 11.5147 10.5147 9.5 13 9.5C15.4853 9.5 17.5 11.5147 17.5 14C17.5 16.4853 15.4853 18.5 13 18.5C10.5147 18.5 8.5 16.4853 8.5 14Z" fill="currentColor" />
-                  <path fillRule="evenodd" clipRule="evenodd" d="M12 1C5.92487 1 1 5.92487 1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1ZM13 7.5C9.41015 7.5 6.5 10.4101 6.5 14C6.5 17.5899 9.41015 20.5 13 20.5C16.5899 20.5 19.5 17.5899 19.5 14C19.5 10.4101 16.5899 7.5 13 7.5Z" fill="currentColor" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold mb-2 dark:text-white">On-Time Delivery</h3>
-              <p className="text-gray-600 dark:text-gray-400">We always deliver our projects on schedule.</p>
-            </div>
-            
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-conison-yellow/10 flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-conison-yellow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M5 4.75C5 2.67893 6.67893 1 8.75 1H15.25C17.3211 1 19 2.67893 19 4.75V22.25H8.75C6.67893 22.25 5 20.5711 5 18.5V4.75ZM15.25 3C14.8358 3 14.5 3.33579 14.5 3.75V5.25C14.5 5.66421 14.8358 6 15.25 6C15.6642 6 16 5.66421 16 5.25V3.75C16 3.33579 15.6642 3 15.25 3Z" fill="currentColor" />
-                  <path d="M19 22.25H9.25C7.17893 22.25 5.5 20.5711 5.5 18.5C5.5 19.7426 6.50736 20.75 7.75 20.75H19V22.25Z" fill="currentColor" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold mb-2 dark:text-white">Expert Support</h3>
-              <p className="text-gray-600 dark:text-gray-400">Get expert support throughout your project journey.</p>
             </div>
           </div>
         </div>

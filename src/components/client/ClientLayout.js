@@ -1,19 +1,43 @@
-import React, { useState } from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Sidebar, SidebarBody } from './Sidebar';
-import { useAuth } from '../../context/AuthContext';
 import { ClientDataProvider } from '../../context/ClientDataContext';
 import { SidebarProvider } from '../../context/SidebarContext';
 import { useDarkMode } from '../../context/DarkModeContext';
+import { useAuth } from '../../context/AuthContext';
+import LoadingSpinner from '../ui/LoadingSpinner';
 
 const ClientLayout = () => {
-  const { currentUser } = useAuth();
+  const [loading, setLoading] = useState(true);
   const { isDarkMode } = useDarkMode();
+  const { currentUser, userData } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
-  // Redirect to login if not authenticated
-  if (!currentUser) {
-    return <Navigate to="/login" />;
+  // Check authentication using Firebase auth
+  useEffect(() => {
+    console.log('ClientLayout - Checking authentication:', { currentUser, userData });
+    
+    if (!currentUser) {
+      console.log('ClientLayout - Not authenticated, redirecting to login');
+      navigate('/login');
+    } else if (userData?.role !== 'client') {
+      console.log('ClientLayout - Not a client, redirecting to appropriate dashboard');
+      navigate(`/${userData?.role || 'client'}`);
+    }
+    
+    // Set loading to false once we've checked authentication
+    setLoading(false);
+  }, [currentUser, userData, navigate]);
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+        <p className="mt-4 text-conison-magenta">Loading dashboard...</p>
+      </div>
+    );
   }
 
   return (

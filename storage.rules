@@ -1,0 +1,43 @@
+// Firebase Storage rules
+
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        firestore.exists(/databases/(default)/documents/users/$(request.auth.uid)) &&
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // User profiles storage
+    match /users/{userId}/{allPaths=**} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+    }
+    
+    // Public assets that anyone can read
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Project assets can be read by project owner and admin
+    match /projects/{projectId}/{allPaths=**} {
+      allow read: if isAuthenticated() && (
+        firestore.exists(/databases/(default)/documents/projects/$(projectId)) &&
+        (firestore.get(/databases/(default)/documents/projects/$(projectId)).data.clientId == request.auth.uid || isAdmin())
+      );
+      allow write: if isAdmin();
+    }
+    
+    // Default deny
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+} 

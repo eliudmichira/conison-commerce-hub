@@ -1,8 +1,9 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSidebar } from '../../context/SidebarContext';
 import { useAuth } from '../../context/AuthContext';
+import { useDarkMode } from '../../context/DarkModeContext';
 import { 
   FaHome, 
   FaClipboardList, 
@@ -11,7 +12,13 @@ import {
   FaCog, 
   FaSignOutAlt,
   FaBars,
-  FaTimes
+  FaTimes,
+  FaFileInvoiceDollar,
+  FaUserCog,
+  FaChevronDown,
+  FaChevronUp,
+  FaBell,
+  FaUserCircle
 } from 'react-icons/fa';
 
 // Utility function to conditionally join classNames
@@ -23,225 +30,201 @@ export const Sidebar = ({
   children,
   open,
   setOpen,
-  animate,
+  animate = false,
 }) => {
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  
   return (
-    <SidebarProvider open={open} setOpen={setOpen} animate={animate}>
-      {children}
-    </SidebarProvider>
+    <>
+      {/* Mobile sidebar backdrop */}
+      <div 
+        className={`fixed inset-0 z-20 bg-gray-900 bg-opacity-50 transition-opacity duration-200 md:hidden
+        ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        onClick={() => setOpen(false)}
+      ></div>
+      
+      {/* Sidebar */}
+      <aside 
+        className={`fixed top-0 left-0 z-30 h-screen w-64 transform bg-white dark:bg-gray-800 shadow-xl 
+        transition-transform duration-200 ease-in-out md:relative md:translate-x-0 ${animate ? 'transition-transform' : ''}
+        ${open ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+      >
+        {children}
+      </aside>
+    </>
   );
 };
 
-export const SidebarProvider = ({
-  children,
-  open: openProp,
-  setOpen: setOpenProp,
-  animate = true,
-}) => {
-  const [openState, setOpenState] = React.useState(false);
-
-  const open = openProp !== undefined ? openProp : openState;
-  const setOpen = setOpenProp !== undefined ? setOpenProp : setOpenState;
-
+export const SidebarHeader = ({ setOpen }) => {
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  
   return (
-    <div className="sidebar-container">
-      {React.Children.map(children, child => {
-        return React.cloneElement(child, { open, setOpen, animate });
-      })}
+    <div className="flex h-16 items-center justify-between border-b border-gray-200 dark:border-gray-700 px-4">
+      <div className="flex items-center">
+        <div className="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-conison-cyan to-conison-magenta">
+          Conison
+        </div>
+      </div>
+      <button 
+        onClick={() => setOpen(false)}
+        className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 focus:outline-none md:hidden dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+      >
+        <FaTimes />
+      </button>
     </div>
   );
 };
 
-export const SidebarBody = (props) => {
-  return (
-    <>
-      <DesktopSidebar {...props} />
-      <MobileSidebar {...props} />
-    </>
-  );
-};
-
-export const DesktopSidebar = ({
-  className,
-  children,
-  open,
-  setOpen,
-  animate,
-  ...props
-}) => {
-  const { logout } = useAuth();
+export const SidebarBody = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { currentUser, logout } = useAuth();
+  const { sidebarExpanded, toggleSidebar } = useSidebar();
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([
+    { id: 1, message: 'New quote has been approved', read: false, date: '2 hours ago' },
+    { id: 2, message: 'Payment confirmation received', read: true, date: 'Yesterday' },
+    { id: 3, message: 'Project update available', read: false, date: '3 days ago' }
+  ]);
 
   const handleLogout = async () => {
-    await logout();
-    // Redirect to home page or login page happens automatically via router protection
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Failed to logout', error);
+    }
   };
-
-  const sidebarLinks = [
-    { label: "Dashboard", href: "/client", icon: <FaHome size={20} /> },
-    { label: "Quotes", href: "/client/quotes", icon: <FaClipboardList size={20} /> },
-    { label: "Projects", href: "/client/projects", icon: <FaChartLine size={20} /> },
-    { label: "Payments", href: "/client/payments", icon: <FaCreditCard size={20} /> },
-    { label: "Settings", href: "/client/settings", icon: <FaCog size={20} /> },
+  
+  const menuItems = [
+    {
+      title: 'Dashboard',
+      icon: <FaHome className="text-conison-cyan" />,
+      path: '/client/dashboard'
+    },
+    {
+      title: 'Projects',
+      icon: <FaClipboardList className="text-conison-magenta" />,
+      path: '/client/projects'
+    },
+    {
+      title: 'Quotes',
+      icon: <FaFileInvoiceDollar className="text-conison-yellow" />,
+      path: '/client/quotes'
+    },
+    {
+      title: 'Payments',
+      icon: <FaCreditCard className="text-green-500" />,
+      path: '/client/payments'
+    },
+    {
+      title: 'Settings',
+      icon: <FaUserCog className="text-gray-500 dark:text-gray-400" />,
+      path: '/client/settings'
+    }
   ];
-
+  
   return (
-    <motion.div
-      className={cn(
-        "h-full px-4 py-4 hidden md:flex md:flex-col bg-white dark:bg-gray-800 w-[300px] flex-shrink-0 shadow-md",
-        className
-      )}
-      animate={{
-        width: animate ? (open ? "300px" : "80px") : "300px",
-      }}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-      {...props}
-    >
-      <div className="flex items-center justify-center py-6 mb-8">
-        <Link to="/client" className="flex items-center">
-          {/* Logo - use your actual logo */}
-          <span className="text-2xl font-bold text-conison-magenta">
-            Conison
-          </span>
-          <motion.span
-            animate={{
-              display: animate ? (open ? "inline-block" : "none") : "inline-block",
-              opacity: animate ? (open ? 1 : 0) : 1,
-            }}
-            className="ml-2 text-2xl font-bold text-conison-gray dark:text-white"
-          >
-            Portal
-          </motion.span>
-        </Link>
-      </div>
-
-      <div className="flex flex-col flex-grow">
-        <nav className="flex-1 space-y-4">
-          {sidebarLinks.map((link) => (
-            <SidebarLink key={link.href} link={link} open={open} animate={animate} />
-          ))}
-        </nav>
-
-        <div className="pt-6 mt-auto border-t border-gray-200 dark:border-gray-700">
-          <button
-            onClick={handleLogout}
-            className="flex items-center justify-start w-full px-4 py-3 text-gray-600 transition duration-150 rounded-lg group dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <FaSignOutAlt size={20} />
-            <motion.span
-              animate={{
-                display: animate ? (open ? "inline-block" : "none") : "inline-block",
-                opacity: animate ? (open ? 1 : 0) : 1,
-              }}
-              className="ml-3 text-sm font-medium"
-            >
-              Logout
-            </motion.span>
-          </button>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-export const MobileSidebar = ({
-  className,
-  children,
-  open,
-  setOpen,
-  ...props
-}) => {
-  const { logout } = useAuth();
-
-  const handleLogout = async () => {
-    await logout();
-    // Redirect happens via router protection
-  };
-
-  const sidebarLinks = [
-    { label: "Dashboard", href: "/client", icon: <FaHome size={20} /> },
-    { label: "Quotes", href: "/client/quotes", icon: <FaClipboardList size={20} /> },
-    { label: "Projects", href: "/client/projects", icon: <FaChartLine size={20} /> },
-    { label: "Payments", href: "/client/payments", icon: <FaCreditCard size={20} /> },
-    { label: "Settings", href: "/client/settings", icon: <FaCog size={20} /> },
-  ];
-
-  return (
-    <>
-      <div
-        className={cn(
-          "h-16 px-4 flex flex-row md:hidden items-center justify-between bg-white dark:bg-gray-800 w-full shadow-sm"
-        )}
-        {...props}
-      >
+    <div className="flex flex-col h-full">
+      {/* User profile section */}
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center">
-          <Link to="/client" className="flex items-center">
-            <span className="text-xl font-bold text-conison-magenta">Conison Portal</span>
-          </Link>
+          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-conison-cyan to-conison-magenta flex items-center justify-center text-white font-bold text-lg">
+            {currentUser?.name ? currentUser.name.charAt(0) : 'C'}
+          </div>
+          <div className="ml-3">
+            <p className="font-medium text-gray-800 dark:text-white">{currentUser?.name || 'Client User'}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{currentUser?.email || 'client@example.com'}</p>
+          </div>
         </div>
-        <div className="flex justify-end z-20">
+      </div>
+      
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto p-4">
+        <ul className="space-y-2">
+          {menuItems.map((item) => (
+            <li key={item.path}>
+              <Link
+                to={item.path}
+                className={`flex items-center px-4 py-3 rounded-lg transition-colors duration-150 ${
+                  location.pathname === item.path || location.pathname.startsWith(item.path + '/')
+                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                <div className="mr-3">{item.icon}</div>
+                <span>{item.title}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      
+      {/* Notifications dropdown */}
+      <div className="border-t border-gray-200 dark:border-gray-700 p-4">
+        <div className="mb-4">
           <button 
-            onClick={() => setOpen(!open)}
-            className="p-2 text-gray-600 dark:text-gray-300"
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="w-full flex items-center justify-between px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
           >
-            <FaBars size={20} />
+            <div className="flex items-center">
+              <FaBell className="mr-3 text-conison-cyan" />
+              <span>Notifications</span>
+            </div>
+            <div className="relative">
+              {notifications.filter(n => !n.read).length > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                  {notifications.filter(n => !n.read).length}
+                </span>
+              )}
+              {showNotifications ? <FaChevronUp /> : <FaChevronDown />}
+            </div>
+          </button>
+          
+          {showNotifications && (
+            <div className="mt-2 space-y-2 max-h-40 overflow-y-auto">
+              {notifications.length > 0 ? (
+                notifications.map((notification) => (
+                  <div 
+                    key={notification.id}
+                    className={`p-3 rounded-lg text-sm ${
+                      notification.read 
+                        ? 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+                        : 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 font-medium'
+                    }`}
+                  >
+                    <p>{notification.message}</p>
+                    <p className="text-xs mt-1 text-gray-500 dark:text-gray-400">{notification.date}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-500 dark:text-gray-400 text-sm py-2">No notifications</p>
+              )}
+            </div>
+          )}
+        </div>
+        
+        {/* Theme toggle & Logout */}
+        <div className="flex flex-col space-y-2">
+          <button 
+            onClick={toggleDarkMode}
+            className="flex items-center px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+          >
+            <span className="mr-3">🌓</span>
+            <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
+          
+          <button 
+            onClick={handleLogout}
+            className="flex items-center px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+          >
+            <FaSignOutAlt className="mr-3" />
+            <span>Logout</span>
           </button>
         </div>
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{
-                duration: 0.3,
-                ease: "easeInOut",
-              }}
-              className={cn(
-                "fixed h-full w-full inset-0 bg-white dark:bg-gray-800 p-4 z-50 flex flex-col",
-                className
-              )}
-            >
-              <div className="flex items-center justify-between mb-8 p-2">
-                <Link to="/client" className="flex items-center">
-                  <span className="text-xl font-bold text-conison-magenta">Conison Portal</span>
-                </Link>
-                <button
-                  onClick={() => setOpen(false)}
-                  className="p-2 text-gray-600 dark:text-gray-300"
-                >
-                  <FaTimes size={20} />
-                </button>
-              </div>
-
-              <nav className="flex-1 space-y-4">
-                {sidebarLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className="flex items-center px-4 py-3 text-gray-600 transition duration-150 rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => setOpen(false)}
-                  >
-                    {link.icon}
-                    <span className="ml-3 text-sm font-medium">{link.label}</span>
-                  </Link>
-                ))}
-              </nav>
-
-              <div className="pt-6 mt-auto border-t border-gray-200 dark:border-gray-700">
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center justify-start w-full px-4 py-3 text-gray-600 transition duration-150 rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <FaSignOutAlt size={20} />
-                  <span className="ml-3 text-sm font-medium">Logout</span>
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
-    </>
+    </div>
   );
 };
 

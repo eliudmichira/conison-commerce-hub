@@ -1,5 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { validateCredentials, saveUser, findUserByEmail } from '../utils/userStorage';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  updateProfile,
+  sendPasswordResetEmail,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence
+} from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase/config';
 
 // Create the auth context
 const AuthContext = createContext();
@@ -11,121 +23,153 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  // Login function using userStorage
-  const login = (email, password) => {
+  // Clear error state
+  const clearError = () => setError(null);
+  
+  // Login function using Firebase Auth
+  const login = async (email, password, rememberMe = true) => {
     try {
-      const user = validateCredentials(email, password);
+      // Set persistence based on rememberMe
+      await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
       
-      if (user) {
-        // Save to localStorage for persistence
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        setCurrentUser(user);
-        return Promise.resolve(user);
-      }
+      // Sign in with email and password
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
       
-      return Promise.reject(new Error('Invalid credentials'));
+      // Get additional user data from Firestore
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      const userData = userDoc.exists() ? userDoc.data() : null;
+      
+      // Update state
+      setCurrentUser(user);
+      setUserData(userData);
+      setError(null);
+      
+      return user;
     } catch (error) {
-      return Promise.reject(error);
+      console.error('Login error:', error);
+      setError(error.message);
+      throw error;
     }
   };
   
-  const logout = () => {
-    localStorage.removeItem('currentUser');
-    setCurrentUser(null);
-    return Promise.resolve();
+  // Logout function using Firebase Auth
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setCurrentUser(null);
+      setUserData(null);
+      setError(null);
+    } catch (error) {
+      console.error('Logout error:', error);
+      setError(error.message);
+      throw error;
+    }
   };
   
-  const signup = (email, password, name) => {
+  // Signup function using Firebase Auth
+  const signup = async (email, password, name, company, phone) => {
     try {
-      if (password.length < 6) {
-        return Promise.reject(new Error('Password should be at least 6 characters'));
-      }
+      // Create user with email and password
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
       
+      // Update the user profile with name
+      await updateProfile(user, {
+        displayName: name
+      });
+      
+      // Store additional user data in Firestore
       const userData = {
+        uid: user.uid,
+        name,
         email,
-        password,
-        name: name || email.split('@')[0],
-        role: 'client'
+        company,
+        phone,
+        role: 'client',
+        createdAt: new Date().toISOString()
       };
       
-      const newUser = saveUser(userData);
+      await setDoc(doc(db, 'users', user.uid), userData);
       
-      // Don't log in the user automatically - they need to log in separately
-      return Promise.resolve(newUser);
+      // Update state
+      setCurrentUser(user);
+      setUserData(userData);
+      setError(null);
+      
+      return user;
     } catch (error) {
-      return Promise.reject(error);
+      console.error('Signup error:', error);
+      setError(error.message);
+      throw error;
     }
   };
   
-  // Update user profile
-  const updateProfile = (updates) => {
+  // Password reset function
+  const resetPassword = async (email) => {
     try {
-      if (!currentUser) {
-        return Promise.reject(new Error('No user is currently logged in'));
-      }
-      
-      // In a real app, this would update the user in the database
-      // For this demo, we'll just update localStorage
-      const updatedUser = {
-        ...currentUser,
-        ...updates
-      };
-      
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-      setCurrentUser(updatedUser);
-      
-      return Promise.resolve(updatedUser);
+      await sendPasswordResetEmail(auth, email);
+      setError(null);
     } catch (error) {
-      return Promise.reject(error);
+      console.error('Password reset error:', error);
+      setError(error.message);
+      throw error;
     }
   };
   
-  // Update password
-  const updatePassword = (currentPassword, newPassword) => {
-    try {
-      if (!currentUser) {
-        return Promise.reject(new Error('No user is currently logged in'));
-      }
-      
-      // Verify current password - in a real app this would be more secure
-      const user = validateCredentials(currentUser.email, currentPassword);
-      
-      if (!user) {
-        return Promise.reject(new Error('Current password is incorrect'));
-      }
-      
-      // In a real app, this would update the user in the database
-      // For this demo, we just update the user object
-      
-      return Promise.resolve();
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  
-  // Check if user is already logged in (from localStorage)
+  // Initialize auth state listener
   useEffect(() => {
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      setCurrentUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
+    console.log('AuthContext - Setting up auth listener');
+    
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      try {
+        if (user) {
+          console.log('AuthContext - User authenticated:', {
+            uid: user.uid,
+            email: user.email
+          });
+          
+          // Get additional user data from Firestore
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          const userData = userDoc.exists() ? userDoc.data() : null;
+          
+          // Update state
+          setCurrentUser(user);
+          setUserData(userData);
+        } else {
+          setCurrentUser(null);
+          setUserData(null);
+        }
+      } catch (error) {
+        console.error('Auth state change error:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    });
+    
+    return () => unsubscribe();
   }, []);
   
   const value = {
     currentUser,
+    userData,
+    loading,
+    error,
     login,
     logout,
     signup,
-    updateProfile,
-    updatePassword
+    resetPassword,
+    clearError
   };
   
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
