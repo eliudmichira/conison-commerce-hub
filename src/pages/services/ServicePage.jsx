@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useDarkMode } from '../../context/DarkModeContext';
+import ParticleBackground from '../../components/ParticleBackground';
 
 const ServicePage = ({ 
   title, 
@@ -18,23 +19,26 @@ const ServicePage = ({
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-conison.gray-900' : 'bg-white'}`}>
       {/* Hero Section */}
-      <section className="relative py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-20 bg-gradient-to-r from-primary-blue via-primary-purple to-primary-teal text-white">
+        <div className="absolute inset-0 opacity-15 pointer-events-none">
+          <ParticleBackground />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="inline-block mb-8"
             >
-              <div className={`p-4 rounded-full ${isDarkMode ? 'bg-conison.gray-800' : 'bg-conison.gray-50'}`}>
-                <Icon className={`w-12 h-12 ${isDarkMode ? 'text-conison-magenta' : 'text-conison-magenta'}`} />
+              <div className="p-4 rounded-full bg-white/10 backdrop-blur-sm">
+                <Icon className="w-12 h-12 text-white" />
               </div>
             </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className={`text-4xl sm:text-5xl md:text-6xl font-bold ${isDarkMode ? 'text-white' : 'text-conison.gray-900'}`}
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white"
             >
               {title}
             </motion.h1>
@@ -42,7 +46,7 @@ const ServicePage = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className={`mt-6 text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-conison.gray-400' : 'text-conison.gray-600'}`}
+              className="mt-6 text-xl max-w-3xl mx-auto text-white/90"
             >
               {description}
             </motion.p>

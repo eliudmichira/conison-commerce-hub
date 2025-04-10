@@ -112,7 +112,11 @@ const NavBar = ({ items = [] }) => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-conison-magenta">
-            Conison
+            <img 
+              src="/images/conison_logo_large.png" 
+              alt="Conison" 
+              className="h-10" 
+            />
           </Link>
 
           {/* Desktop Navigation */}

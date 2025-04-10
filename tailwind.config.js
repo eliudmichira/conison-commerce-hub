@@ -7,9 +7,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'primary-blue': '#2563eb',
+        'primary-blue': '#4338ca',
         'primary-purple': '#8b5cf6',
-        'primary-teal': '#0d9488',
+        'primary-teal': '#06b6d4',
         'text-primary': '#111827',
         'text-secondary': '#374151',
         'text-tertiary': '#6b7280',
@@ -21,8 +21,8 @@ module.exports = {
         'dark-accent': '#374151',
         'dark-text-primary': '#f9fafb',
         'dark-text-secondary': '#e5e7eb',
-        'conison-yellow': '#0d9488',
-        'conison-cyan': '#2563eb',
+        'conison-yellow': '#06b6d4',
+        'conison-cyan': '#4338ca',
         'conison-magenta': '#8b5cf6',
         'conison-gray': '#374151',
         'background': '#ffffff',
@@ -32,8 +32,8 @@ module.exports = {
       boxShadow: {
         'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
         'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-        'button': '0 4px 6px -1px rgba(37, 99, 235, 0.2)',
-        'button-hover': '0 10px 15px -3px rgba(37, 99, 235, 0.3)',
+        'button': '0 4px 6px -1px rgba(67, 56, 202, 0.2)',
+        'button-hover': '0 10px 15px -3px rgba(67, 56, 202, 0.3)',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

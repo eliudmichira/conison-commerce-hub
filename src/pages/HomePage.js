@@ -128,11 +128,13 @@ const HomePage = () => {
         id="home" 
         className={`${isDarkMode 
           ? 'bg-gradient-to-r from-dark-primary via-dark-secondary to-dark-primary' 
-          : 'bg-gradient-to-r from-primary-blue via-primary-purple to-primary-purple'} 
+          : 'bg-gradient-to-r from-primary-blue via-primary-purple to-primary-teal'} 
           text-white min-h-screen flex items-center relative overflow-hidden`}
         style={{ opacity: heroOpacity, y: heroY }}
       >
-        <ParticleBackground />
+        <div className="absolute inset-0 z-0">
+          <ParticleBackground />
+        </div>
         <div className="absolute inset-0 z-10">
           <AnimatedHero />
         </div>
@@ -160,7 +162,7 @@ const HomePage = () => {
               <span className="inline-block text-primary-blue dark:text-primary-blue font-semibold tracking-wider mb-2">
                 WHY CHOOSE US
               </span>
-              <h2 className="text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary-blue to-primary-purple">Powering Digital Innovation</h2>
+              <h2 className="text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary-blue to-primary-teal">Powering Digital Innovation</h2>
               <p className="text-xl text-text-secondary dark:text-dark-text-primary max-w-3xl mx-auto">
                 We combine technical expertise with innovative solutions to help businesses thrive in the digital age.
               </p>
@@ -171,7 +173,7 @@ const HomePage = () => {
                 whileHover={{ scale: 1.03 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary-blue to-primary-purple rounded-full mb-6 text-white text-2xl">🎯</div>
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary-blue to-primary-teal rounded-full mb-6 text-white text-2xl">🎯</div>
                 <h3 className="text-xl font-semibold mb-3">Expert Team</h3>
                 <p className="text-text-secondary dark:text-dark-text-secondary">
                   Our experienced professionals bring years of industry expertise to every project.
@@ -182,7 +184,7 @@ const HomePage = () => {
                 whileHover={{ scale: 1.03 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary-blue to-primary-purple rounded-full mb-6 text-white text-2xl">⚡</div>
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary-blue to-primary-teal rounded-full mb-6 text-white text-2xl">⚡</div>
                 <h3 className="text-xl font-semibold mb-3">Innovative Solutions</h3>
                 <p className="text-text-secondary dark:text-dark-text-secondary">
                   We leverage cutting-edge technologies to deliver exceptional results.
@@ -193,7 +195,7 @@ const HomePage = () => {
                 whileHover={{ scale: 1.03 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary-blue to-primary-purple rounded-full mb-6 text-white text-2xl">🤝</div>
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary-blue to-primary-teal rounded-full mb-6 text-white text-2xl">🤝</div>
                 <h3 className="text-xl font-semibold mb-3">Client-Focused</h3>
                 <p className="text-text-secondary dark:text-dark-text-secondary">
                   Your success is our priority, with dedicated support throughout your journey.
@@ -223,7 +225,7 @@ const HomePage = () => {
                   className="flex bg-light dark:bg-dark-secondary rounded-xl p-6 shadow-card border border-gray-100 dark:border-gray-700 hover:shadow-card-hover transition-all duration-300"
                   whileHover={{ y: -10 }}
                 >
-                  <div className="mr-6 p-4 bg-gradient-to-r from-primary-blue/10 to-primary-purple/10 rounded-xl flex-shrink-0">
+                  <div className="mr-6 p-4 bg-gradient-to-r from-primary-blue/10 to-primary-teal/10 rounded-xl flex-shrink-0">
                     {service.icon}
                   </div>
                   <div>
@@ -231,7 +233,7 @@ const HomePage = () => {
                     <p className="text-text-secondary dark:text-dark-text-secondary mb-4">{service.description}</p>
                     <Link 
                       to={service.link} 
-                      className="group flex items-center font-medium text-primary-blue hover:text-primary-purple transition"
+                      className="group flex items-center font-medium text-primary-blue hover:text-primary-teal transition"
                     >
                       Learn more
                       <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,7 +248,7 @@ const HomePage = () => {
             <div className="text-center">
               <Link 
                 to="/services" 
-                className="inline-flex items-center justify-center bg-gradient-to-r from-primary-blue to-primary-purple text-white font-semibold py-4 px-8 rounded-full hover:shadow-button-hover transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center justify-center bg-gradient-to-r from-primary-blue to-primary-teal text-white font-semibold py-4 px-8 rounded-full hover:shadow-button-hover transition-all duration-300 transform hover:scale-105"
               >
                 View All Services
                 <FaArrowRight className="ml-2" />
@@ -268,7 +270,7 @@ const HomePage = () => {
               <span className="inline-block text-primary-purple dark:text-primary-purple font-semibold tracking-wider mb-2">
                 QUICK QUOTES
               </span>
-              <h2 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary-blue to-primary-purple">Featured Quote Examples</h2>
+              <h2 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary-blue to-primary-teal">Featured Quote Examples</h2>
               <p className="text-xl text-text-secondary dark:text-dark-text-primary max-w-3xl mx-auto">
                 Explore sample quotes for our most popular services. Request similar quotes with just one click.
               </p>
@@ -290,14 +292,14 @@ const HomePage = () => {
                         <div className="mr-4">{quote.icon}</div>
                         <h3 className="text-xl font-bold">{quote.title}</h3>
                       </div>
-                      <span className="px-4 py-2 rounded-full bg-gradient-to-r from-primary-purple/10 to-primary-blue/10 text-primary-purple font-medium text-sm">
+                      <span className="px-4 py-2 rounded-full bg-gradient-to-r from-primary-teal/10 to-primary-blue/10 text-primary-blue font-medium text-sm">
                         {quote.priceRange}
                       </span>
                     </div>
                     <ul className="space-y-3 mb-6">
                       {quote.features.map((feature, idx) => (
                         <li key={idx} className="flex items-start">
-                          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-gradient-to-r from-primary-blue to-primary-purple flex items-center justify-center mt-0.5">
+                          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-gradient-to-r from-primary-blue to-primary-teal flex items-center justify-center mt-0.5">
                             <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                             </svg>
@@ -309,7 +311,7 @@ const HomePage = () => {
                     <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
                       <Link 
                         to={quote.link} 
-                        className="inline-flex items-center justify-center w-full bg-gradient-to-r from-primary-blue to-primary-purple text-white font-medium py-3 px-6 rounded-lg hover:shadow-button transition-all duration-300"
+                        className="inline-flex items-center justify-center w-full bg-gradient-to-r from-primary-blue to-primary-teal text-white font-medium py-3 px-6 rounded-lg hover:shadow-button transition-all duration-300"
                       >
                         Request Similar Quote
                         <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -325,7 +327,7 @@ const HomePage = () => {
             <div className="text-center mt-12">
               <Link 
                 to="/quote-request" 
-                className="inline-flex items-center justify-center bg-gradient-to-r from-primary-purple to-primary-blue text-white font-semibold py-4 px-8 rounded-full hover:shadow-button-hover transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center justify-center bg-gradient-to-r from-primary-teal to-primary-blue text-white font-semibold py-4 px-8 rounded-full hover:shadow-button-hover transition-all duration-300 transform hover:scale-105"
               >
                 Request Custom Quote
                 <FaArrowRight className="ml-2" />
@@ -347,7 +349,7 @@ const HomePage = () => {
               <span className="inline-block text-primary-purple dark:text-primary-purple font-semibold tracking-wider mb-2">
                 SUCCESS STORIES
               </span>
-              <h2 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary-blue to-primary-purple">Our Recent Work</h2>
+              <h2 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary-blue to-primary-teal">Our Recent Work</h2>
               <p className="text-xl text-text-secondary dark:text-dark-text-primary max-w-3xl mx-auto">
                 See how we've helped businesses transform their digital presence
               </p>
@@ -359,7 +361,7 @@ const HomePage = () => {
                 whileHover={{ scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <div className="h-48 bg-gradient-to-r from-primary-blue to-primary-purple flex items-center justify-center overflow-hidden">
+                <div className="h-48 bg-gradient-to-r from-primary-blue to-primary-teal flex items-center justify-center overflow-hidden">
                   <h3 className="text-3xl font-bold text-white">E-commerce Success</h3>
                 </div>
                 <div className="p-6">
@@ -391,7 +393,7 @@ const HomePage = () => {
                 whileHover={{ scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <div className="h-48 bg-gradient-to-r from-primary-purple to-primary-blue flex items-center justify-center overflow-hidden">
+                <div className="h-48 bg-gradient-to-r from-primary-teal to-primary-blue flex items-center justify-center overflow-hidden">
                   <h3 className="text-3xl font-bold text-white">Mobile App Success</h3>
                 </div>
                 <div className="p-6">
@@ -423,7 +425,7 @@ const HomePage = () => {
             <div className="text-center mt-12">
               <Link 
                 to="/portfolio" 
-                className="inline-flex items-center justify-center bg-gradient-to-r from-primary-blue to-primary-purple text-white font-semibold py-4 px-8 rounded-full hover:shadow-button-hover transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center justify-center bg-gradient-to-r from-primary-blue to-primary-teal text-white font-semibold py-4 px-8 rounded-full hover:shadow-button-hover transition-all duration-300 transform hover:scale-105"
               >
                 View All Case Studies
                 <FaArrowRight className="ml-2" />
@@ -435,7 +437,7 @@ const HomePage = () => {
         {/* CTA Section */}
         <motion.section 
           ref={ctaRef}
-          className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary-blue to-primary-purple"
+          className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary-blue to-primary-teal"
           initial={{ opacity: 0 }}
           animate={isVisible.cta ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.6 }}
@@ -448,7 +450,7 @@ const HomePage = () => {
             <div className="flex flex-wrap justify-center gap-4">
               <Link 
                 to="/quote-request" 
-                className="inline-flex items-center justify-center bg-white text-primary-purple font-semibold py-4 px-8 rounded-full hover:shadow-button-hover transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center justify-center bg-white text-primary-teal font-semibold py-4 px-8 rounded-full hover:shadow-button-hover transition-all duration-300 transform hover:scale-105"
               >
                 Get a Free Quote
                 <FaArrowRight className="ml-2" />

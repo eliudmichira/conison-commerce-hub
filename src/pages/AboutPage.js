@@ -19,6 +19,7 @@ import {
   Shield
 } from 'lucide-react';
 import { useDarkMode } from '../context/DarkModeContext';
+import ParticleBackground from '../components/ParticleBackground';
 
 const AboutPage = () => {
   const { isDarkMode } = useDarkMode();
@@ -35,25 +36,25 @@ const AboutPage = () => {
       icon: Zap,
       title: 'Innovation',
       description: 'Constantly exploring emerging technologies to deliver cutting-edge solutions that keep our clients ahead of the competition.',
-      color: 'text-yellow-500'
+      color: 'text-primary-blue'
     },
     {
       icon: Users,
       title: 'Client Partnership',
       description: 'Building collaborative relationships with clients, understanding their unique needs, and becoming an extension of their team.',
-      color: 'text-blue-600'
+      color: 'text-primary-purple'
     },
     {
       icon: Rocket,
       title: 'Excellence',
       description: 'Committed to delivering high-quality, performant, and scalable solutions that exceed expectations and create long-term value.',
-      color: 'text-green-600'
+      color: 'text-primary-teal'
     },
     {
       icon: Handshake,
       title: 'Integrity',
       description: 'Operating with transparency, honesty, and ethical standards in all our business relationships and practices.',
-      color: 'text-purple-600'
+      color: 'text-primary-purple'
     }
   ];
 
@@ -99,13 +100,16 @@ const AboutPage = () => {
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-conison.gray-900' : 'bg-white'}`}>
       {/* Hero Section */}
-      <section className="relative py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-20 bg-gradient-to-r from-primary-blue via-primary-purple to-primary-teal text-white">
+        <div className="absolute inset-0 opacity-15 pointer-events-none">
+          <ParticleBackground />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`text-4xl sm:text-5xl md:text-6xl font-bold ${isDarkMode ? 'text-white' : 'text-conison.gray-900'}`}
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white"
             >
               About Conison
             </motion.h1>
@@ -113,7 +117,7 @@ const AboutPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className={`mt-6 text-xl ${isDarkMode ? 'text-conison.gray-400' : 'text-conison.gray-600'}`}
+              className="mt-6 text-xl text-white/90"
             >
               Empowering businesses with innovative technology solutions
             </motion.p>
@@ -131,8 +135,8 @@ const AboutPage = () => {
             className="space-y-6"
           >
             <div className="inline-block">
-              <h2 className="text-sm font-bold text-conison-magenta uppercase tracking-wider mb-2">Our Story</h2>
-              <div className="h-1 w-20 bg-conison-magenta rounded-full mb-6"></div>
+              <h2 className="text-sm font-bold text-primary-teal uppercase tracking-wider mb-2">Our Story</h2>
+              <div className="h-1 w-20 bg-primary-teal rounded-full mb-6"></div>
             </div>
             
             <h3 className="text-3xl md:text-4xl font-bold">Driving Digital Transformation</h3>
@@ -197,8 +201,8 @@ const AboutPage = () => {
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="inline-block">
-              <h2 className="text-sm font-bold text-conison-magenta uppercase tracking-wider mb-2">Our Core Values</h2>
-              <div className="h-1 w-20 bg-conison-magenta rounded-full mb-6 mx-auto"></div>
+              <h2 className="text-sm font-bold text-primary-teal uppercase tracking-wider mb-2">Our Core Values</h2>
+              <div className="h-1 w-20 bg-primary-teal rounded-full mb-6 mx-auto"></div>
             </div>
             <h3 className="text-3xl md:text-4xl font-bold mb-6">Principles That Guide Our Work</h3>
             <p className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -273,8 +277,8 @@ const AboutPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="inline-block">
-              <h2 className="text-sm font-bold text-conison-magenta uppercase tracking-wider mb-2">Meet Our Team</h2>
-              <div className="h-1 w-20 bg-conison-magenta rounded-full mb-6 mx-auto"></div>
+              <h2 className="text-sm font-bold text-primary-teal uppercase tracking-wider mb-2">Meet Our Team</h2>
+              <div className="h-1 w-20 bg-primary-teal rounded-full mb-6 mx-auto"></div>
             </div>
             <h3 className={`text-3xl md:text-4xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
               The People Behind Our Success
@@ -385,7 +389,7 @@ const AboutPage = () => {
           <div className="text-center mt-12">
             <Link 
               to="/login" 
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-conison-magenta hover:bg-conison-magenta-dark transition-colors"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-blue hover:bg-primary-blue/90 transition-colors"
             >
               Members Login
             </Link>
@@ -394,18 +398,18 @@ const AboutPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className={`py-20 ${isDarkMode ? 'bg-conison.gray-800' : 'bg-conison.gray-50'}`}>
+      <section className={`py-20 bg-gradient-to-r from-primary-blue to-primary-teal text-white`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-conison.gray-900'}`}>
+          <h2 className="text-3xl font-bold text-white">
             Ready to Transform Your Business?
           </h2>
-          <p className={`mt-4 text-lg ${isDarkMode ? 'text-conison.gray-400' : 'text-conison.gray-600'}`}>
+          <p className="mt-4 text-lg text-white/90">
             Let's discuss how we can help you achieve your goals
           </p>
           <div className="mt-8">
             <a
               href="/contact"
-              className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-conison-magenta hover:bg-conison-magenta-600 transition-colors`}
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-primary-blue bg-white hover:bg-white/90 transition-colors"
             >
               Get in Touch
             </a>
