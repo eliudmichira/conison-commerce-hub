@@ -4,16 +4,29 @@ import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 import { getInstallations } from 'firebase/installations';
 
-// Firebase configuration
+// Firebase configuration using environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyCV-mb5qsq8RPyLE4cIAz979RRMRM7vAg4",
-  authDomain: "conison-25ccd.firebaseapp.com",
-  projectId: "conison-25ccd",
-  storageBucket: "conison-25ccd.appspot.com",
-  messagingSenderId: "265194682359",
-  appId: "1:265194682359:web:a1d1ffd0500c1be873e0f2",
-  measurementId: "G-NH5M5QXRX8"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
+
+// Fallback for development if environment variables are not set
+if (!firebaseConfig.apiKey) {
+  console.warn('Firebase environment variables not found, using development fallback. This should NOT be used in production.');
+  // Development fallback - DO NOT USE IN PRODUCTION
+  firebaseConfig.apiKey = "AIzaSyCV-mb5qsq8RPyLE4cIAz979RRMRM7vAg4";
+  firebaseConfig.authDomain = "conison-25ccd.firebaseapp.com";
+  firebaseConfig.projectId = "conison-25ccd";
+  firebaseConfig.storageBucket = "conison-25ccd.appspot.com";
+  firebaseConfig.messagingSenderId = "265194682359";
+  firebaseConfig.appId = "1:265194682359:web:a1d1ffd0500c1be873e0f2";
+  firebaseConfig.measurementId = "G-NH5M5QXRX8";
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

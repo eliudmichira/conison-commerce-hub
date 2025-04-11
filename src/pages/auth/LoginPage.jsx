@@ -137,7 +137,7 @@ const LoginPage = () => {
       >
         <div className="text-center">
           <img 
-            src="/conison_transparent_upscaled.png" 
+            src={`${process.env.PUBLIC_URL}/conison_transparent_upscaled.png`}
             alt="Conison" 
             className="h-12 mx-auto mb-6" 
           />

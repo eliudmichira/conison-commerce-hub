@@ -75,7 +75,7 @@ const NavBar = ({ items = [] }) => {
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center text-2xl font-bold text-conison-magenta">
               <img 
-                src="/conison_transparent_upscaled.png" 
+                src={`${process.env.PUBLIC_URL}/conison_transparent_upscaled.png`}
                 alt="Conison" 
                 className="h-16 md:h-20" 
               />
