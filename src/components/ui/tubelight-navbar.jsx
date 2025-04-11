@@ -67,7 +67,9 @@ const NavBar = ({ items = [] }) => {
           ? isDarkMode 
             ? 'bg-gray-900/95 backdrop-blur-md border-b border-gray-800'
             : 'bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-md'
-          : 'bg-transparent'
+          : isDarkMode 
+            ? 'bg-transparent' 
+            : 'bg-gradient-to-b from-gray-900/50 to-transparent backdrop-blur-sm'
       }`}
     >
       <div className="container mx-auto px-4">
@@ -95,7 +97,7 @@ const NavBar = ({ items = [] }) => {
                         : 'text-gray-800 hover:text-conison-magenta'
                       : isDarkMode
                         ? 'text-white hover:text-conison-magenta' 
-                        : 'text-white hover:text-conison-magenta'
+                        : 'text-gray-800 hover:text-conison-magenta'
                   }`}
                 >
                   {React.createElement(item.icon, { className: 'w-4 h-4' })}
@@ -113,7 +115,9 @@ const NavBar = ({ items = [] }) => {
                   ? isDarkMode
                     ? 'bg-gray-800 text-gray-200 hover:bg-gray-700'
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                  : 'bg-white/10 text-white hover:bg-white/20'
+                  : isDarkMode
+                    ? 'bg-white/10 text-white hover:bg-white/20'
+                    : 'bg-gray-800/20 text-gray-800 hover:bg-gray-800/30'
               }`}
               aria-label="Toggle dark mode"
             >
@@ -123,12 +127,14 @@ const NavBar = ({ items = [] }) => {
             {isAuthenticated ? (
               <button
                 onClick={handleLogout}
-                className={`px-4 py-2 rounded-lg text-white transition-colors ${
+                className={`px-4 py-2 rounded-lg transition-colors ${
                   isScrolled
                     ? isDarkMode
-                      ? 'bg-gray-800 hover:bg-gray-700'
-                      : 'bg-conison-magenta hover:bg-conison-magenta-hover'
-                    : 'bg-white text-gray-900 hover:bg-white/90'
+                      ? 'bg-gray-800 hover:bg-gray-700 text-white'
+                      : 'bg-conison-magenta hover:bg-conison-magenta-hover text-white'
+                    : isDarkMode
+                      ? 'bg-white text-gray-900 hover:bg-white/90'
+                      : 'bg-conison-magenta text-white hover:bg-conison-magenta-hover'
                 }`}
               >
                 Sign Out
@@ -141,7 +147,9 @@ const NavBar = ({ items = [] }) => {
                       ? isDarkMode
                         ? 'bg-conison-magenta text-white hover:bg-conison-magenta-hover'
                         : 'bg-conison-magenta text-white hover:bg-conison-magenta-hover'
-                      : 'bg-white text-gray-900 hover:bg-white/90'
+                      : isDarkMode
+                        ? 'bg-white text-gray-900 hover:bg-white/90'
+                        : 'bg-conison-magenta text-white hover:bg-conison-magenta-hover'
                   }`}
                 >
                   Sign In
@@ -156,7 +164,9 @@ const NavBar = ({ items = [] }) => {
                   ? isDarkMode
                     ? 'bg-gray-800 text-gray-200 hover:bg-gray-700'
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                  : 'bg-white/10 text-white hover:bg-white/20'
+                  : isDarkMode
+                    ? 'bg-white/10 text-white hover:bg-white/20'
+                    : 'bg-gray-800/20 text-gray-800 hover:bg-gray-800/30'
               }`}
               aria-label="Toggle menu"
             >
