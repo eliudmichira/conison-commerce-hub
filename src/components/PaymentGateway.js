@@ -11,8 +11,12 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useDarkMode } from '../context/DarkModeContext';
 
-// Initialize Stripe with your publishable key - replace with your actual key when in production
-const stripePromise = loadStripe('pk_test_51OypMYJapBRyvNd4p9XE0ZspNtM66u9ZEepLrBp9EHOL3JqGiqx87WnoDKDc6IlFsU1kVmrgd3Nb9wROUi6Psvmw00ycpZxSrq');
+// Initialize Stripe with your publishable key from environment variables
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY)
+  .catch(error => {
+    console.error('Failed to load Stripe:', error);
+    return Promise.resolve(null);
+  });
 
 // Helper function to format currency values
 const formatCurrency = (value, currencyCode = 'USD') => {
@@ -38,7 +42,7 @@ const StripeCardForm = ({ amount, currency, onSuccess, onError }) => {
     event.preventDefault();
     
     if (!stripe || !elements) {
-      // Stripe.js hasn't loaded yet
+      setErrorMessage('Payment system is not ready. Please try again in a moment.');
       return;
     }
 
@@ -63,46 +67,43 @@ const StripeCardForm = ({ amount, currency, onSuccess, onError }) => {
         return;
       }
 
-      // Here you would typically send the payment method ID to your server
-      // For demonstration, we're simulating a successful payment
-      // In production, replace this with an actual call to your backend
-      
-      // Simulating API call to your server
-      const response = await simulatePaymentRequest(paymentMethod.id, amount, currency);
-      
+      // Make actual API call to your backend
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/create-payment-intent`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          paymentMethodId: paymentMethod.id,
+          amount,
+          currency,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Payment failed');
+      }
+
+      const result = await response.json();
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
       // Handle successful payment
       onSuccess({
-        transactionId: `pm_${paymentMethod.id}`,
+        transactionId: result.id,
         method: 'card',
         amount,
-        currency
+        currency,
+        receiptUrl: result.receipt_url
       });
     } catch (err) {
-      setErrorMessage('An unexpected error occurred. Please try again.');
+      setErrorMessage(err.message || 'An unexpected error occurred. Please try again.');
       onError(err);
     } finally {
       setLoading(false);
     }
-  };
-
-  // This simulates sending payment info to your server
-  // In production, replace with actual API call
-  const simulatePaymentRequest = async (paymentMethodId, amount, currency) => {
-    // Simulating a server request
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ success: true, id: paymentMethodId });
-      }, 1000);
-    });
-    
-    // In production your code would look something like this:
-    /*
-    return await axios.post('/api/process-payment', {
-      paymentMethodId,
-      amount,
-      currency
-    });
-    */
   };
 
   const CARD_ELEMENT_OPTIONS = {
@@ -519,14 +520,22 @@ const PaymentGateway = ({ amount = 0, currency = 'USD', onSuccess, onCancel }) =
           </div>
           
           {selectedMethod === 'card' && (
-            <Elements stripe={stripePromise}>
-              <StripeCardForm 
-                amount={amount} 
-                currency={currency} 
-                onSuccess={handlePaymentSuccess}
-                onError={handlePaymentError}
-              />
-            </Elements>
+            <>
+              {stripePromise ? (
+                <Elements stripe={stripePromise}>
+                  <StripeCardForm 
+                    amount={amount} 
+                    currency={currency} 
+                    onSuccess={handlePaymentSuccess}
+                    onError={handlePaymentError}
+                  />
+                </Elements>
+              ) : (
+                <div className="p-4 bg-red-50 text-red-700 rounded-md mb-4">
+                  Failed to load Stripe payment system. Please try a different payment method.
+                </div>
+              )}
+            </>
           )}
           
           {selectedMethod === 'mpesa' && (

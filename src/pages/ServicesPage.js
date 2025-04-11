@@ -8,6 +8,7 @@ import {
   FaLightbulb, FaArrowRight, FaShoppingCart 
 } from 'react-icons/fa';
 import servicesData from '../data/ServiceData';
+import ParticleBackground from '../components/ParticleBackground';
 
 const ServicesPage = () => {
   const { isDarkMode } = useDarkMode();
@@ -219,8 +220,9 @@ const ServicesPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
       {/* Hero Banner */}
-      <div className={`w-full ${isDarkMode ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-r from-conison-cyan to-conison-magenta'}`}>
-        <div className="container mx-auto px-6 py-24 text-center">
+      <div className={`w-full ${isDarkMode ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-r from-conison-cyan to-conison-magenta'} relative overflow-hidden`}>
+        <ParticleBackground />
+        <div className="container mx-auto px-6 py-24 text-center relative z-10">
           <motion.h1 
             className="text-5xl md:text-6xl font-bold text-white mb-6"
             initial={{ opacity: 0, y: -20 }}
@@ -362,8 +364,9 @@ const ServicesPage = () => {
       </div>
       
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-conison-cyan to-conison-magenta">
-        <div className="max-w-5xl mx-auto text-center">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-conison-cyan to-conison-magenta relative overflow-hidden">
+        <ParticleBackground />
+        <div className="max-w-5xl mx-auto text-center relative z-10">
           <h2 className="text-4xl font-bold text-white mb-6">Ready to Get Started?</h2>
           <p className="text-xl text-white/90 max-w-3xl mx-auto mb-10">
             Let us help you transform your business with our comprehensive range of services. Contact us today for a consultation.

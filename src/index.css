@@ -1,78 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 @import './styles/colors.css';
 @import './styles/variables.css';
 @import './styles/typography.css';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import './styles/patterns.css';
+
+/* Custom CSS starts here */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 279 1% 27%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 279 1% 27%;
- 
-    --popover: 0 0% 100%;
-    --popover-foreground: 279 1% 27%;
- 
-    --primary: 326 100% 46%;
-    --primary-foreground: 0 0% 100%;
- 
-    --secondary: 197 100% 47%;
-    --secondary-foreground: 0 0% 100%;
- 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
- 
-    --accent: 52 100% 49%;
-    --accent-foreground: 279 1% 27%;
- 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 326 100% 46%;
- 
+    --background: var(--light-bg-primary);
+    --foreground: var(--light-text-primary);
+    --card: var(--light-bg-secondary);
+    --card-foreground: var(--light-text-primary);
+    --popover: var(--light-bg-primary);
+    --popover-foreground: var(--light-text-primary);
+    --primary: var(--accent-cyan);
+    --primary-foreground: var(--light-text-primary);
+    --secondary: var(--accent-magenta);
+    --secondary-foreground: var(--light-text-primary);
+    --muted: var(--light-bg-tertiary);
+    --muted-foreground: var(--light-text-tertiary);
+    --accent: var(--accent-yellow);
+    --accent-foreground: var(--light-text-primary);
+    --destructive: var(--error);
+    --destructive-foreground: var(--light-text-primary);
+    --border: var(--light-border);
+    --input: var(--light-border);
+    --ring: var(--accent-cyan);
     --radius: 0.5rem;
   }
- 
+
   .dark {
-    --background: 222.2 14% 13%;
-    --foreground: 0 0% 100%;
- 
-    --card: 222.2 14% 18%;
-    --card-foreground: 0 0% 100%;
- 
-    --popover: 222.2 14% 13%;
-    --popover-foreground: 0 0% 100%;
- 
-    --primary: 326 100% 46%;
-    --primary-foreground: 0 0% 100%;
- 
-    --secondary: 197 100% 47%;
-    --secondary-foreground: 0 0% 100%;
- 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
- 
-    --accent: 52 100% 49%;
-    --accent-foreground: 0 0% 100%;
- 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 100%;
- 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 326 100% 46%;
+    --background: var(--dark-bg-primary);
+    --foreground: var(--dark-text-primary);
+    --card: var(--dark-bg-secondary);
+    --card-foreground: var(--dark-text-primary);
+    --popover: var(--dark-bg-primary);
+    --popover-foreground: var(--dark-text-primary);
+    --primary: var(--accent-cyan);
+    --primary-foreground: var(--dark-text-primary);
+    --secondary: var(--accent-magenta);
+    --secondary-foreground: var(--dark-text-primary);
+    --muted: var(--dark-bg-tertiary);
+    --muted-foreground: var(--dark-text-tertiary);
+    --accent: var(--accent-yellow);
+    --accent-foreground: var(--dark-text-primary);
+    --destructive: var(--error);
+    --destructive-foreground: var(--dark-text-primary);
+    --border: var(--dark-border);
+    --input: var(--dark-border);
+    --ring: var(--accent-cyan);
   }
 }
- 
+
 @layer base {
   * {
-    /* Remove border-border reference as it's not defined */
+    @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
@@ -84,6 +71,7 @@
     -moz-osx-font-smoothing: grayscale;
     background-color: white;
     color: var(--text-medium);
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   /* Dark mode overrides */
@@ -341,4 +329,267 @@
     background: var(--dark-bg-secondary);
     border: var(--card-dark-border);
   }
+} 
+
+/* Particles.js Styling */
+#particles-js {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  z-index: 0;
+}
+
+.dark-mode #particles-js {
+  opacity: 0.8;
+}
+
+/* Ensure particles are contained within their container */
+.particles-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hero section styling with particles */
+.hero-with-particles {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* Custom Utility Classes */
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent-cyan to-accent-magenta;
+  }
+
+  .bg-gradient {
+    @apply bg-gradient-to-r from-accent-cyan to-accent-magenta;
+  }
+
+  .hover-gradient {
+    @apply hover:bg-gradient-to-r hover:from-accent-cyan-hover hover:to-accent-magenta-hover;
+  }
+
+  .border-gradient {
+    @apply border-2 border-transparent bg-clip-border bg-gradient-to-r from-accent-cyan to-accent-magenta;
+  }
+
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/10 dark:bg-black/10;
+  }
+}
+
+/* Custom Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Improved Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--accent-cyan);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-cyan-hover);
+}
+
+/* Selection Styling */
+::selection {
+  background-color: var(--accent-cyan);
+  color: white;
+}
+
+/* Focus Styles */
+:focus-visible {
+  outline: none;
+  ring: 2px;
+  ring-color: var(--accent-cyan);
+  ring-offset: 2px;
+  ring-offset-color: var(--background);
+}
+
+/* Improved Transitions */
+* {
+  transition: color var(--transition-normal), background-color var(--transition-normal);
+}
+
+/* Dark Mode Toggle Animation */
+.dark-mode-toggle {
+  transition: all var(--transition-normal) ease-in-out;
+}
+
+/* Button Styles */
+.btn-primary {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--accent-cyan);
+  color: white;
+  font-weight: 500;
+  transition: background-color var(--transition-normal);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-cyan-hover);
+}
+
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--accent-magenta);
+  color: white;
+  font-weight: 500;
+  transition: background-color var(--transition-normal);
+}
+
+.btn-secondary:hover {
+  background-color: var(--accent-magenta-hover);
+}
+
+.btn-accent {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--accent-yellow);
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: background-color var(--transition-normal);
+}
+
+.btn-accent:hover {
+  background-color: var(--accent-yellow-hover);
+}
+
+/* Form Elements */
+input, textarea, select {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  transition: all var(--transition-normal);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: var(--accent-cyan);
+  border-color: transparent;
+}
+
+/* Card Styles */
+.card {
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--card);
+  box-shadow: var(--shadow-md);
+  transition: box-shadow var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Link Styles */
+a {
+  color: var(--accent-cyan);
+  transition: color var(--transition-normal);
+}
+
+a:hover {
+  color: var(--accent-cyan-hover);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  h1 {
+    font-size: 3.75rem;
+    line-height: 1;
+  }
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+@media (min-width: 768px) {
+  h2 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  h2 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+  h3 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  h3 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--foreground);
+  opacity: 0.8;
 } 

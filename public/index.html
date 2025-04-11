@@ -1,124 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/images/conison_logo_large.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Conison Technologies - Professional IT Services"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/images/conison_logo_large.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    
-    <!-- Resource hints for faster loading -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Preload critical assets -->
-    <link rel="preload" href="%PUBLIC_URL%/images/conison_logo_large.png" as="image" imagesizes="32px" />
-    <link rel="preload" href="%PUBLIC_URL%/static/css/main.chunk.css" as="style" />
-    <link rel="preload" href="%PUBLIC_URL%/static/js/main.chunk.js" as="script" />
-    
-    <!-- Inline critical CSS to eliminate render blocking -->
-    <style>
-      /* Critical styles for LCP content */
-      body { 
-        margin: 0; 
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
-        -webkit-font-smoothing: antialiased; 
-        -moz-osx-font-smoothing: grayscale;
-        letter-spacing: -0.01em;
-        color: #2d3748;
-      }
-      .text-primary { color: #8a1a9c; }
-      .text-primary-dark { color: #6a0d7a; }
-      .text-primary-light { color: #b356c2; }
-      .text-dark { color: #1a1a2e; }
-      .text-medium { color: #2d3748; }
-      .text-light { color: #4a5568; }
-      
-      .text-conison-magenta { color: #ec008c; }
-      .text-conison-cyan { color: #00adee; }
-      .text-conison-gray { color: #4a5568; }
-      .inline-block { display: inline-block; }
-      .font-bold { font-weight: 700; }
-      .font-semibold { font-weight: 600; }
-      .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-      .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
-      .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
-      .text-5xl { font-size: 3rem; line-height: 1; }
-      .text-center { text-align: center; }
-      .flex { display: flex; }
-      .items-center { align-items: center; }
-      .justify-center { justify-content: center; }
-      .flex-col { flex-direction: column; }
-      .min-h-screen { min-height: 100vh; }
-      .w-full { width: 100%; }
-      .mx-auto { margin-left: auto; margin-right: auto; }
-      .animate-spin { animation: spin 1s linear infinite; }
-      @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-      
-      /* Dark mode styles */
-      .dark { color-scheme: dark; }
-      .dark .text-white { color: #fff; }
-      .dark .bg-gray-900 { background-color: #1a202c; }
-      
-      /* Initial loading indicator */
-      #root-loading {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        width: 100%;
-        background-color: #f8fafc;
-      }
-      
-      .dark #root-loading {
-        background-color: #1a202c;
-      }
-      
-      #root-loading-spinner {
-        border: 4px solid rgba(0, 0, 0, 0.1);
-        border-left-color: #8a1a9c;
-        border-radius: 50%;
-        width: 36px;
-        height: 36px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto;
-      }
-      
-      .dark #root-loading-spinner {
-        border: 4px solid rgba(255, 255, 255, 0.1);
-        border-left-color: #b356c2;
-      }
-      
-      /* Add dimension to LCP element to prevent layout shift */
-      a.text-2xl.font-bold.text-primary {
-        display: inline-block;
-        min-height: 32px;
-        min-width: 120px;
-      }
-    </style>
-    
-    <title>Conison Technologies</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <title>Conison Commerce Hub</title>
+    <!-- Firebase SDK scripts -->
+    <script defer src="/__/firebase/11.6.0/firebase-app-compat.js"></script>
+    <script defer src="/__/firebase/11.6.0/firebase-auth-compat.js"></script>
+    <script defer src="/__/firebase/11.6.0/firebase-database-compat.js"></script>
+    <script defer src="/__/firebase/11.6.0/firebase-firestore-compat.js"></script>
+    <script defer src="/__/firebase/11.6.0/firebase-functions-compat.js"></script>
+    <script defer src="/__/firebase/11.6.0/firebase-messaging-compat.js"></script>
+    <script defer src="/__/firebase/11.6.0/firebase-storage-compat.js"></script>
+    <script defer src="/__/firebase/11.6.0/firebase-analytics-compat.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=false"></script>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <!-- Add initial loading state that will show before JS loads -->
-    <div id="root">
-      <div id="root-loading">
-        <div id="root-loading-spinner"></div>
-      </div>
-    </div>
-    
-    <!-- Defer non-critical resources -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
+    <div id="root"></div>
   </body>
-</html> 
+</html>

@@ -205,7 +205,9 @@ const QuoteRequestPage = () => {
         : 'bg-gradient-to-br from-conison-cyan to-conison-magenta'} 
         text-white relative overflow-hidden`}
       >
-        <ParticleBackground />
+        <div className="absolute inset-0 z-0 opacity-50">
+          <ParticleBackground />
+        </div>
         <div className="container mx-auto px-6 py-24 z-10 relative">
           <div className={`text-center transition-all duration-700 ease-out transform ${isPageLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
             <span className="inline-block py-1.5 px-4 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm font-medium mb-4 shadow-sm">
@@ -504,7 +506,7 @@ const QuoteRequestPage = () => {
                       </div>
                       <div>
                         <h3 className="text-xl font-semibold mb-1 dark:text-white">Phone</h3>
-                        <a href="tel:+254712345678" className="text-conison-cyan dark:text-conison-cyan hover:underline">+254 712 345 678</a>
+                        <a href="tel:+211920504110" className="text-conison-cyan dark:text-conison-cyan hover:underline">+211 920504110</a>
                       </div>
                     </div>
                     
@@ -529,7 +531,7 @@ const QuoteRequestPage = () => {
                       </div>
                       <div>
                         <h3 className="text-xl font-semibold mb-1 dark:text-white">Location</h3>
-                        <p className="text-gray-600 dark:text-gray-400">Nairobi, Kenya</p>
+                        <p className="text-gray-600 dark:text-gray-400">Juba, South Sudan</p>
                       </div>
                     </div>
                   </div>

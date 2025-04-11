@@ -107,56 +107,108 @@ const LoginPage = () => {
   };
 
   const inputClassName = (fieldName) => `
-    appearance-none relative block w-full pl-10 pr-3 py-3 border rounded-lg
-    ${errors[fieldName] ? 'border-red-500' : isDarkMode ? 'border-gray-700 focus:border-conison-magenta' : 'border-gray-300 focus:border-conison-magenta'}
-    ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-gray-900'}
-    placeholder-gray-500 
-    focus:outline-none focus:ring-2 focus:ring-conison-magenta focus:z-10
+    appearance-none relative block w-full pl-12 pr-3 py-3.5 border
+    ${errors[fieldName] 
+      ? 'border-error focus:border-error focus:ring-error/30' 
+      : isDarkMode 
+        ? 'border-dark-border focus:border-primary-purple' 
+        : 'border-light-border focus:border-primary-blue'
+    }
+    ${isDarkMode 
+      ? 'bg-dark-secondary text-dark-text-primary' 
+      : 'bg-white text-text-primary'
+    }
+    placeholder-text-tertiary dark:placeholder-dark-text-tertiary
+    rounded-lg
+    focus:outline-none focus:ring-2 focus:ring-opacity-50
     transition-all duration-200
     text-base
   `;
 
+  // Enhanced animations
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        delayChildren: 0.3,
+        staggerChildren: 0.2
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }
+  };
+
   return (
-    <div className={`min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 ${isDarkMode ? 'bg-conison.gray-900 text-white' : 'bg-conison.gray-50 text-gray-900'}`}>
+    <div className={`min-h-screen flex flex-col justify-center py-12 px-6 sm:px-6 lg:px-8 ${
+      isDarkMode ? 'bg-dark-primary' : 'bg-light'
+    }`}>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={`max-w-md w-full space-y-8 p-8 rounded-xl shadow-conison-magenta ${
-          isDarkMode ? 'bg-conison.gray-800' : 'bg-white'
-        }`}
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className={`max-w-md w-full mx-auto space-y-8 ${
+          isDarkMode 
+            ? 'bg-dark-secondary border border-dark-border' 
+            : 'bg-white border border-light-border'
+        } p-8 rounded-xl shadow-lg`}
       >
-        <div className="text-center">
-          <h1 className={`text-3xl font-extrabold ${isDarkMode ? 'text-white' : 'text-conison.gray-900'}`}>
+        <motion.div variants={itemVariants} className="text-center">
+          <h1 className={`text-3xl font-bold ${
+            isDarkMode ? 'text-dark-text-primary' : 'text-text-primary'
+          }`}>
             Welcome Back
           </h1>
-          <p className={`mt-2 text-sm ${isDarkMode ? 'text-conison.gray-400' : 'text-conison.gray-600'}`}>
-            Don't have an account?{' '}
-            <Link
-              to="/register"
-              className="font-medium text-conison-magenta hover:text-conison-magenta-dark focus:outline-none focus:underline transition-colors"
-            >
-              Sign up
-            </Link>
+          <p className={`mt-3 text-base ${
+            isDarkMode ? 'text-dark-text-secondary' : 'text-text-secondary'
+          }`}>
+            Sign in to access your account
           </p>
-        </div>
+        </motion.div>
 
         {generalError && (
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-200 p-4 rounded-lg text-sm font-medium"
+            className={`p-4 rounded-lg text-sm font-medium ${
+              isDarkMode 
+                ? 'bg-error/10 text-error border border-error/20' 
+                : 'bg-error/10 text-error border border-error/20'
+            }`}
           >
-            {generalError}
+            <div className="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              {generalError}
+            </div>
           </motion.div>
         )}
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
-          <div className="rounded-md space-y-4">
+        <motion.form 
+          variants={itemVariants}
+          className="mt-8 space-y-6" 
+          onSubmit={handleSubmit} 
+          noValidate
+        >
+          <div className="space-y-5">
             <div className="space-y-1">
+              <label 
+                htmlFor="email" 
+                className={`block text-sm font-medium ${
+                  isDarkMode ? 'text-dark-text-secondary' : 'text-text-secondary'
+                }`}
+              >
+                Email address
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className={`h-5 w-5 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
+                  <FaEnvelope className={`h-5 w-5 ${
+                    isDarkMode ? 'text-dark-text-tertiary' : 'text-text-tertiary'
+                  }`} />
                 </div>
                 <input
                   id="email"
@@ -166,23 +218,38 @@ const LoginPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className={inputClassName('email')}
-                  placeholder="Email address"
+                  placeholder="name@example.com"
                   aria-label="Email address"
                   aria-invalid={!!errors.email}
                   aria-describedby={errors.email ? "email-error" : undefined}
                 />
               </div>
               {errors.email && (
-                <p id="email-error" className="text-red-500 text-xs mt-1 ml-1">
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  id="email-error" 
+                  className="text-error text-sm mt-1 ml-1"
+                >
                   {errors.email}
-                </p>
+                </motion.p>
               )}
             </div>
             
             <div className="space-y-1">
+              <label 
+                htmlFor="password" 
+                className={`block text-sm font-medium ${
+                  isDarkMode ? 'text-dark-text-secondary' : 'text-text-secondary'
+                }`}
+              >
+                Password
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className={`h-5 w-5 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
+                  <FaLock className={`h-5 w-5 ${
+                    isDarkMode ? 'text-dark-text-tertiary' : 'text-text-tertiary'
+                  }`} />
                 </div>
                 <input
                   id="password"
@@ -191,39 +258,72 @@ const LoginPage = () => {
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`${inputClassName('password')} pr-10`}
-                  placeholder="Password"
+                  className={`${inputClassName('password')} pr-12`}
+                  placeholder="••••••••"
                   aria-label="Password"
                   aria-invalid={!!errors.password}
                   aria-describedby={errors.password ? "password-error" : undefined}
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className={`absolute inset-y-0 right-0 pr-3 flex items-center rounded-r-lg transition-colors ${
+                    isDarkMode 
+                      ? 'hover:text-primary-purple text-dark-text-tertiary' 
+                      : 'hover:text-primary-blue text-text-tertiary'
+                  }`}
                   onClick={togglePasswordVisibility}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? (
-                    <FaEyeSlash className={`h-5 w-5 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} hover:text-gray-700 dark:hover:text-gray-300`} />
-                  ) : (
-                    <FaEye className={`h-5 w-5 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} hover:text-gray-700 dark:hover:text-gray-300`} />
-                  )}
+                  <div className="p-1 hover:bg-opacity-10 hover:bg-black rounded-full">
+                    {showPassword ? (
+                      <FaEyeSlash className="h-5 w-5" />
+                    ) : (
+                      <FaEye className="h-5 w-5" />
+                    )}
+                  </div>
                 </button>
               </div>
               {errors.password && (
-                <p id="password-error" className="text-red-500 text-xs mt-1 ml-1">
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  id="password-error" 
+                  className="text-error text-sm mt-1 ml-1"
+                >
                   {errors.password}
-                </p>
+                </motion.p>
               )}
             </div>
           </div>
 
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                className={`h-4 w-4 rounded border-gray-300 text-primary-blue focus:ring-primary-blue ${
+                  isDarkMode ? 'bg-dark-tertiary border-dark-border' : ''
+                }`}
+              />
+              <label 
+                htmlFor="remember-me" 
+                className={`ml-2 block text-sm ${
+                  isDarkMode ? 'text-dark-text-secondary' : 'text-text-secondary'
+                }`}
+              >
+                Remember me
+              </label>
+            </div>
             <Link 
               to="/forgot-password"
-              className="text-sm text-conison-magenta hover:text-conison-magenta-dark focus:outline-none focus:underline transition-colors"
+              className={`text-sm font-medium ${
+                isDarkMode 
+                  ? 'text-primary-purple hover:text-primary-teal' 
+                  : 'text-primary-blue hover:text-primary-purple'
+              } focus:outline-none focus:underline transition-colors`}
             >
-              Forgot your password?
+              Forgot password?
             </Link>
           </div>
 
@@ -231,9 +331,17 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-base font-medium rounded-lg text-white bg-conison-magenta hover:bg-conison-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-conison-magenta transition-colors duration-200 ${
-                isLoading ? 'opacity-70 cursor-not-allowed' : ''
-              }`}
+              className={`group relative w-full flex justify-center py-3 px-4 text-base font-medium rounded-lg text-white 
+                ${isDarkMode 
+                  ? 'bg-primary-purple hover:bg-primary-purple/90' 
+                  : 'bg-primary-blue hover:bg-primary-blue/90'
+                }
+                focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  isDarkMode ? 'focus:ring-primary-purple' : 'focus:ring-primary-blue'
+                }
+                transition-colors duration-200 ${
+                  isLoading ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
               aria-busy={isLoading}
             >
               {isLoading ? (
@@ -247,7 +355,41 @@ const LoginPage = () => {
               Sign in
             </button>
           </div>
-        </form>
+          
+          <div className={`text-center mt-6 text-sm ${
+            isDarkMode ? 'text-dark-text-secondary' : 'text-text-secondary'
+          }`}>
+            Don't have an account?{' '}
+            <Link
+              to="/register"
+              className={`font-medium ${
+                isDarkMode 
+                  ? 'text-primary-purple hover:text-primary-teal' 
+                  : 'text-primary-blue hover:text-primary-purple'
+              } focus:outline-none focus:underline transition-colors`}
+            >
+              Sign up
+            </Link>
+          </div>
+        </motion.form>
+
+        <motion.div 
+          variants={itemVariants}
+          className="pt-5 mt-6 border-t border-gray-200 dark:border-gray-700"
+        >
+          <div className={`text-center text-xs ${
+            isDarkMode ? 'text-dark-text-tertiary' : 'text-text-tertiary'
+          }`}>
+            By signing in, you agree to our{' '}
+            <Link to="/terms" className="underline hover:text-primary-blue dark:hover:text-primary-purple">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link to="/privacy" className="underline hover:text-primary-blue dark:hover:text-primary-purple">
+              Privacy Policy
+            </Link>
+          </div>
+        </motion.div>
       </motion.div>
     </div>
   );

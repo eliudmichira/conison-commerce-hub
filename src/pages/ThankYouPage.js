@@ -25,7 +25,7 @@ const ThankYouPage = () => {
                 We've received your quote request and our team is already working on it. You'll receive a customized quote within 48 hours.
               </p>
               <p className="text-gray-700 dark:text-gray-300">
-                If you have any urgent questions, please don't hesitate to contact us directly at <a href="mailto:info@conisontechnologies.com" className="text-blue-600 dark:text-blue-400 font-medium hover:underline">info@conisontechnologies.com</a> or call us at <a href="tel:+254712345678" className="text-blue-600 dark:text-blue-400 font-medium hover:underline">+254 712 345 678</a>.
+                If you have any urgent questions, please don't hesitate to contact us directly at <a href="mailto:info@conisontechnologies.com" className="text-blue-600 dark:text-blue-400 font-medium hover:underline">info@conisontechnologies.com</a> or call us at <a href="tel:+211920504110" className="text-blue-600 dark:text-blue-400 font-medium hover:underline">+211 920504110</a>.
               </p>
             </div>
             

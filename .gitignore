@@ -27,4 +27,17 @@ yarn-error.log*
 *.sublime-workspace
 
 # Environment variables
-.env 
+.env
+.env.production
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+.firebaserc
+*.cache
+
+# Temporary files
+temp_build/
+conison-commerce-hub.zip
+-i 

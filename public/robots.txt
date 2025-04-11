@@ -1,0 +1,12 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://conison.com/sitemap.xml
+
+# Disallow admin and private routes
+Disallow: /admin/
+Disallow: /client/
+Disallow: /login/
+Disallow: /register/ 

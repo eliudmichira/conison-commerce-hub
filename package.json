@@ -62,5 +62,6 @@
   },
   "devDependencies": {
     "esm": "^3.2.25"
-  }
+  },
+  "homepage": "."
 }

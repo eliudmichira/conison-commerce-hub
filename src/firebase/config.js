@@ -1,7 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getAnalytics, isSupported } from 'firebase/analytics';
+import { getInstallations } from 'firebase/installations';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -18,6 +19,22 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Enable offline persistence for Firestore
+if (typeof window !== 'undefined') {
+  enableIndexedDbPersistence(db)
+    .catch((err) => {
+      console.warn('Firestore persistence failed to enable:', err.code);
+    });
+}
+
+// Initialize installations with error handling
+let installations = null;
+try {
+  installations = getInstallations(app);
+} catch (error) {
+  console.warn('Firebase installations failed to initialize:', error);
+}
 
 // Initialize analytics only if supported in the current environment
 let analytics = null;
@@ -39,5 +56,5 @@ if (typeof window !== 'undefined') {
   initAnalytics();
 }
 
-export { auth, db, analytics };
+export { auth, db, analytics, installations };
 export default app; 
