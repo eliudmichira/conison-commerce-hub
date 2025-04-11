@@ -1,0 +1,237 @@
+/* colors.css - Enhanced Conison Color System
+ * This file defines the comprehensive color system for the Conison brand
+ * To use along with the Tailwind configuration
+ */
+
+:root {
+  /* 
+   * MODERN COLOR SYSTEM
+   * Primary brand colors
+   */
+  
+  /* Primary Brand Colors */
+  --primary-blue: #2563eb;       /* Vibrant blue that draws attention */
+  --primary-purple: #8b5cf6;     /* Rich purple for gradient effects */
+  --primary-teal: #0d9488;       /* Teal for accents and highlights */
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(to right, var(--primary-blue), var(--primary-purple));
+  --gradient-secondary: linear-gradient(to right, var(--primary-teal), var(--primary-blue));
+  
+  /* Text Colors */
+  --text-primary: #111827;       /* Near-black for headings and important text */
+  --text-secondary: #374151;     /* Dark gray for body text */
+  --text-tertiary: #6b7280;      /* Medium gray for less important text */
+  
+  /* Background Colors */
+  --bg-light: #ffffff;           /* Pure white */
+  --bg-off-white: #f9fafb;       /* Off-white for section backgrounds */
+  --bg-light-accent: #f3f4f6;    /* Light gray for cards and accent areas */
+  
+  /* Dark Mode Colors */
+  --dark-bg-primary: #121212;
+  --dark-bg-secondary: #1E1E1E;
+  --dark-bg-tertiary: #2D2D2D;
+  --dark-text-primary: #FFFFFF;
+  --dark-text-secondary: #B0B0B0;
+  --dark-text-tertiary: #757575;
+  --dark-border: #3A3A3A;
+  --dark-hover: #2A2A2A;
+
+  /* Button Styles */
+  --btn-border-radius: 9999px;
+  --btn-transition: all 0.3s;
+  --btn-primary-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+  --btn-primary-hover-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+  
+  /* Card Styles */
+  --card-border-radius: 16px;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --card-hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --card-border: 1px solid rgba(0, 0, 0, 0.05);
+  --card-dark-border: 1px solid rgba(255, 255, 255, 0.05);
+  
+  /* Conison Legacy Colors (updated to modern palette) */
+  --conison-cyan: #00BCD4;
+  --conison-magenta: #FF4081;
+  --conison-yellow: #FFEB3B;
+  --conison-gray: var(--text-secondary);
+  --conison-white: var(--bg-light);
+  --conison-black: var(--text-primary);
+  
+  /* Transparent variants for overlays, shadows, etc. */
+  --conison-magenta-10: rgba(139, 92, 246, 0.1);  /* Based on primary-purple */
+  --conison-magenta-20: rgba(139, 92, 246, 0.2);
+  --conison-magenta-50: rgba(139, 92, 246, 0.5);
+  
+  --conison-cyan-10: rgba(37, 99, 235, 0.1);  /* Based on primary-blue */
+  --conison-cyan-20: rgba(37, 99, 235, 0.2);
+  --conison-cyan-50: rgba(37, 99, 235, 0.5);
+  
+  --conison-yellow-10: rgba(13, 148, 136, 0.1);  /* Based on primary-teal */
+  --conison-yellow-20: rgba(13, 148, 136, 0.2);
+  --conison-yellow-50: rgba(13, 148, 136, 0.5);
+
+  /* Accent Colors with Hover States */
+  --accent-yellow: #FFEB3B;
+  --accent-yellow-hover: #FDD835;
+  --accent-cyan: #00BCD4;
+  --accent-cyan-hover: #0097A7;
+  --accent-magenta: #FF4081;
+  --accent-magenta-hover: #D81B60;
+
+  /* Status Colors */
+  --success: #4CAF50;
+  --error: #F44336;
+  --warning: #FFC107;
+  --info: #2196F3;
+
+  /* Shadow Variables */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  /* Dark Mode Shadows */
+  --dark-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --dark-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --dark-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  --dark-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+
+  /* Transitions */
+  --transition-fast: 150ms;
+  --transition-normal: 300ms;
+  --transition-slow: 500ms;
+
+  /* Light Mode Colors */
+  --light-bg-primary: #FFFFFF;
+  --light-bg-secondary: #F8FAFC;
+  --light-bg-tertiary: #F1F5F9;
+  --light-text-primary: #0F172A;
+  --light-text-secondary: #334155;
+  --light-text-tertiary: #64748B;
+  --light-border: #E2E8F0;
+  --light-hover: #F1F5F9;
+  --light-nav-bg: rgba(255, 255, 255, 0.95);
+  --light-nav-border: rgba(226, 232, 240, 0.8);
+  --light-card-bg: #FFFFFF;
+  --light-card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  /* Dark Mode Colors */
+  --dark-bg-primary: #121212;
+  --dark-bg-secondary: #1E1E1E;
+  --dark-bg-tertiary: #2D2D2D;
+  --dark-text-primary: #FFFFFF;
+  --dark-text-secondary: #B0B0B0;
+  --dark-text-tertiary: #757575;
+  --dark-border: #3A3A3A;
+  --dark-hover: #2A2A2A;
+  --dark-nav-bg: rgba(18, 18, 18, 0.95);
+  --dark-nav-border: rgba(58, 58, 58, 0.8);
+  --dark-card-bg: #1E1E1E;
+  --dark-card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] {
+  --bg-primary: var(--dark-bg-primary);
+  --bg-secondary: var(--dark-bg-secondary);
+  --bg-tertiary: var(--dark-bg-tertiary);
+  --text-primary: var(--dark-text-primary);
+  --text-secondary: var(--dark-text-secondary);
+  --text-tertiary: var(--dark-text-tertiary);
+  --border-color: var(--dark-border);
+  --hover-color: var(--dark-hover);
+  --nav-bg: var(--dark-nav-bg);
+  --nav-border: var(--dark-nav-border);
+  --card-bg: var(--dark-card-bg);
+  --card-shadow: var(--dark-card-shadow);
+  --shadow-sm: var(--dark-shadow-sm);
+  --shadow-md: var(--dark-shadow-md);
+  --shadow-lg: var(--dark-shadow-lg);
+  --shadow-xl: var(--dark-shadow-xl);
+}
+
+/* Light Mode Overrides */
+[data-theme="light"] {
+  --bg-primary: var(--light-bg-primary);
+  --bg-secondary: var(--light-bg-secondary);
+  --bg-tertiary: var(--light-bg-tertiary);
+  --text-primary: var(--light-text-primary);
+  --text-secondary: var(--light-text-secondary);
+  --text-tertiary: var(--light-text-tertiary);
+  --border-color: var(--light-border);
+  --hover-color: var(--light-hover);
+  --nav-bg: var(--light-nav-bg);
+  --nav-border: var(--light-nav-border);
+  --card-bg: var(--light-card-bg);
+  --card-shadow: var(--light-card-shadow);
+}
+
+/* Button Styles */
+.btn-primary {
+  background-image: var(--gradient-primary);
+  color: white;
+  box-shadow: var(--btn-primary-shadow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--btn-primary-hover-shadow);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary-blue);
+  border: 2px solid var(--primary-blue);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(37, 99, 235, 0.1);
+}
+
+/* Card Styles */
+.card {
+  background: var(--bg-light);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-shadow);
+  border: var(--card-border);
+  transition: var(--btn-transition);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-hover-shadow);
+}
+
+.dark .card {
+  background: var(--dark-bg-secondary);
+  border: var(--card-dark-border);
+}
+
+/* Navigation Styles */
+.nav-link {
+  color: var(--text-secondary);
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.nav-link:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background: var(--gradient-primary);
+  transition: width 0.3s;
+}
+
+.nav-link:hover:after,
+.nav-link.active:after {
+  width: 100%;
+}
+
+.dark .nav-link {
+  color: var(--dark-text-secondary);
+}

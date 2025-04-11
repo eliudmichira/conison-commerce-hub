@@ -1,0 +1,73 @@
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--text-medium);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-dark);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+p, li {
+  font-weight: 400;
+}
+
+/* Text size and spacing adjustments */
+.text-xs {
+  font-size: 0.8125rem;
+}
+
+.text-sm {
+  font-size: 0.925rem;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+}
+
+/* Improved button text */
+button, 
+.btn {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* Link styling */
+a {
+  color: var(--primary);
+  transition: color 0.15s ease-out;
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+/* Form element typography */
+input, 
+select, 
+textarea,
+.form-input,
+.form-select,
+.form-textarea {
+  font-size: 0.925rem;
+  color: var(--text-dark);
+} 
