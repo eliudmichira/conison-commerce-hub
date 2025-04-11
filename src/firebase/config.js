@@ -28,45 +28,68 @@ if (!firebaseConfig.apiKey) {
   firebaseConfig.measurementId = "G-NH5M5QXRX8";
 }
 
+// Check if we're in development (use development mode if NODE_ENV isn't explicitly set)
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Enable offline persistence for Firestore
-if (typeof window !== 'undefined') {
-  enableIndexedDbPersistence(db)
-    .catch((err) => {
-      console.warn('Firestore persistence failed to enable:', err.code);
-    });
-}
-
-// Initialize installations with error handling
-let installations = null;
-try {
-  installations = getInstallations(app);
-} catch (error) {
-  console.warn('Firebase installations failed to initialize:', error);
-}
-
-// Initialize analytics only if supported in the current environment
+let app;
+let auth;
+let db;
 let analytics = null;
+let installations = null;
 
-// Check if analytics is supported before initializing
-const initAnalytics = async () => {
-  try {
-    const analyticsSupported = await isSupported();
-    if (analyticsSupported) {
-      analytics = getAnalytics(app);
-    }
-  } catch (error) {
-    console.error("Analytics not supported:", error);
+try {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  
+  // Enable offline persistence for Firestore only in browser environment
+  if (typeof window !== 'undefined') {
+    enableIndexedDbPersistence(db)
+      .catch((err) => {
+        if (err.code === 'failed-precondition') {
+          console.warn('Firestore persistence failed: Multiple tabs open');
+        } else if (err.code === 'unimplemented') {
+          console.warn('Firestore persistence not supported in this browser');
+        } else {
+          console.warn('Firestore persistence failed to enable:', err.code);
+        }
+      });
   }
-};
 
-// Only run in browser environment
-if (typeof window !== 'undefined') {
-  initAnalytics();
+  // Initialize installations with error handling
+  try {
+    installations = getInstallations(app);
+  } catch (error) {
+    console.warn('Firebase installations failed to initialize:', error);
+  }
+
+  // Initialize analytics only if supported and not in development mode unless explicitly enabled
+  const initAnalytics = async () => {
+    try {
+      const analyticsSupported = await isSupported();
+      const shouldEnableAnalytics = analyticsSupported && 
+        (process.env.REACT_APP_ENABLE_ANALYTICS_IN_DEV === 'true' || !isDevelopment);
+      
+      if (shouldEnableAnalytics) {
+        analytics = getAnalytics(app);
+        console.log('Firebase Analytics initialized successfully');
+      } else if (isDevelopment) {
+        console.log('Firebase Analytics disabled in development mode');
+      }
+    } catch (error) {
+      console.log('Firebase Analytics initialization skipped:', error.message);
+    }
+  };
+
+  // Only run in browser environment
+  if (typeof window !== 'undefined') {
+    initAnalytics().catch(err => {
+      console.log('Analytics initialization error (non-critical):', err.message);
+    });
+  }
+} catch (error) {
+  console.error('Firebase initialization error:', error);
 }
 
 export { auth, db, analytics, installations };

@@ -1,6 +1,7 @@
 // App.js
 import React, { useEffect, memo, useMemo } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import checkFirebaseConfig from './utils/checkFirebaseConfig';
 
 // Contexts
 import { DarkModeProvider } from './context/DarkModeContext';
@@ -77,6 +78,13 @@ const DashboardRedirect = () => {
 const AppContent = () => {
   const location = useLocation();
   const { pathname } = location;
+  
+  // Check Firebase configuration on app startup
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      checkFirebaseConfig();
+    }
+  }, []);
   
   // Determine if we're on a dashboard route to hide navbar/footer
   const isDashboardRoute = useMemo(() => 
