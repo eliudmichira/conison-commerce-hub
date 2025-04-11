@@ -52,7 +52,7 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: Facebook, url: 'https://facebook.com/conison', label: 'Facebook' },
+    { icon: Facebook, url: 'https://web.facebook.com/Conisontech213?_rdc=1&_rdr#', label: 'Facebook' },
     { icon: Twitter, url: 'https://twitter.com/conison', label: 'Twitter' },
     { icon: Instagram, url: 'https://instagram.com/conison', label: 'Instagram' },
     { icon: Linkedin, url: 'https://linkedin.com/company/conison', label: 'LinkedIn' }
@@ -60,8 +60,8 @@ const Footer = () => {
 
   const contactInfo = [
     { icon: Mail, text: 'info@conisontechnologies.com', type: 'email', label: 'Email us' },
-    { icon: Phone, text: '+211 92 668 5125', type: 'tel', label: 'Call us' },
-    { icon: MapPin, text: 'Juba Town, Near Baping Insurance Company, South Sudan', type: 'address', label: 'Our location' },
+    { icon: Phone, text: '+211 920504110', type: 'tel', label: 'Call us' },
+    { icon: MapPin, text: 'Juba, South Sudan', type: 'address', label: 'Our location' },
     { icon: Clock, text: 'Mon-Fri: 9:00 AM - 6:00 PM', type: 'hours', label: 'Working hours' }
   ];
 
@@ -128,10 +128,12 @@ const Footer = () => {
           {/* Company Info */}
           <div>
             <div className="mb-6">
-              <Link to="/">
-                <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-conison-magenta">
-                  Conison
-                </h3>
+              <Link to="/" className="flex items-center">
+                <img 
+                  src="/conison_transparent_upscaled.png" 
+                  alt="Conison" 
+                  className="h-40" 
+                />
               </Link>
             </div>
             <p className={`mb-6 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -256,42 +258,52 @@ const Footer = () => {
             </ul>
           </div>
         </div>
+      </div>
 
-        {/* Bottom Area with Copyright and Legal */}
-        <div className={`mt-12 pt-8 border-t ${
-          isDarkMode ? 'border-gray-800' : 'border-gray-200'
-        } flex flex-col md:flex-row justify-between items-center`}>
-          <div className="text-center md:text-left mb-4 md:mb-0">
-            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              © {currentYear} Conison. All rights reserved.
+      {/* Bottom Bar */}
+      <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} py-4 border-t ${
+        isDarkMode ? 'border-gray-700' : 'border-gray-200'
+      }`}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className={`text-sm ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-500'
+            }`}>
+              © {currentYear} Conison Technologies. All rights reserved.
             </p>
-          </div>
-          
-          <div className="flex space-x-6">
-            {footerLinks.support.slice(0, 3).map((link, index) => (
+            <div className="flex space-x-4 mt-4 md:mt-0">
               <Link
-                key={index}
-                to={link.path}
+                to="/privacy"
                 className={`text-sm hover:text-conison-magenta transition-colors ${
                   isDarkMode ? 'text-gray-400' : 'text-gray-500'
                 }`}
               >
-                {link.name}
+                Privacy Policy
               </Link>
-            ))}
+              <Link
+                to="/terms"
+                className={`text-sm hover:text-conison-magenta transition-colors ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                }`}
+              >
+                Terms of Service
+              </Link>
+            </div>
           </div>
         </div>
       </div>
-      
-      {/* Back to top button */}
+
+      {/* Scroll to Top Button */}
       <motion.button
         onClick={scrollToTop}
+        className={`fixed bottom-8 right-8 p-3 rounded-full shadow-lg ${
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        } hover:bg-conison-magenta hover:text-white transition-colors duration-200`}
         whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        className="fixed bottom-6 right-6 p-3 rounded-full bg-conison-magenta text-white shadow-lg z-50"
-        aria-label="Back to top"
+        whileTap={{ scale: 0.9 }}
+        aria-label="Scroll to top"
       >
-        <ArrowUp className="w-5 h-5" />
+        <ArrowUp className="w-6 h-6" />
       </motion.button>
     </footer>
   );

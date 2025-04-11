@@ -1,0 +1,19 @@
+/* Replace SVG background patterns with gradients */
+.bg-cta-pattern-dark {
+  background-image: linear-gradient(to right, #1a202c, #2d3748);
+  background-repeat: repeat;
+  background-size: 20px 20px;
+}
+
+.bg-cta-pattern-light {
+  background-image: linear-gradient(to right, #f7fafc, #edf2f7); 
+  background-repeat: repeat;
+  background-size: 20px 20px;
+}
+
+.bg-grid-pattern {
+  background-image: linear-gradient(45deg, #f1f1f1 25%, transparent 25%, transparent 75%, #f1f1f1 75%, #f1f1f1),
+                    linear-gradient(45deg, #f1f1f1 25%, transparent 25%, transparent 75%, #f1f1f1 75%, #f1f1f1);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+} 

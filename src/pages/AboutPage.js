@@ -97,6 +97,51 @@ const AboutPage = () => {
     }
   ];
 
+  const teamMembers = [
+    {
+      name: 'John Doe',
+      role: 'CEO & Founder',
+      image: 'https://cdn.pixabay.com/photo/2017/08/01/01/33/people-2563491_1280.jpg',
+      description: 'Visionary leader with 15+ years of experience in technology and business development.'
+    },
+    {
+      name: 'Jane Smith',
+      role: 'CTO',
+      image: 'https://cdn.pixabay.com/photo/2017/08/01/01/33/people-2563491_1280.jpg',
+      description: 'Technical expert specializing in software architecture and innovation.'
+    },
+    {
+      name: 'Mike Johnson',
+      role: 'Lead Developer',
+      image: 'https://cdn.pixabay.com/photo/2017/08/01/01/33/people-2563491_1280.jpg',
+      description: 'Full-stack developer with expertise in modern web technologies.'
+    },
+    {
+      name: 'Sarah Williams',
+      role: 'UX Designer',
+      image: 'https://cdn.pixabay.com/photo/2017/08/01/01/33/people-2563491_1280.jpg',
+      description: 'Creative designer focused on user experience and interface design.'
+    }
+  ];
+
+  const officeImages = [
+    {
+      src: 'https://cdn.pixabay.com/photo/2017/08/01/01/33/people-2563491_1280.jpg',
+      alt: 'Our modern office space',
+      caption: 'Innovative Workspace'
+    },
+    {
+      src: 'https://cdn.pixabay.com/photo/2017/08/01/01/33/people-2563491_1280.jpg',
+      alt: 'Team collaboration area',
+      caption: 'Collaboration Hub'
+    },
+    {
+      src: 'https://cdn.pixabay.com/photo/2017/08/01/01/33/people-2563491_1280.jpg',
+      alt: 'Meeting room',
+      caption: 'Creative Meetings'
+    }
+  ];
+
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-conison.gray-900' : 'bg-white'}`}>
       {/* Hero Section */}
@@ -126,73 +171,35 @@ const AboutPage = () => {
       </section>
 
       {/* Our Story Section */}
-      <section className="py-24 container mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-6"
-          >
-            <div className="inline-block">
-              <h2 className="text-sm font-bold text-primary-teal uppercase tracking-wider mb-2">Our Story</h2>
-              <div className="h-1 w-20 bg-primary-teal rounded-full mb-6"></div>
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-bold mb-6">Our Story</h2>
+              <p className={`text-lg mb-6 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Founded in 2020, Conison Technologies has grown from a small startup to a leading technology solutions provider. Our journey has been marked by innovation, dedication, and a commitment to excellence.
+              </p>
+              <p className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                We believe in creating technology that makes a difference, solving real-world problems, and helping businesses thrive in the digital age.
+              </p>
             </div>
-            
-            <h3 className="text-3xl md:text-4xl font-bold">Driving Digital Transformation</h3>
-            
-            <p className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              {companyInfo.description}
-            </p>
-            
-            <p className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              {companyInfo.founded}, we've been dedicated to helping businesses adapt to the digital era with comprehensive tech solutions tailored to their unique needs.
-            </p>
-            
-            <div className="py-4">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                  <Target className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+            <div className="grid grid-cols-2 gap-4">
+              {officeImages.map((image, index) => (
+                <div key={index} className="relative group overflow-hidden rounded-lg">
+                  <img 
+                    src={image.src} 
+                    alt={image.alt}
+                    className="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute bottom-4 left-4 text-white">
+                      <p className="text-sm">{image.caption}</p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-xl mb-1">Our Mission</h4>
-                  <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{companyInfo.mission}</p>
-                </div>
-              </div>
+              ))}
             </div>
-            
-            <Link 
-              to="/portfolio" 
-              className="inline-flex items-center text-conison-magenta hover:text-purple-700 font-semibold transition-colors group"
-            >
-              <span>View Our Success Stories</span>
-              <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="relative"
-          >
-            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
-              <img 
-                src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
-                alt="Conison Team Collaboration" 
-                className="w-full h-auto"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end">
-                <div className="p-6">
-                  <div className="text-white text-lg font-semibold">Collaborative Excellence</div>
-                  <div className="text-blue-200 text-sm">Our team working together to deliver outstanding results</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="absolute -bottom-10 -right-10 z-0 w-64 h-64 bg-gradient-to-r from-conison-magenta to-blue-600 rounded-full blur-3xl opacity-20"></div>
-            <div className="absolute -top-10 -left-10 z-0 w-64 h-64 bg-gradient-to-r from-yellow-400 to-orange-600 rounded-full blur-3xl opacity-20"></div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -289,110 +296,33 @@ const AboutPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Team Member 1 */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className={`rounded-xl overflow-hidden shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}
-            >
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" 
-                  alt="John Doe - CEO" 
-                  className="w-full h-64 object-cover object-center"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-              </div>
-              <div className="p-6">
-                <h4 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>John Doe</h4>
-                <p className="text-conison-magenta font-medium mb-3">Chief Executive Officer</p>
-                <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} mb-4`}>
-                  With over 15 years of experience in the tech industry, John leads our company with vision and strategic insight.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Team Member 2 */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className={`rounded-xl overflow-hidden shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}
-            >
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80" 
-                  alt="Jane Smith - CTO" 
-                  className="w-full h-64 object-cover object-center"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-              </div>
-              <div className="p-6">
-                <h4 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Jane Smith</h4>
-                <p className="text-conison-magenta font-medium mb-3">Chief Technology Officer</p>
-                <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} mb-4`}>
-                  Jane brings deep technical expertise and a forward-thinking approach to guiding our technology development.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Team Member 3 */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className={`rounded-xl overflow-hidden shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}
-            >
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" 
-                  alt="Michael Johnson - Lead Developer" 
-                  className="w-full h-64 object-cover object-center"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-              </div>
-              <div className="p-6">
-                <h4 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Michael Johnson</h4>
-                <p className="text-conison-magenta font-medium mb-3">Lead Developer</p>
-                <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} mb-4`}>
-                  Michael's coding expertise and problem-solving skills help us build robust and scalable solutions for our clients.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Team Member 4 */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className={`rounded-xl overflow-hidden shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}
-            >
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" 
-                  alt="Sarah Williams - Design Director" 
-                  className="w-full h-64 object-cover object-center"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-              </div>
-              <div className="p-6">
-                <h4 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Sarah Williams</h4>
-                <p className="text-conison-magenta font-medium mb-3">Design Director</p>
-                <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} mb-4`}>
-                  Sarah's creative vision and user-centered approach ensure our products deliver exceptional experiences.
-                </p>
-              </div>
-            </motion.div>
-          </div>
-
-          <div className="text-center mt-12">
-            <Link 
-              to="/login" 
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-blue hover:bg-primary-blue/90 transition-colors"
-            >
-              Members Login
-            </Link>
+            {teamMembers.map((member, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className={`rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all ${
+                  isDarkMode ? 'bg-gray-800 hover:bg-gray-750' : 'bg-white hover:bg-gray-50'
+                }`}
+              >
+                <div className="relative h-64">
+                  <img 
+                    src={member.image} 
+                    alt={member.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-2">{member.name}</h3>
+                  <p className={`text-primary-teal mb-4`}>{member.role}</p>
+                  <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {member.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

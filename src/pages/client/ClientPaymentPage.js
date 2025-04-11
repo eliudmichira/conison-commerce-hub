@@ -8,11 +8,12 @@ import { FaArrowLeft, FaCheckCircle, FaExclamationCircle, FaFileInvoiceDollar } 
 const ClientPaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { quotes, payments, addPayment } = useClientData();
+  const { quotes, addPayment } = useClientData();
   const [quote, setQuote] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   useEffect(() => {
     // Parse query parameters to get the quote ID
@@ -40,24 +41,43 @@ const ClientPaymentPage = () => {
     setLoading(false);
   }, [location.search, quotes]);
 
+  useEffect(() => {
+    if (quote && quote.status !== 'approved') {
+      setError('This quote is not approved for payment. Please contact support if you believe this is an error.');
+    }
+  }, [quote]);
+
   const handlePaymentSuccess = async (paymentData) => {
-    // Augment payment data with quote ID
-    const fullPaymentData = {
-      ...paymentData,
-      quoteId: quote.id,
-      status: 'completed',
-      date: new Date().toISOString()
-    };
-    
     try {
+      // Validate payment data
+      if (!paymentData.transactionId || !paymentData.amount) {
+        throw new Error('Invalid payment data received');
+      }
+
+      // Augment payment data with quote ID and additional details
+      const fullPaymentData = {
+        ...paymentData,
+        quoteId: quote.id,
+        status: 'completed',
+        date: new Date().toISOString(),
+        service: quote.service,
+        customerEmail: quote.contactEmail,
+        customerName: quote.contactName
+      };
+      
       // Add payment to the system
       await addPayment(fullPaymentData);
       
+      // Store payment receipt URL in localStorage for receipt page
+      if (paymentData.receiptUrl) {
+        localStorage.setItem(`payment_receipt_${paymentData.transactionId}`, paymentData.receiptUrl);
+      }
+      
       // Update status in URL for a clean way to show success state
-      navigate(`/client/payments/make?quoteId=${quote.id}&status=success`);
+      navigate(`/client/payments/make?quoteId=${quote.id}&status=success&transactionId=${paymentData.transactionId}`);
     } catch (error) {
       console.error('Error registering payment:', error);
-      setError('There was an error processing your payment. Please try again.');
+      setError(error.message || 'There was an error processing your payment. Please try again.');
     }
   };
 
@@ -204,6 +224,7 @@ const ClientPaymentPage = () => {
               currency="USD"
               onSuccess={handlePaymentSuccess}
               onCancel={handlePaymentCancel}
+              onProcessingChange={setIsProcessingPayment}
             />
           </div>
         </motion.div>

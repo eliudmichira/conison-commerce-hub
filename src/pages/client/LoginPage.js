@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useDarkMode } from '../../context/DarkModeContext';
 import { useAuth } from '../../context/AuthContext';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import InputField from '../../components/auth/InputField';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
 const LoginPage = () => {
-  const { isDarkMode } = useDarkMode();
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -84,19 +82,19 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="px-6 py-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Welcome Back</h1>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
+            <h1 className="text-3xl font-bold text-gray-800">Welcome Back</h1>
+            <p className="text-gray-600 mt-2">
               Log in to access your dashboard
             </p>
           </div>
           
           {/* Display error message */}
           {loginError && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-md text-sm">
+            <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md text-sm">
               {loginError}
             </div>
           )}
@@ -116,7 +114,7 @@ const LoginPage = () => {
             {/* Password input */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password
                 </label>
                 <button
@@ -143,7 +141,7 @@ const LoginPage = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-conison-magenta focus:border-conison-magenta bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-conison-magenta focus:border-conison-magenta bg-white text-gray-900"
                   placeholder="••••••••"
                   required
                 />
@@ -159,7 +157,7 @@ const LoginPage = () => {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300 rounded"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                 Remember me
               </label>
               <Link 
@@ -193,7 +191,7 @@ const LoginPage = () => {
               Don't have an account?{" "}
               <Link
                 to="/signup"
-                className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                className="font-medium text-primary-600 hover:underline"
               >
                 Sign up
               </Link>

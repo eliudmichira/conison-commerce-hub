@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDarkMode } from '../../context/DarkModeContext';
-import { FaChartLine, FaSearch, FaHashtag, FaEnvelope, FaAd, FaBullhorn } from 'react-icons/fa';
+import { FaSearch, FaHashtag, FaEnvelope, FaAd, FaBullhorn } from 'react-icons/fa';
 import ParticleBackground from '../../components/ParticleBackground';
 
 const DigitalMarketingPage = () => {

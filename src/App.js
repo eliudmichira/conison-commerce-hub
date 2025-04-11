@@ -26,6 +26,8 @@ import ThankYouPage from './pages/ThankYouPage';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/client/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
 
 // Service Pages
 import WebDevelopmentPage from './pages/services/WebDevelopmentPage';
@@ -37,6 +39,7 @@ import CybersecurityPage from './pages/services/CybersecurityPage';
 import DigitalMarketingPage from './pages/services/DigitalMarketingPage';
 import GraphicDesignPage from './pages/services/GraphicDesignPage';
 import MobileDevelopmentPage from './pages/services/MobileDevelopmentPage';
+import BrandingPage from './pages/services/BrandingPage';
 
 // Client Portal Pages
 import ClientDashboard from './pages/client/Dashboard';
@@ -105,6 +108,7 @@ const AppContent = () => {
           <Route path="/services/digital-marketing" element={<DigitalMarketingPage />} />
           <Route path="/services/graphic-design" element={<GraphicDesignPage />} />
           <Route path="/services/mobile-development" element={<MobileDevelopmentPage />} />
+          <Route path="/services/branding" element={<BrandingPage />} />
           
           {/* Generic service route as a fallback */}
           <Route path="/services/:id" element={<ServiceDetailPage />} />
@@ -116,6 +120,8 @@ const AppContent = () => {
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms-of-service" element={<TermsOfServicePage />} />
 
           {/* Client Portal Routes */}
           <Route 

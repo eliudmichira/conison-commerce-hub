@@ -48,8 +48,8 @@ const ContactPage = () => {
     {
       icon: FaPhone,
       title: 'Phone',
-      content: '+211 92 668 5125',
-      link: 'tel:+211926685125'
+      content: '+211 920504110',
+      link: 'tel:+211920504110'
     },
     {
       icon: FaEnvelope,
@@ -60,8 +60,8 @@ const ContactPage = () => {
     {
       icon: FaMapMarkerAlt,
       title: 'Address',
-      content: 'Juba Town, Near Baping Insurance Company, South Sudan',
-      link: 'https://maps.google.com/?q=Baping+Insurance+Company+Juba+South+Sudan'
+      content: 'Juba, South Sudan',
+      link: 'https://maps.google.com/?q=Juba+South+Sudan'
     },
     {
       icon: FaClock,

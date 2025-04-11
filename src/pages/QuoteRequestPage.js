@@ -504,7 +504,7 @@ const QuoteRequestPage = () => {
                       </div>
                       <div>
                         <h3 className="text-xl font-semibold mb-1 dark:text-white">Phone</h3>
-                        <a href="tel:+254712345678" className="text-conison-cyan dark:text-conison-cyan hover:underline">+254 712 345 678</a>
+                        <a href="tel:+211920504110" className="text-conison-cyan dark:text-conison-cyan hover:underline">+211 920504110</a>
                       </div>
                     </div>
                     
@@ -529,7 +529,7 @@ const QuoteRequestPage = () => {
                       </div>
                       <div>
                         <h3 className="text-xl font-semibold mb-1 dark:text-white">Location</h3>
-                        <p className="text-gray-600 dark:text-gray-400">Nairobi, Kenya</p>
+                        <p className="text-gray-600 dark:text-gray-400">Juba, South Sudan</p>
                       </div>
                     </div>
                   </div>

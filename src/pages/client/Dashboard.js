@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUsers, FaFileInvoiceDollar, FaUserClock, FaExclamationTriangle } from 'react-icons/fa';
+import { FaUsers, FaFileInvoiceDollar, FaUserClock, FaExclamationTriangle, FaProjectDiagram, FaCreditCard, FaMoneyBillWave } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { useClientData } from '../../context/ClientDataContext';
-import { createQuote, createProject, createPayment } from '../../api/clientApi';
+// Will be used for future client actions
+// import { createQuote, createProject, createPayment } from '../../api/clientApi';
 
 const Dashboard = () => {
   const { currentUser, userData } = useAuth();
@@ -167,7 +168,7 @@ const Dashboard = () => {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-600 dark:text-gray-400">Active Projects</h3>
-            <FaFileInvoiceDollar className="text-blue-500 text-xl" />
+            <FaProjectDiagram className="text-blue-500 text-xl" />
           </div>
           <p className="text-2xl font-bold">{stats.activeProjects}</p>
           <div className="mt-2">
@@ -180,7 +181,7 @@ const Dashboard = () => {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-600 dark:text-gray-400">Total Paid</h3>
-            <FaFileInvoiceDollar className="text-green-500 text-xl" />
+            <FaMoneyBillWave className="text-green-500 text-xl" />
           </div>
           <p className="text-2xl font-bold">${stats.totalPaid.toLocaleString()}</p>
           <div className="mt-2">
@@ -193,7 +194,7 @@ const Dashboard = () => {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-600 dark:text-gray-400">Pending Payments</h3>
-            <FaFileInvoiceDollar className="text-yellow-500 text-xl" />
+            <FaCreditCard className="text-yellow-500 text-xl" />
           </div>
           <p className="text-2xl font-bold">${stats.pendingPayments.toLocaleString()}</p>
           <div className="mt-2">

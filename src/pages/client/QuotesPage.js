@@ -4,7 +4,7 @@ import { useClientData } from '../../context/ClientDataContext';
 import { FaCheck, FaHourglassHalf, FaTimesCircle, FaFileDownload } from 'react-icons/fa';
 
 const QuotesPage = () => {
-  const { quotes, loading, updateQuote } = useClientData();
+  const { quotes, loading, updateQuoteStatus } = useClientData();
   const [filter, setFilter] = useState('all');
 
   if (loading) {
@@ -24,7 +24,7 @@ const QuotesPage = () => {
   });
 
   const handleAcceptQuote = (quoteId) => {
-    updateQuote(quoteId, { status: 'approved' });
+    updateQuoteStatus(quoteId, 'approved');
   };
 
   return (
