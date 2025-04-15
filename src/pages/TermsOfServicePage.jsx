@@ -89,8 +89,8 @@ const TermsOfServicePage = () => {
               For any questions regarding these Terms of Service, please contact us at:
             </p>
             <p className="mt-4">
-              Email: legal@conisontechnologies.com<br />
-              Phone: +211 920504110<br />
+              Email: info@conisontechnologies.com<br />
+              Phone: +211 920 504 110<br />
               Address: Juba, South Sudan
             </p>
           </section>

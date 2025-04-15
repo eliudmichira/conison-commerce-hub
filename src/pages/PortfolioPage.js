@@ -17,7 +17,8 @@ const categories = [
   { id: 'mobile-development', name: 'Mobile Development' },
   { id: 'ecommerce', name: 'E-commerce' },
   { id: 'ui-ux', name: 'UI/UX Design' },
-  { id: 'data', name: 'Data & Analytics' }
+  { id: 'data', name: 'Data & Analytics' },
+  { id: 'graphic-design', name: 'Graphic Design' }
 ];
 
 // Years for filtering
@@ -25,6 +26,264 @@ const years = ['All', '2024', '2023', '2022', '2021'];
 
 // Comprehensive list of projects
 const portfolioProjects = [
+  {
+    id: 'spire-branding',
+    title: 'Spire Global Brand Identity',
+    description: 'Comprehensive brand identity design for Spire Global, a leading space-to-cloud analytics company.',
+    longDescription: 'We developed a complete brand identity system for Spire Global, including logo design, color palette, typography, and brand guidelines. The design reflects their innovative approach to space technology and data analytics, creating a cohesive visual language across all their platforms.',
+    category: 'graphic-design',
+    image: '/images/portfolio/Sketch/41841682_239108683394229_3387513046489366528_n.jpg',
+    icon: FaPalette,
+    client: 'Spire Global',
+    year: 2024,
+    duration: '3 months',
+    teamSize: 4,
+    featured: true,
+    technologies: ['Adobe Illustrator', 'Adobe Photoshop', 'Brand Guidelines', 'Typography'],
+    projectUrl: 'https://spire.com',
+    stats: {
+      recognition: '+75%',
+      engagement: '+60%',
+      conversion: '+45%'
+    },
+    testimonial: {
+      quote: "The new brand identity perfectly captures our vision of making space accessible and useful for everyone.",
+      author: "Marketing Director",
+      position: "Spire Global"
+    },
+    images: [
+      {
+        src: '/images/portfolio/Sketch/41841682_239108683394229_3387513046489366528_n.jpg',
+        alt: 'Spire Global Logo Design',
+        caption: 'Main logo design'
+      },
+      {
+        src: '/images/portfolio/Sketch/41838932_239108166727614_3985199368255832064_n.jpg',
+        alt: 'Brand Elements',
+        caption: 'Brand elements and patterns'
+      },
+      {
+        src: '/images/portfolio/Sketch/41933150_239107830060981_4661905305787957248_n.jpg',
+        alt: 'Typography System',
+        caption: 'Typography system'
+      }
+    ]
+  },
+  {
+    id: 'limk-branding',
+    title: 'LIMK Corporate Identity',
+    description: 'Complete corporate identity package for LIMK, a leading metal construction company.',
+    longDescription: 'We created a comprehensive corporate identity system for LIMK, including business cards, letterheads, stamps, and marketing materials. The design reflects their expertise in metal constructions while maintaining a professional and modern aesthetic.',
+    category: 'graphic-design',
+    image: '/images/portfolio/limk/Business cards.jpeg',
+    icon: FaPalette,
+    client: 'LIMK',
+    year: 2024,
+    duration: '2 months',
+    teamSize: 3,
+    featured: true,
+    technologies: ['Adobe Illustrator', 'Adobe InDesign', 'Print Design', 'Brand Guidelines'],
+    projectUrl: 'https://www.limk.ro/en/',
+    stats: {
+      recognition: '+70%',
+      engagement: '+55%',
+      conversion: '+40%'
+    },
+    testimonial: {
+      quote: "The new corporate identity has significantly improved our professional image and brand recognition.",
+      author: "Sales Manager",
+      position: "LIMK"
+    },
+    images: [
+      {
+        src: '/images/portfolio/limk/Business cards.jpeg',
+        alt: 'Business Cards',
+        caption: 'Professional business cards design'
+      },
+      {
+        src: '/images/portfolio/limk/Leaflet.jpeg',
+        alt: 'Marketing Leaflet',
+        caption: 'Brand marketing leaflet design'
+      },
+      {
+        src: '/images/portfolio/limk/Stamp2.jpeg',
+        alt: 'Brand Stamp',
+        caption: 'Official brand stamp design'
+      }
+    ]
+  },
+  {
+    id: 'kawira-tours',
+    title: 'Kawira Safaris Website',
+    description: 'Modern website design and development for Kawira Safaris, a premium safari tour operator.',
+    longDescription: 'We designed and developed a responsive website for Kawira Safaris, featuring their safari packages, destinations, and booking system. The design incorporates stunning wildlife photography and intuitive navigation to showcase their unique safari experiences.',
+    category: 'web-development',
+    image: '/images/portfolio/kawira/kawira_main.jpg',
+    icon: FaLaptopCode,
+    client: 'Kawira Safaris',
+    year: 2024,
+    duration: '4 months',
+    teamSize: 5,
+    featured: true,
+    technologies: ['React', 'Node.js', 'MongoDB', 'AWS', 'Responsive Design'],
+    projectUrl: 'https://kawirasafaris.net/',
+    stats: {
+      bookings: '+80%',
+      engagement: '+65%',
+      conversion: '+50%'
+    },
+    testimonial: {
+      quote: "The new website has transformed our online presence and significantly increased our bookings.",
+      author: "Operations Manager",
+      position: "Kawira Safaris"
+    },
+    images: [
+      {
+        src: '/images/portfolio/kawira/kawira_main.jpg',
+        alt: 'Website Homepage',
+        caption: 'Main website homepage'
+      },
+      {
+        src: '/images/portfolio/kawira/kawira2.jpg',
+        alt: 'Safari Packages',
+        caption: 'Safari packages section'
+      },
+      {
+        src: '/images/portfolio/kawira/kawira3.jpg',
+        alt: 'Booking System',
+        caption: 'Online booking system'
+      }
+    ]
+  },
+  {
+    id: 'intercity-security',
+    title: 'Intercity Security Branding',
+    description: 'Complete brand identity for Intercity Security Group, a leading security services provider.',
+    longDescription: 'We developed a comprehensive brand identity system for Intercity Security Group, including logo design, marketing materials, and outdoor advertising. The design emphasizes trust, professionalism, and security while maintaining a modern and approachable aesthetic.',
+    category: 'graphic-design',
+    image: '/images/portfolio/intercity/Intercity__logo.jpg',
+    icon: FaPalette,
+    client: 'Intercity Security Group',
+    year: 2024,
+    duration: '3 months',
+    teamSize: 4,
+    featured: true,
+    technologies: ['Adobe Illustrator', 'Adobe Photoshop', 'Brand Guidelines', 'Outdoor Advertising'],
+    projectUrl: 'https://intercitysecuritygroup.co.ke/',
+    stats: {
+      recognition: '+85%',
+      engagement: '+70%',
+      conversion: '+55%'
+    },
+    testimonial: {
+      quote: "The new brand identity has significantly enhanced our market presence and client trust.",
+      author: "Marketing Director",
+      position: "Intercity Security Group"
+    },
+    images: [
+      {
+        src: '/images/portfolio/intercity/Intercity__logo.jpg',
+        alt: 'Main Logo',
+        caption: 'Primary logo design'
+      },
+      {
+        src: '/images/portfolio/intercity/Intercity_billboard.jpg',
+        alt: 'Billboard Design',
+        caption: 'Outdoor advertising design'
+      },
+      {
+        src: '/images/portfolio/intercity/Intercity_bronchure.jpg',
+        alt: 'Marketing Brochure',
+        caption: 'Marketing brochure design'
+      }
+    ]
+  },
+  {
+    id: 'dhong-collections',
+    title: 'Dhong Collections E-commerce',
+    description: 'E-commerce website development for Dhong Collections, a premium fashion brand.',
+    longDescription: 'We designed and developed a modern e-commerce platform for Dhong Collections, featuring their premium fashion collections, shopping cart, and secure payment integration. The design emphasizes luxury and elegance while providing a seamless shopping experience.',
+    category: 'ecommerce',
+    image: '/images/portfolio/dhong/dhong_Main.jpg',
+    icon: FaLaptopCode,
+    client: 'Dhong Collections',
+    year: 2024,
+    duration: '5 months',
+    teamSize: 6,
+    featured: true,
+    technologies: ['React', 'Node.js', 'MongoDB', 'Stripe', 'AWS'],
+    projectUrl: 'https://dhongcollections.com/',
+    stats: {
+      sales: '+90%',
+      engagement: '+75%',
+      conversion: '+60%'
+    },
+    testimonial: {
+      quote: "The new e-commerce platform has revolutionized our online sales and customer experience.",
+      author: "CEO",
+      position: "Dhong Collections"
+    },
+    images: [
+      {
+        src: '/images/portfolio/dhong/dhong_Main.jpg',
+        alt: 'Website Homepage',
+        caption: 'Main website homepage'
+      },
+      {
+        src: '/images/portfolio/dhong/Dhong2.jpg',
+        alt: 'Product Showcase',
+        caption: 'Product showcase section'
+      },
+      {
+        src: '/images/portfolio/dhong/Dhong3.jpg',
+        alt: 'Shopping Experience',
+        caption: 'Shopping experience design'
+      }
+    ]
+  },
+  {
+    id: 'custom-calendars',
+    title: 'Custom Calendar Designs',
+    description: 'Custom calendar designs for various corporate clients.',
+    longDescription: 'We created a series of custom calendar designs for various corporate clients, featuring unique themes, photography, and branding elements. Each calendar was tailored to reflect the client\'s brand identity while providing practical functionality.',
+    category: 'graphic-design',
+    image: '/images/portfolio/calendars/Calendar_main.jpg',
+    icon: FaPalette,
+    client: 'Multiple Clients',
+    year: 2024,
+    duration: '2 months',
+    teamSize: 3,
+    featured: true,
+    technologies: ['Adobe InDesign', 'Adobe Photoshop', 'Print Design', 'Typography'],
+    projectUrl: 'https://conisontechnologies.com',
+    stats: {
+      satisfaction: '95%',
+      reorders: '+80%',
+      engagement: '+70%'
+    },
+    testimonial: {
+      quote: "The custom calendars have become a valuable marketing tool and a cherished gift for our clients.",
+      author: "Marketing Manager",
+      position: "Multiple Clients"
+    },
+    images: [
+      {
+        src: '/images/portfolio/calendars/Calendar_main.jpg',
+        alt: 'Main Calendar Design',
+        caption: 'Main calendar design'
+      },
+      {
+        src: '/images/portfolio/calendars/Calendar2.jpg',
+        alt: 'Corporate Calendar',
+        caption: 'Corporate client calendar'
+      },
+      {
+        src: '/images/portfolio/calendars/Calendar3.jpg',
+        alt: 'Custom Theme',
+        caption: 'Custom themed calendar'
+      }
+    ]
+  },
   {
     id: 'e-commerce-platform',
     title: 'E-commerce Platform',
@@ -145,7 +404,7 @@ const portfolioProjects = [
     description: 'Advanced AI-powered platform for automated content creation and optimization.',
     longDescription: 'A sophisticated content platform leveraging the latest in AI technology to help marketing teams generate and optimize content at scale. Features include multilingual content generation, SEO optimization, sentiment analysis, and an intuitive editing interface.',
     category: 'web-development',
-    image: 'https://images.unsplash.com/photo-1677442135132-79f98fbf76dc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
+    image: 'https://scontent.fnbo9-1.fna.fbcdn.net/v/t39.30808-6/425739412_970306261768936_4123706898051061434_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeFHxorsvb3U5c5YB_jcBsWwslf6OgDb2ViyV_o6ANvZWMtOOd5Dr-jkGPB-5oEAdwpx1JREDpoSzy2skp6OdDwL&_nc_ohc=vsiTLFRmLYQQ7kNvwH4kvSS&_nc_oc=AdmAKcNTmtEyvUOc9LTvrVAzXH-k-2azo1e9TjdxCOMTzfPGpycf8aAXgRmuziuasRA&_nc_pt=5&_nc_zt=23&_nc_ht=scontent.fnbo9-1.fna&_nc_gid=D1rGun3v_GVUuG__5_ALzQ&oh=00_AfEU3vKRoRWWa_y3_Kq3yljvhvb2v4lvuyydtMbiMcedRg&oe=68003407',
     icon: FaRobot,
     client: 'ContentGenius',
     year: 2024,
@@ -280,14 +539,34 @@ const portfolioProjects = [
     },
     images: [
       {
-        src: 'https://images.unsplash.com/photo-1634942537034-2531766767a1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
-        alt: 'Brand guidelines',
-        caption: 'Visual identity guidelines'
+        src: '/images/portfolio/Brand/Business cards.jpeg',
+        alt: 'Business Cards Design',
+        caption: 'Professional business cards design'
       },
       {
-        src: 'https://images.unsplash.com/photo-1586717799252-bd134ad00e26?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
-        alt: 'Marketing materials',
-        caption: 'Print and digital marketing collateral'
+        src: '/images/portfolio/Brand/Leaflet.jpeg',
+        alt: 'Marketing Leaflet',
+        caption: 'Brand marketing leaflet design'
+      },
+      {
+        src: '/images/portfolio/Brand/Stamp2.jpeg',
+        alt: 'Brand Stamp Design',
+        caption: 'Official brand stamp design'
+      },
+      {
+        src: '/images/portfolio/Brand/stamp.jpeg',
+        alt: 'Alternative Stamp Design',
+        caption: 'Alternative brand stamp variation'
+      },
+      {
+        src: '/images/portfolio/Brand/Invoice.jpeg',
+        alt: 'Invoice Template',
+        caption: 'Branded invoice template design'
+      },
+      {
+        src: '/images/portfolio/Brand/REceipt.jpeg',
+        alt: 'Receipt Template',
+        caption: 'Branded receipt template design'
       }
     ]
   },
@@ -404,6 +683,59 @@ const portfolioProjects = [
         caption: 'Interactive lesson interface'
       }
     ]
+  },
+  {
+    id: 'bakers-choice-posters',
+    title: 'Baker\'s Choice Marketing Posters',
+    description: 'A series of vibrant and engaging marketing posters designed for Baker\'s Choice, a premium kosher baking ingredients company.',
+    longDescription: 'We created a series of eye-catching marketing posters for Baker\'s Choice, a leading provider of premium kosher baking ingredients. The posters were designed to showcase their product range while maintaining their brand identity and kosher certification standards. Each poster features high-quality product photography, clear messaging, and a consistent design language that reflects the company\'s commitment to quality and tradition.',
+    category: 'graphic-design',
+    image: '/images/portfolio/bakers/Poster1.jpg',
+    icon: FaPalette,
+    client: 'Baker\'s Choice',
+    year: 2024,
+    duration: '2 months',
+    teamSize: 3,
+    featured: true,
+    technologies: ['Adobe Photoshop', 'Adobe Illustrator', 'Typography', 'Color Theory'],
+    projectUrl: 'https://bakerschoiceny.com',
+    stats: {
+      engagement: '+65%',
+      recognition: '+40%',
+      conversion: '+30%'
+    },
+    testimonial: {
+      quote: "The posters perfectly captured our brand essence and helped us significantly increase our product visibility in the market.",
+      author: "Marketing Director",
+      position: "Baker's Choice"
+    },
+    images: [
+      {
+        src: '/images/portfolio/bakers/Poster1.jpg',
+        alt: 'Baker\'s Choice Poster 1',
+        caption: 'Main product showcase poster'
+      },
+      {
+        src: '/images/portfolio/bakers/poster2.jpg',
+        alt: 'Baker\'s Choice Poster 2',
+        caption: 'Specialty ingredients highlight'
+      },
+      {
+        src: '/images/portfolio/bakers/poster 3.jpg',
+        alt: 'Baker\'s Choice Poster 3',
+        caption: 'Seasonal promotion design'
+      },
+      {
+        src: '/images/portfolio/bakers/poster4.jpg',
+        alt: 'Baker\'s Choice Poster 4',
+        caption: 'Product range display'
+      },
+      {
+        src: '/images/portfolio/bakers/poster5.jpg',
+        alt: 'Baker\'s Choice Poster 5',
+        caption: 'Brand identity poster'
+      }
+    ]
   }
 ];
 
@@ -504,6 +836,8 @@ const PortfolioPage = () => {
         return 'text-pink-600 dark:text-pink-400';
       case 'data':
         return 'text-amber-600 dark:text-amber-400';
+      case 'graphic-design':
+        return 'text-teal-600 dark:text-teal-400';
       default:
         return 'text-gray-600 dark:text-gray-400';
     }
@@ -522,6 +856,8 @@ const PortfolioPage = () => {
         return 'bg-pink-600/90';
       case 'data':
         return 'bg-amber-600/90';
+      case 'graphic-design':
+        return 'bg-teal-600/90';
       default:
         return 'bg-gray-600/90';
     }
@@ -854,7 +1190,7 @@ const PortfolioPage = () => {
                           <div className={`p-2 rounded-lg mb-2 inline-block ${getCategoryBg(project.category)}`}>
                             <project.icon className="w-6 h-6" />
                           </div>
-                          <h3 className="text-xl font-bold mb-1">{project.title}</h3>
+                          <h3 className="text-xl font-bold mb-1 text-white">{project.title}</h3>
                           <div className="flex items-center gap-2">
                             <span className="text-sm text-gray-200">{project.year}</span>
                             <span className="w-1 h-1 rounded-full bg-gray-400"></span>
@@ -1020,7 +1356,7 @@ const PortfolioPage = () => {
                                 <div className={`p-2 rounded-lg inline-block ${getCategoryBg(project.category)}`}>
                                   <project.icon className="w-5 h-5 text-white" />
                                 </div>
-                                <h3 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                <h3 className={`text-xl font-bold ${isDarkMode ? 'text-gray-900' : 'text-gray-900'}`}>
                                   {project.title}
                                 </h3>
                               </div>

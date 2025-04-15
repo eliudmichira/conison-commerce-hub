@@ -11,6 +11,30 @@ const QuoteRequestPage = () => {
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const location = useLocation();
   
+  // Process steps
+  const processSteps = [
+    {
+      number: '1',
+      title: 'Submit Your Request',
+      description: 'Fill out our detailed quote request form with your project requirements and preferences.'
+    },
+    {
+      number: '2',
+      title: 'Review & Analysis',
+      description: 'Our team carefully reviews your requirements and analyzes the scope of work.'
+    },
+    {
+      number: '3',
+      title: 'Custom Quote',
+      description: 'We prepare a detailed, customized quote based on your specific needs and budget.'
+    },
+    {
+      number: '4',
+      title: 'Project Kickoff',
+      description: 'Once approved, we begin your project with a detailed kickoff meeting and timeline.'
+    }
+  ];
+
   // Get query parameters from URL
   const queryParams = new URLSearchParams(location.search);
   const serviceParam = queryParams.get('service');
@@ -107,48 +131,27 @@ const QuoteRequestPage = () => {
     }
   ];
 
-  // Process steps
-  const processSteps = [
-    {
-      number: 1,
-      title: "Submit Request",
-      description: "Fill out our comprehensive quote request form with details about your project needs."
-    },
-    {
-      number: 2,
-      title: "Project Analysis",
-      description: "Our team will analyze your requirements and prepare a detailed quotation for your project."
-    },
-    {
-      number: 3,
-      title: "Quote Delivery",
-      description: "Within 48 hours, you'll receive a detailed quote with project scope and cost breakdown."
-    },
-    {
-      number: 4,
-      title: "Project Start",
-      description: "Once approved, we'll schedule a kickoff meeting and begin working on your project."
-    }
-  ];
-
   // Testimonials
   const testimonials = [
     {
       name: "Sarah Johnson",
       company: "Marketing Director, TechGrow Ltd",
       stars: 5,
+      image: "/images/testimonials/sarah.jpg",
       testimonial: "The quoting process was incredibly smooth. Within 24 hours, I had a detailed breakdown of costs and timeline. The team at Conison Technologies delivered exactly what they promised, on time and within budget. We've been working with them for over a year now on multiple projects."
     },
     {
       name: "Michael Kimani",
       company: "CEO, LocalEats Delivery",
       stars: 5,
+      image: "/images/testimonials/michael.jpg",
       testimonial: "I appreciated the transparency in their quoting process. They clearly explained all costs and what I was getting for my money. No surprises or hidden fees. Their e-commerce solution has increased our sales by 200%. The ongoing support after the project was completed has also been excellent."
     },
     {
       name: "Jessica Wambui",
       company: "Marketing Manager, Savannah Tours",
       stars: 4,
+      image: "/images/testimonials/jessica.jpg",
       testimonial: "Conison Technologies revamped our digital marketing strategy. The quote process was straightforward, and they were willing to work within our budget constraints. Their social media management has helped us increase engagement by 150% in just three months."
     }
   ];
@@ -227,14 +230,17 @@ const QuoteRequestPage = () => {
           <div className={`mb-16 transform transition-all duration-700 ease-out ${isPageLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} style={{ transitionDelay: '0.1s' }}>
             <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center dark:text-white">How Our Quote Process Works</h2>
             <div className="relative">
-              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-conison-cyan/20 via-conison-magenta/20 to-conison-cyan/20 dark:from-conison-cyan/20 dark:via-conison-magenta/20 dark:to-conison-cyan/20 transform -translate-y-1/2 hidden md:block"></div>
+              <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-conison-cyan via-conison-magenta to-conison-cyan dark:from-conison-cyan/30 dark:via-conison-magenta/30 dark:to-conison-cyan/30 transform -translate-y-1/2 hidden md:block"></div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {processSteps.map((step, index) => (
-                  <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 flex-1 relative z-10 transform transition-all hover:-translate-y-1 hover:shadow-xl duration-300">
-                    <div className={`absolute -top-5 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-xl ${isDarkMode ? 'bg-gradient-to-br from-conison-gray to-conison-magenta' : 'bg-gradient-to-br from-conison-yellow to-conison-magenta'} text-white flex items-center justify-center font-bold shadow-lg`}>
+                  <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 flex-1 relative z-10 transform transition-all hover:-translate-y-2 hover:shadow-xl duration-300">
+                    <div className={`absolute -top-5 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-xl ${isDarkMode 
+                      ? 'bg-gradient-to-br from-conison-gray to-conison-magenta' 
+                      : 'bg-gradient-to-br from-conison-yellow to-conison-magenta'} 
+                      text-white flex items-center justify-center font-bold text-xl shadow-lg`}>
                       {step.number}
                     </div>
-                    <h3 className="text-lg font-semibold mb-3 mt-4 text-center text-gray-800 dark:text-white">{step.title}</h3>
+                    <h3 className="text-lg font-semibold mb-3 mt-6 text-center text-gray-800 dark:text-white">{step.title}</h3>
                     <p className="text-gray-600 dark:text-gray-300 text-center text-sm">
                       {step.description}
                     </p>
@@ -311,10 +317,16 @@ const QuoteRequestPage = () => {
                       {testimonials.map((testimonial, index) => (
                         <div key={index} className="bg-white dark:bg-gray-800/50 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-lg transition-shadow duration-300">
                           <div className="flex flex-wrap items-center mb-4 gap-4">
-                            <div className={`h-12 w-12 rounded-full ${isDarkMode ? 'bg-conison-gray/30' : 'bg-conison-cyan/20'} flex items-center justify-center text-conison-cyan dark:text-conison-cyan mr-2`}>
-                              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
-                              </svg>
+                            <div className="h-12 w-12 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+                              <img 
+                                src={testimonial.image} 
+                                alt={testimonial.name}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = "https://ui-avatars.com/api/?name=" + testimonial.name.replace(/\s+/g, '+') + "&background=random";
+                                }}
+                              />
                             </div>
                             <div>
                               <h4 className="font-semibold text-gray-800 dark:text-white">{testimonial.name}</h4>
@@ -506,7 +518,7 @@ const QuoteRequestPage = () => {
                       </div>
                       <div>
                         <h3 className="text-xl font-semibold mb-1 dark:text-white">Phone</h3>
-                        <a href="tel:+211920504110" className="text-conison-cyan dark:text-conison-cyan hover:underline">+211 920504110</a>
+                        <a href="tel:+211920504110" className="text-conison-cyan dark:text-conison-cyan hover:underline">+211 920 504 110</a>
                       </div>
                     </div>
                     

@@ -43,20 +43,42 @@ const Footer = () => {
           
           <div>
             <h3 className="text-xl font-bold mb-4 text-conison-cyan dark:text-conison-cyan">Services</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/services/web-development" className="hover:text-conison-magenta transition-colors">Web Development</Link>
-              </li>
-              <li>
-                <Link to="/services/graphic-design" className="hover:text-conison-magenta transition-colors">Graphic Design</Link>
-              </li>
-              <li>
-                <Link to="/services/branding" className="hover:text-conison-magenta transition-colors">Branding</Link>
-              </li>
-              <li>
-                <Link to="/services/digital-marketing" className="hover:text-conison-magenta transition-colors">Digital Marketing</Link>
-              </li>
-            </ul>
+            <div className="grid grid-cols-2 gap-x-4">
+              <ul className="space-y-2">
+                <li>
+                  <Link to="/services/web-development" className="hover:text-conison-magenta transition-colors">Web Development</Link>
+                </li>
+                <li>
+                  <Link to="/services/mobile-development" className="hover:text-conison-magenta transition-colors">Mobile Development</Link>
+                </li>
+                <li>
+                  <Link to="/services/ai-ml" className="hover:text-conison-magenta transition-colors">AI & ML Solutions</Link>
+                </li>
+                <li>
+                  <Link to="/services/cloud-solutions" className="hover:text-conison-magenta transition-colors">Cloud Solutions</Link>
+                </li>
+                <li>
+                  <Link to="/services/business-consulting" className="hover:text-conison-magenta transition-colors">Business Consulting</Link>
+                </li>
+              </ul>
+              <ul className="space-y-2">
+                <li>
+                  <Link to="/services/motion-graphics" className="hover:text-conison-magenta transition-colors">Motion Graphics</Link>
+                </li>
+                <li>
+                  <Link to="/services/cybersecurity" className="hover:text-conison-magenta transition-colors">Cybersecurity</Link>
+                </li>
+                <li>
+                  <Link to="/services/digital-marketing" className="hover:text-conison-magenta transition-colors">Digital Marketing</Link>
+                </li>
+                <li>
+                  <Link to="/services/graphic-design" className="hover:text-conison-magenta transition-colors">Graphic Design</Link>
+                </li>
+                <li>
+                  <Link to="/services/branding" className="hover:text-conison-magenta transition-colors">Branding</Link>
+                </li>
+              </ul>
+            </div>
           </div>
           
           <div>
@@ -70,6 +92,9 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/services" className="hover:text-conison-magenta transition-colors">Services</Link>
+              </li>
+              <li>
+                <Link to="/portfolio" className="hover:text-conison-magenta transition-colors">Portfolio</Link>
               </li>
               <li>
                 <Link to="/rate-card" className="hover:text-conison-magenta transition-colors">Rate Card</Link>
@@ -86,7 +111,7 @@ const Footer = () => {
               <p className="mb-2">Juba Town, Near Baping Insurance Company</p>
               <p className="mb-2">Juba, South Sudan</p>
               <p className="mb-2">
-                <a href="tel:+211926685125" className="hover:text-conison-magenta transition-colors">+211 92 668 5125</a>
+                <a href="tel:+211920504110" className="hover:text-conison-magenta transition-colors">+211 920 504 110</a>
               </p>
               <p>
                 <a href="mailto:info@conisontechnologies.com" className="hover:text-conison-magenta transition-colors">info@conisontechnologies.com</a>

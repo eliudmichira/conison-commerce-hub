@@ -67,7 +67,7 @@ const ServicesPage = () => {
         title: 'Graphic Design',
         description: 'Professional graphic design services for all your visual communication needs.',
         icon: <FaPalette className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1626785774625-ddcddc3445e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         features: ['Logo Design', 'Brand Identity Materials', 'Print Design', 'Digital Graphics'],
         category: 'design',
         link: '/services/graphic-design'
@@ -77,7 +77,7 @@ const ServicesPage = () => {
         title: 'Branding & Identity',
         description: 'Create a memorable brand identity that sets you apart from the competition.',
         icon: <FaPalette className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         features: ['Brand Strategy', 'Visual Identity Development', 'Brand Guidelines', 'Logo Design'],
         category: 'design',
         link: '/services/branding'
@@ -87,7 +87,7 @@ const ServicesPage = () => {
         title: 'Web & App Development',
         description: 'Custom websites and applications designed to meet your specific business needs.',
         icon: <FaCode className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         features: ['Custom Website Development', 'E-commerce Solutions', 'Content Management Systems', 'Web Application Development'],
         category: 'development',
         link: '/services/web-development'
@@ -97,7 +97,7 @@ const ServicesPage = () => {
         title: 'Digital Marketing',
         description: 'Strategic marketing campaigns that drive traffic, leads, and conversions for sustainable growth.',
         icon: <FaChartLine className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1557838923-2985c318be48?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         features: ['Search Engine Optimization', 'Social Media Marketing', 'Pay-Per-Click Advertising', 'Email Marketing'],
         category: 'marketing',
         link: '/services/digital-marketing'
@@ -127,7 +127,7 @@ const ServicesPage = () => {
         title: 'Corporate IT Solutions & Software Development',
         description: 'Tailored IT solutions to streamline your business operations.',
         icon: <FaCode className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         features: ['Custom Software Development', 'ERP Solutions', 'CRM Implementation', 'IT Infrastructure Setup'],
         category: 'development',
         link: '/services/it-solutions'
@@ -147,7 +147,7 @@ const ServicesPage = () => {
         title: 'E-Commerce Solutions',
         description: 'Complete e-commerce solutions to help you sell your products online.',
         icon: <FaShoppingCart className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         features: ['E-commerce Website Development', 'Shopping Cart Integration', 'Payment Gateway Setup', 'Product Catalog Management'],
         category: 'development',
         link: '/services/ecommerce'
@@ -157,7 +157,7 @@ const ServicesPage = () => {
         title: 'AI & Automation Services',
         description: 'Leverage the power of AI to automate and enhance your business processes.',
         icon: <FaRobot className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         features: ['AI Chatbot Development', 'Workflow Automation', 'Marketing Automation', 'Process Optimization'],
         category: 'ai',
         link: '/services/ai-automation'

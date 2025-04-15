@@ -15,19 +15,16 @@ import {
 
 const RateCardPage = () => {
   const { isDarkMode } = useDarkMode();
-  const [activeTab, setActiveTab] = useState('monthly');
   const [activeFaq, setActiveFaq] = useState(null);
 
   // Refs for scroll animations
   const heroRef = useRef(null);
   const benefitsRef = useRef(null);
-  const pricingRef = useRef(null);
   const faqRef = useRef(null);
   
   // Check if elements are in view for animations
   const heroInView = useInView(heroRef, { once: true, amount: 0.3 });
   const benefitsInView = useInView(benefitsRef, { once: true, amount: 0.3 });
-  const pricingInView = useInView(pricingRef, { once: true, amount: 0.1 });
   const faqInView = useInView(faqRef, { once: true, amount: 0.3 });
   
   // Pricing benefits data with improved icons
@@ -85,111 +82,6 @@ const RateCardPage = () => {
       answer: "We include two rounds of revisions in our standard project rate to ensure your complete satisfaction. Minor adjustments and tweaks during the development process don't count against these revision rounds. For extensive changes or shifts in project direction after approval of initial concepts, additional charges may apply based on our hourly rates. We'll always communicate clearly before any additional charges are incurred."
     }
   ];
-
-  // Sample pricing plans
-  const pricingPlans = {
-    monthly: [
-      {
-        name: "Essential",
-        price: "999",
-        description: "Perfect for small businesses just getting started with digital presence",
-        features: [
-          "Responsive website (up to 5 pages)",
-          "Basic SEO setup",
-          "Contact form integration",
-          "Mobile optimization",
-          "1 month of support"
-        ],
-        highlight: false,
-        cta: "Get Started"
-      },
-      {
-        name: "Professional",
-        price: "2,499",
-        description: "Comprehensive solution for established businesses looking to grow online",
-        features: [
-          "Custom website design (up to 10 pages)",
-          "Advanced SEO implementation",
-          "Email marketing integration",
-          "Basic e-commerce functionality",
-          "Social media integration",
-          "Content management system",
-          "3 months of support & maintenance"
-        ],
-        highlight: true,
-        cta: "Most Popular"
-      },
-      {
-        name: "Enterprise",
-        price: "5,999",
-        description: "Full-scale digital solution for businesses with complex requirements",
-        features: [
-          "Custom web application development",
-          "Full e-commerce capabilities",
-          "Payment gateway integration",
-          "Custom database solutions",
-          "Advanced analytics dashboard",
-          "API integrations",
-          "6 months of priority support",
-          "Dedicated account manager"
-        ],
-        highlight: false,
-        cta: "Contact Us"
-      }
-    ],
-    quarterly: [
-      {
-        name: "Essential",
-        price: "2,699",
-        description: "Perfect for small businesses just getting started with digital presence",
-        features: [
-          "Responsive website (up to 5 pages)",
-          "Basic SEO setup",
-          "Contact form integration",
-          "Mobile optimization",
-          "3 months of support",
-          "Quarterly performance report"
-        ],
-        highlight: false,
-        cta: "Get Started"
-      },
-      {
-        name: "Professional",
-        price: "6,799",
-        description: "Comprehensive solution for established businesses looking to grow online",
-        features: [
-          "Custom website design (up to 10 pages)",
-          "Advanced SEO implementation",
-          "Email marketing integration",
-          "Basic e-commerce functionality",
-          "Social media integration",
-          "Content management system",
-          "6 months of support & maintenance",
-          "Quarterly strategy consultation"
-        ],
-        highlight: true,
-        cta: "Save 10%"
-      },
-      {
-        name: "Enterprise",
-        price: "15,999",
-        description: "Full-scale digital solution for businesses with complex requirements",
-        features: [
-          "Custom web application development",
-          "Full e-commerce capabilities",
-          "Payment gateway integration",
-          "Custom database solutions",
-          "Advanced analytics dashboard",
-          "API integrations",
-          "1 year of priority support",
-          "Dedicated account manager",
-          "Quarterly technology reviews"
-        ],
-        highlight: false,
-        cta: "Best Value"
-      }
-    ]
-  };
   
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
@@ -214,7 +106,7 @@ const RateCardPage = () => {
               Pricing & Services
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Transparent <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">Pricing</span>
+              Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">Rate Card</span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
               Clear, competitive rates for all our digital services with no hidden costs. Invest in quality that delivers results.
@@ -241,222 +133,62 @@ const RateCardPage = () => {
         </div>
       </section>
       
-      {/* Pricing Philosophy Section */}
-      <section 
-        ref={benefitsRef}
-        className={`py-16 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white'}`}
-      >
+      {/* Rate Card Section */}
+      <section className={`py-16 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white'}`}>
         <div className="container mx-auto px-6 lg:px-8">
-          <motion.div 
-            className="max-w-3xl mx-auto text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            animate={benefitsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <h2 className="text-3xl font-bold mb-4">Our Pricing Philosophy</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
-              At Conison Technologies, we believe in transparent pricing that delivers value. Our rates reflect the quality of our work and the expertise of our team. We work with clients of all sizes and tailor our solutions to fit your budget without compromising quality.
-            </p>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-            {pricingBenefits.map((benefit, index) => (
-              <motion.div 
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={benefitsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
-                className={`p-6 rounded-xl ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'} shadow-sm hover:shadow-md transition-all`}
-              >
-                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${benefit.color} text-white mb-4`}>
-                  {benefit.icon}
-                </div>
-                <h3 className="text-xl font-semibold mb-3">{benefit.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300">{benefit.description}</p>
-              </motion.div>
-            ))}
-          </div>
+          <RateCard />
         </div>
       </section>
-      
-      {/* Pricing Plans Section */}
-      <section 
-        ref={pricingRef}
-        className={`py-20 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white'}`}
-      >
-        <div className="container mx-auto px-6 lg:px-8">
-          <motion.div 
-            className="text-center max-w-3xl mx-auto mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            animate={pricingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <h2 className="text-3xl font-bold mb-4">Pricing Plans</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
-              Choose the plan that's right for your business. All plans include our quality guarantee and exceptional support.
-            </p>
-            
-            <div className={`inline-flex p-1 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'} mb-8`}>
-              <button
-                onClick={() => setActiveTab('monthly')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                  activeTab === 'monthly' 
-                    ? 'bg-purple-600 text-white shadow-sm' 
-                    : isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setActiveTab('quarterly')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                  activeTab === 'quarterly' 
-                    ? 'bg-purple-600 text-white shadow-sm' 
-                    : isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Quarterly <span className="text-xs font-light">(Save 10%)</span>
-              </button>
-            </div>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {pricingPlans[activeTab].map((plan, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={pricingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.5, delay: index * 0.1 + 0.2, ease: "easeOut" }}
-                className={`relative rounded-2xl overflow-hidden ${
-                  plan.highlight 
-                    ? 'ring-2 ring-purple-600 dark:ring-purple-500' 
-                    : isDarkMode ? 'bg-gray-800' : 'bg-white'
-                } shadow-lg hover:shadow-xl transition-all`}
-              >
-                {plan.highlight && (
-                  <div className="absolute top-0 inset-x-0 py-1 text-center text-xs font-medium text-white bg-gradient-to-r from-purple-600 to-blue-600">
-                    MOST POPULAR
-                  </div>
-                )}
-                
-                <div className={`p-8 ${plan.highlight && 'pt-6'}`}>
-                  <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6 h-12">
-                    {plan.description}
-                  </p>
-                  
-                  <div className="mb-6">
-                    <span className="text-4xl font-bold">KSh {plan.price}</span>
-                    <span className="text-gray-500 dark:text-gray-400">{activeTab === 'monthly' ? '/mo' : '/quarter'}</span>
-                  </div>
-                  
-                  <Link 
-                    to="/contact" 
-                    className={`block w-full py-3 text-center rounded-lg font-medium mb-8 ${
-                      plan.highlight
-                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white'
-                        : isDarkMode 
-                          ? 'bg-gray-700 hover:bg-gray-600 text-white' 
-                          : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
-                    } transition-all`}
-                  >
-                    {plan.cta}
-                  </Link>
-                  
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-600 dark:text-gray-300">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Need a more customized solution? We've got you covered.
-            </p>
-            <Link 
-              to="/contact" 
-              className={`inline-flex items-center font-medium text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300`}
-            >
-              Contact us for a custom quote <ArrowRight className="ml-2 w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-      
-      {/* Rate Card Component */}
-      <section className="py-20">
-        <div className="container mx-auto px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-          >
-            <RateCard />
-          </motion.div>
-        </div>
-      </section>
-      
+
       {/* FAQ Section */}
       <section 
         ref={faqRef}
-        className={`py-20 ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}
+        className={`py-16 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}
       >
         <div className="container mx-auto px-6 lg:px-8">
           <motion.div 
-            className="text-center max-w-3xl mx-auto mb-16"
+            className="text-center max-w-3xl mx-auto mb-12"
             initial={{ opacity: 0, y: 20 }}
             animate={faqInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
-              Find answers to common questions about our pricing, payment terms, and policies.
+            <p className="text-gray-600 dark:text-gray-300">
+              Find answers to common questions about our pricing and services
             </p>
           </motion.div>
-          
-          <div className="max-w-4xl mx-auto">
-            {faqItems.map((faq, index) => (
+
+          <div className="max-w-3xl mx-auto">
+            {faqItems.map((item, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={faqInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                transition={{ duration: 0.4, delay: index * 0.1, ease: "easeOut" }}
-                className={`mb-4 rounded-xl overflow-hidden ${
+                className={`mb-4 rounded-lg overflow-hidden ${
                   isDarkMode ? 'bg-gray-800' : 'bg-white'
-                } shadow-sm hover:shadow-md transition-all`}
+                }`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={faqInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
               >
                 <button
+                  className={`w-full px-6 py-4 text-left flex items-center justify-between ${
+                    isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+                  }`}
                   onClick={() => setActiveFaq(activeFaq === index ? null : index)}
-                  className="flex justify-between items-center w-full p-6 text-left font-medium"
-                  aria-expanded={activeFaq === index}
                 >
-                  <span>{faq.question}</span>
-                  <ChevronDown 
-                    className={`w-5 h-5 text-purple-600 dark:text-purple-400 transition-transform ${
+                  <span className="font-medium">{item.question}</span>
+                  <ChevronDown
+                    className={`w-5 h-5 transform transition-transform ${
                       activeFaq === index ? 'rotate-180' : ''
                     }`}
                   />
                 </button>
-                
-                <div 
-                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    activeFaq === index ? 'max-h-96' : 'max-h-0'
-                  }`}
-                >
-                  <div className={`p-6 pt-0 border-t ${
-                    isDarkMode ? 'border-gray-700' : 'border-gray-200'
-                  } text-gray-600 dark:text-gray-300`}>
-                    {faq.answer}
+                {activeFaq === index && (
+                  <div className={`px-6 py-4 ${
+                    isDarkMode ? 'bg-gray-800' : 'bg-white'
+                  }`}>
+                    <p className="text-gray-600 dark:text-gray-300">{item.answer}</p>
                   </div>
-                </div>
+                )}
               </motion.div>
             ))}
           </div>

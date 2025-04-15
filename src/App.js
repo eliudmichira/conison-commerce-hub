@@ -26,7 +26,7 @@ import ThankYouPage from './pages/ThankYouPage';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/client/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
-import SignupPage from './pages/client/SignupPage';
+import SignupPage from './pages/client/RegisterPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 
@@ -55,6 +55,8 @@ import PrivateRoute from './components/PrivateRoute';
 
 // Styles
 import './styles/colors.css';
+
+import ChatAssistant from './components/ChatAssistant';
 
 // Temporary Admin Dashboard Component
 const AdminPlaceholder = memo(() => (
@@ -171,6 +173,7 @@ const AppContent = () => {
       </main>
       
       {!isDashboardRoute && <Footer />}
+      <ChatAssistant />
     </div>
   );
 };

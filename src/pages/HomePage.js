@@ -26,7 +26,7 @@ const HomePage = () => {
     },
     {
       Icon: FaShoppingCart,
-      title: "E-commerce Solutions",
+      title: "Graphic Design",
       description: "Complete online stores with secure checkout, inventory management, and customer analytics.",
       link: "/services/digital-marketing",
       image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
@@ -34,7 +34,7 @@ const HomePage = () => {
     },
     {
       Icon: FaProjectDiagram,
-      title: "Digital Strategy",
+      title: "Branding Identity",
       description: "Strategic planning to maximize your digital presence and achieve business objectives.",
       link: "/services",
       image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
@@ -53,25 +53,28 @@ const HomePage = () => {
   // Higher quality testimonial images
   const testimonials = [
     {
-      name: "Sarah Johnson",
-      company: "TechSolutions Inc.",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-      quote: "Conison Technologies transformed our outdated website into a modern, high-converting platform. Their expertise and dedication to quality are unmatched.",
-      rating: 5
+      id: 1,
+      name: "Kherallah Mayombeek",
+      company: "CEO, TechStart Africa",
+      quote: "Conison Technologies delivered an outstanding website for my business. Their team was professional, responsive, and delivered exactly what we needed. Highly recommended!",
+      rating: 5,
+      image: "https://unsplash.com/photos/man-in-black-crew-neck-long-sleeve-shirt-Ft4p5E9HjTQ"
     },
     {
-      name: "Michael Chen",
-      company: "GrowthFocus",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-      quote: "Working with Conison on our digital marketing strategy doubled our leads within three months. Their data-driven approach delivers real results.",
-      rating: 5
+      id: 2,
+      name: "Ukumu Kim Diallo",
+      company: "Marketing Director, AfroFashion",
+      quote: "The team at Conison Technologies transformed our online presence. Their expertise in web development and digital marketing has significantly increased our business growth.",
+      rating: 5,
+      image: "https://unsplash.com/photos/man-in-blue-formal-suit-29pFbI_D1Sc"
     },
     {
-      name: "Alicia Rodriguez",
-      company: "StyleShop",
-      image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-      quote: "Our e-commerce implementation was seamless and exactly what we needed. Sales increased by 40% in the first quarter after launch.",
-      rating: 4
+      id: 3,
+      name: "Tunde Adebayo",
+      company: "Founder, GreenTech Solutions",
+      quote: "Working with Conison Technologies was a game-changer for our company. Their innovative solutions and professional approach helped us achieve our digital goals.",
+      rating: 5,
+      image: "https://unsplash.com/photos/man-writing-on-white-paper-EI50ZDA-l8Y"
     }
   ];
 
@@ -356,7 +359,7 @@ const HomePage = () => {
                     <span className={`text-xs font-medium ${
                       isDarkMode ? 'text-gray-300' : 'text-gray-700'
                     }`}>
-                      David Wilson, CEO at NextLevel
+                      David Michira, CEO at NextLevel
                     </span>
                   </div>
                 </div>
@@ -367,85 +370,46 @@ const HomePage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className={`py-24 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-16"
-          >
-            <span className={`inline-block px-4 py-1 rounded-full text-sm font-medium mb-4 ${
-              isDarkMode ? 'bg-yellow-900/30 text-yellow-400' : 'bg-yellow-100 text-yellow-800'
-            }`}>
-              Testimonials
-            </span>
-            <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${
-              isDarkMode ? 'text-white' : 'text-gray-900'
-            }`}>
-              What Our Clients Say
-            </h2>
-            <p className={`text-lg md:text-xl ${
-              isDarkMode ? 'text-gray-400' : 'text-gray-600'
-            } max-w-2xl mx-auto`}>
-              Don't just take our word for it — hear from the businesses we've helped succeed
-            </p>
-          </motion.div>
-
+          <h2 className="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`p-6 rounded-xl ${
-                  isDarkMode 
-                    ? 'bg-gray-800 border border-gray-700' 
-                    : 'bg-gray-50 border border-gray-100'
-                } shadow-lg hover:shadow-xl transition-all duration-300`}
-              >
-                <div className="flex gap-2 mb-4">
+              <div key={testimonial.id} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                <div className="flex items-center mb-4">
+                  <img
+                    src={testimonial.image}
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full mr-4"
+                  />
+                  <div>
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.company}</p>
+                  </div>
+                </div>
+                <div className="flex mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <FaStar key={i} className="text-yellow-400 h-5 w-5" />
+                    <FaStar key={i} className="w-5 h-5 text-yellow-400" />
                   ))}
                   {[...Array(5 - testimonial.rating)].map((_, i) => (
-                    <FaStar key={i + testimonial.rating} className={`${
-                      isDarkMode ? 'text-gray-700' : 'text-gray-300'
-                    } h-5 w-5`} />
+                    <FaStar key={i + testimonial.rating} className="w-5 h-5 text-gray-300" />
                   ))}
                 </div>
-                <p className={`mb-6 ${
-                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
-                } italic`}>
+                <p className="text-gray-600 dark:text-gray-300 italic">
                   "{testimonial.quote}"
                 </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full overflow-hidden">
-                    <img 
-                      src={testimonial.image} 
-                      alt={testimonial.name}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div>
-                    <h4 className={`font-medium ${
-                      isDarkMode ? 'text-white' : 'text-gray-900'
-                    }`}>
-                      {testimonial.name}
-                    </h4>
-                    <p className={`text-sm ${
-                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      {testimonial.company}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+              </div>
             ))}
+          </div>
+          <div className="mt-8 text-center">
+            <a
+              href="https://web.facebook.com/Conisontech213/reviews"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Read More Reviews on Facebook
+            </a>
           </div>
         </div>
       </section>

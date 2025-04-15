@@ -152,16 +152,14 @@ const ContactPage = () => {
     {
       icon: FaPhone,
       title: 'Phone',
-      content: '+211 920504110',
+      content: '+211 920 504 110',
       link: 'tel:+211920504110',
-      color: 'bg-blue-500/10 text-blue-500 dark:bg-blue-400/10 dark:text-blue-400'
     },
     {
       icon: FaEnvelope,
       title: 'Email',
       content: 'info@conisontechnologies.com',
       link: 'mailto:info@conisontechnologies.com',
-      color: 'bg-purple-500/10 text-purple-500 dark:bg-purple-400/10 dark:text-purple-400'
     },
     {
       icon: FaMapMarkerAlt,

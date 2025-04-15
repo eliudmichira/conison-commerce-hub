@@ -87,29 +87,13 @@ const AboutPage = () => {
       color: 'from-pink-500 to-rose-400',
       iconBg: isDarkMode ? 'bg-pink-900/20' : 'bg-pink-100',
       iconColor: 'text-pink-500'
-    },
-    {
-      icon: Database,
-      title: 'Data Management',
-      description: 'Comprehensive database solutions for secure, efficient, and scalable data operations and business intelligence.',
-      color: 'from-amber-500 to-yellow-400',
-      iconBg: isDarkMode ? 'bg-amber-900/20' : 'bg-amber-100',
-      iconColor: 'text-amber-500'
-    },
-    {
-      icon: Code,
-      title: 'Custom Software',
-      description: 'Bespoke software solutions tailored to your specific business requirements and integration needs.',
-      color: 'from-indigo-500 to-blue-400',
-      iconBg: isDarkMode ? 'bg-indigo-900/20' : 'bg-indigo-100',
-      iconColor: 'text-indigo-500'
     }
   ];
 
   // Team members with high-quality images
   const teamMembers = [
     {
-      name: 'John Doe',
+      name: 'Elisha Arende',
       role: 'CEO & Founder',
       image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
       description: 'Visionary leader with 15+ years of experience in technology and business development.',
@@ -119,7 +103,7 @@ const AboutPage = () => {
       }
     },
     {
-      name: 'Jane Smith',
+      name: 'Eliud Samuel',
       role: 'CTO',
       image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
       description: 'Technical expert specializing in software architecture and innovation.',
@@ -129,7 +113,7 @@ const AboutPage = () => {
       }
     },
     {
-      name: 'Mike Johnson',
+      name: 'Dennis Muasya',
       role: 'Lead Developer',
       image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
       description: 'Full-stack developer with expertise in modern web technologies.',
@@ -215,7 +199,7 @@ const AboutPage = () => {
             <motion.h1
               className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-md"
             >
-              About Conison
+              About Conison Technologies
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}

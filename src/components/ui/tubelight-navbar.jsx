@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDarkMode } from '../../context/DarkModeContext';
 import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaHome, FaUser, FaBriefcase, FaFileAlt, FaTag, FaCogs, FaSun, FaMoon, FaBars, FaTimes } from 'react-icons/fa';
+import { FaHome, FaUser, FaBriefcase, FaFileAlt, FaTag, FaCogs, FaSun, FaMoon, FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
 
 const NavBar = ({ items = [] }) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -16,13 +16,14 @@ const NavBar = ({ items = [] }) => {
 
   // Default navigation items if none are provided
   const defaultItems = [
-    { name: 'Home', path: '/', icon: FaHome },
-    { name: 'Services', path: '/services', icon: FaCogs },
-    { name: 'Portfolio', path: '/portfolio', icon: FaBriefcase },
+    { name: 'Services', path: '/services', icon: FaCogs, subItems: [
     { name: 'Rate Card', path: '/rate-card', icon: FaTag },
-    { name: 'Quote Request', path: '/quote-request', icon: FaFileAlt },
+      { name: 'Quote Request', path: '/quote-request', icon: FaFileAlt }
+    ]},
+    { name: 'Portfolio', path: '/portfolio', icon: FaBriefcase, subItems: [
     { name: 'About', path: '/about', icon: FaUser },
     { name: 'Contact', path: '/contact', icon: FaFileAlt }
+    ]}
   ];
 
   const navItems = items.length > 0 ? items : defaultItems;
@@ -78,10 +79,10 @@ const NavBar = ({ items = [] }) => {
             
             <div className="hidden md:flex items-center space-x-8">
               {navItems.map((item, index) => (
+                <div key={item.path} className="relative group">
                 <Link
-                  key={item.path}
                   to={item.path}
-                  className="relative group"
+                    className="relative"
                   onClick={() => setActiveIndex(index)}
                 >
                   <span className={`flex items-center gap-2 text-base font-medium transition-colors duration-200 ${
@@ -92,11 +93,31 @@ const NavBar = ({ items = [] }) => {
                   >
                     {React.createElement(item.icon, { className: 'w-5 h-5' })}
                     {item.name}
+                      {item.subItems && <FaChevronDown className="w-3 h-3 ml-1" />}
                   </span>
                   <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-500 dark:bg-indigo-400 transition-all duration-300 group-hover:w-full ${
                     activeIndex === index ? 'w-full' : ''
                   }`} />
                 </Link>
+                  
+                  {/* Dropdown menu */}
+                  {item.subItems && (
+                    <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                      <div className="py-1">
+                        {item.subItems.map((subItem) => (
+                          <Link
+                            key={subItem.path}
+                            to={subItem.path}
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            {React.createElement(subItem.icon, { className: 'w-4 h-4 mr-2' })}
+                            {subItem.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -167,8 +188,8 @@ const NavBar = ({ items = [] }) => {
               <div className="container mx-auto px-4 py-8">
                 <div className="flex flex-col gap-6">
                   {navItems.map((item, index) => (
+                    <div key={item.path}>
                     <Link
-                      key={item.path}
                       to={item.path}
                       className={`flex items-center gap-3 text-lg font-medium transition-colors duration-200 ${
                         activeIndex === index
@@ -183,6 +204,22 @@ const NavBar = ({ items = [] }) => {
                       {React.createElement(item.icon, { className: 'w-6 h-6' })}
                       {item.name}
                     </Link>
+                      {item.subItems && (
+                        <div className="ml-9 mt-2 space-y-2">
+                          {item.subItems.map((subItem) => (
+                            <Link
+                              key={subItem.path}
+                              to={subItem.path}
+                              className="flex items-center gap-3 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400"
+                              onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                              {React.createElement(subItem.icon, { className: 'w-5 h-5' })}
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>

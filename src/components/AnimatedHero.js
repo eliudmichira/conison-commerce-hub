@@ -46,22 +46,18 @@ function AnimatedHero() {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
         <img 
-          src="/images/services/hero-bg.jpg" 
-          alt="" 
+          src="/images/agung-raharja-urbSCgUxfQ0-unsplash.jpg" 
+          alt="Modern technology workspace" 
           className="w-full h-full object-cover"
           aria-hidden="true"
         />
         <div 
-          className={`absolute inset-0 ${
-            isDarkMode 
-              ? 'bg-gradient-to-br from-gray-900/90 via-gray-900/85 to-gray-900/95' 
-              : 'bg-gradient-to-br from-white/90 via-white/85 to-white/95'
-          }`}
+          className={`absolute inset-0 bg-gradient-to-br from-gray-900/70 via-gray-900/60 to-gray-900/80`}
         ></div>
       </div>
       
       {/* Diagonal lines pattern overlay */}
-      <div className="absolute inset-0 opacity-5" style={{ 
+      <div className="absolute inset-0 opacity-10" style={{ 
         backgroundImage: `url(${process.env.PUBLIC_URL}/images/grid-pattern.svg)`,
         backgroundRepeat: 'repeat',
         backgroundSize: '10px 10px'
@@ -79,9 +75,9 @@ function AnimatedHero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 px-6 py-2 border border-purple-500/20 mb-4"
+              className="rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 px-6 py-2 border border-purple-500/30 mb-4"
             >
-              <span className={`text-sm font-medium ${isDarkMode ? "text-purple-300" : "text-purple-700"}`}>
+              <span className="text-sm font-medium text-purple-200">
                 Technology Solutions Provider
               </span>
             </motion.div>
@@ -92,7 +88,7 @@ function AnimatedHero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <span className={isDarkMode ? "text-white" : "text-gray-900"}>
+              <span className="text-white">
                 Conison
               </span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 ml-4">
@@ -131,9 +127,7 @@ function AnimatedHero() {
             </div>
 
             <motion.p 
-              className={`text-lg md:text-xl leading-relaxed ${
-                isDarkMode ? "text-white/80" : "text-gray-700"
-              } max-w-2xl mx-auto text-center`}
+              className="text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl mx-auto text-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
@@ -153,11 +147,7 @@ function AnimatedHero() {
             <Link to="/contact">
               <Button 
                 size="lg" 
-                className={`group gap-3 px-6 py-6 text-base ${
-                  isDarkMode 
-                    ? "bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm" 
-                    : "bg-gray-900/5 text-gray-800 hover:bg-gray-900/10 backdrop-blur-sm"
-                } border-0 rounded-xl shadow-sm`} 
+                className="group gap-3 px-6 py-6 text-base bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border-0 rounded-xl shadow-sm" 
                 variant="outline"
               >
                 Schedule a call 
@@ -182,17 +172,17 @@ function AnimatedHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.6 }}
           >
-            <div className={`text-center px-6 ${isDarkMode ? "text-white/90" : "text-gray-800"}`}>
+            <div className="text-center px-6 text-white/90">
               <div className="text-3xl font-bold mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">500+</div>
-              <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Happy Clients</div>
+              <div className="text-sm text-gray-400">Happy Clients</div>
             </div>
-            <div className={`text-center px-6 ${isDarkMode ? "text-white/90" : "text-gray-800"}`}>
+            <div className="text-center px-6 text-white/90">
               <div className="text-3xl font-bold mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">98%</div>
-              <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Success Rate</div>
+              <div className="text-sm text-gray-400">Success Rate</div>
             </div>
-            <div className={`text-center px-6 ${isDarkMode ? "text-white/90" : "text-gray-800"}`}>
+            <div className="text-center px-6 text-white/90">
               <div className="text-3xl font-bold mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">12+</div>
-              <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Years Experience</div>
+              <div className="text-sm text-gray-400">Years Experience</div>
             </div>
           </motion.div>
         </motion.div>

@@ -37,10 +37,15 @@ const Footer = () => {
     ],
     services: [
       { name: 'Web Development', path: '/services/web-development' },
-      { name: 'Mobile Apps', path: '/services/mobile-apps' },
-      { name: 'UI/UX Design', path: '/services/ui-ux-design' },
+      { name: 'Mobile Development', path: '/services/mobile-development' },
+      { name: 'AI & ML Solutions', path: '/services/ai-ml' },
+      { name: 'Cloud Solutions', path: '/services/cloud-solutions' },
+      { name: 'Business Consulting', path: '/services/business-consulting' },
+      { name: 'Motion Graphics', path: '/services/motion-graphics' },
+      { name: 'Cybersecurity', path: '/services/cybersecurity' },
       { name: 'Digital Marketing', path: '/services/digital-marketing' },
-      { name: 'E-commerce Solutions', path: '/services/ecommerce' }
+      { name: 'Graphic Design', path: '/services/graphic-design' },
+      { name: 'Branding', path: '/services/branding' }
     ],
     support: [
       { name: 'Help Center', path: '/help' },
@@ -60,7 +65,7 @@ const Footer = () => {
 
   const contactInfo = [
     { icon: Mail, text: 'info@conisontechnologies.com', type: 'email', label: 'Email us' },
-    { icon: Phone, text: '+211 920504110', type: 'tel', label: 'Call us' },
+    { icon: Phone, text: '+211 920 504 110', type: 'tel', label: 'Call us' },
     { icon: MapPin, text: 'Juba, South Sudan', type: 'address', label: 'Our location' },
     { icon: Clock, text: 'Mon-Fri: 9:00 AM - 6:00 PM', type: 'hours', label: 'Working hours' }
   ];
@@ -148,165 +153,4 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   variants={socialIconVariants}
                   whileHover="hover"
-                  className={`p-2 rounded-full ${
-                    isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-100'
-                  } shadow-sm transition-colors duration-200`}
-                  aria-label={social.label}
-                >
-                  <social.icon className="w-5 h-5 text-conison-magenta" />
-                </motion.a>
-              ))}
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-semibold mb-5 flex items-center">
-              <span className="h-5 w-1 bg-conison-magenta rounded-full mr-2"></span>
-              Company
-            </h4>
-            <ul className="space-y-3">
-              {footerLinks.company.map((link, index) => (
-                <motion.li key={index} whileHover="hover">
-                  <Link
-                    to={link.path}
-                    className={`hover:text-conison-magenta transition-colors flex items-center ${
-                      isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                    }`}
-                  >
-                    <motion.span variants={linkVariants}>
-                      <ChevronRight className="w-4 h-4 inline mr-1 text-conison-magenta opacity-0 group-hover:opacity-100" />
-                      {link.name}
-                    </motion.span>
-                  </Link>
-                </motion.li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h4 className="text-lg font-semibold mb-5 flex items-center">
-              <span className="h-5 w-1 bg-conison-magenta rounded-full mr-2"></span>
-              Services
-            </h4>
-            <ul className="space-y-3">
-              {footerLinks.services.map((link, index) => (
-                <motion.li key={index} whileHover="hover">
-                  <Link
-                    to={link.path}
-                    className={`hover:text-conison-magenta transition-colors flex items-center group ${
-                      isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                    }`}
-                  >
-                    <motion.span variants={linkVariants}>
-                      <ChevronRight className="w-4 h-4 inline mr-1 text-conison-magenta opacity-0 group-hover:opacity-100" />
-                      {link.name}
-                    </motion.span>
-                  </Link>
-                </motion.li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h4 className="text-lg font-semibold mb-5 flex items-center">
-              <span className="h-5 w-1 bg-conison-magenta rounded-full mr-2"></span>
-              Contact Us
-            </h4>
-            <ul className="space-y-4">
-              {contactInfo.map((item, index) => (
-                <li key={index} className="flex items-start space-x-3">
-                  <div className={`p-2 rounded-full ${
-                    isDarkMode ? 'bg-gray-800' : 'bg-white'
-                  } shadow-sm`}>
-                    <item.icon className="w-5 h-5 text-conison-magenta" />
-                  </div>
-                  <div>
-                    <span className="text-xs text-conison-magenta font-medium block">
-                      {item.label}
-                    </span>
-                    {item.type === 'email' ? (
-                      <a
-                        href={`mailto:${item.text}`}
-                        className={`hover:text-conison-magenta transition-colors ${
-                          isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                        }`}
-                      >
-                        {item.text}
-                      </a>
-                    ) : item.type === 'tel' ? (
-                      <a
-                        href={`tel:${item.text.replace(/\D/g, '')}`}
-                        className={`hover:text-conison-magenta transition-colors ${
-                          isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                        }`}
-                      >
-                        {item.text}
-                      </a>
-                    ) : (
-                      <span className={`${
-                        isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                      }`}>
-                        {item.text}
-                      </span>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} py-4 border-t ${
-        isDarkMode ? 'border-gray-700' : 'border-gray-200'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className={`text-sm ${
-              isDarkMode ? 'text-gray-400' : 'text-gray-500'
-            }`}>
-              © {currentYear} Conison Technologies. All rights reserved.
-            </p>
-            <div className="flex space-x-4 mt-4 md:mt-0">
-              <Link
-                to="/privacy"
-                className={`text-sm hover:text-conison-magenta transition-colors ${
-                  isDarkMode ? 'text-gray-400' : 'text-gray-500'
-                }`}
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                to="/terms"
-                className={`text-sm hover:text-conison-magenta transition-colors ${
-                  isDarkMode ? 'text-gray-400' : 'text-gray-500'
-                }`}
-              >
-                Terms of Service
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Scroll to Top Button */}
-      <motion.button
-        onClick={scrollToTop}
-        className={`fixed bottom-8 right-8 p-3 rounded-full shadow-lg ${
-          isDarkMode ? 'bg-gray-800' : 'bg-white'
-        } hover:bg-conison-magenta hover:text-white transition-colors duration-200`}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        aria-label="Scroll to top"
-      >
-        <ArrowUp className="w-6 h-6" />
-      </motion.button>
-    </footer>
-  );
-};
-
-export default Footer;
+                  className={`
