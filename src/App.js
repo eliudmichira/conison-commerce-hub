@@ -24,9 +24,8 @@ import QuoteRequestPage from './pages/QuoteRequestPage';
 import PaymentPage from './pages/PaymentPage';
 import ThankYouPage from './pages/ThankYouPage';
 import NotFoundPage from './pages/NotFoundPage';
-import LoginPage from './pages/client/LoginPage';
-import RegisterPage from './pages/auth/RegisterPage';
-import SignupPage from './pages/client/RegisterPage';
+import LoginPage from './pages/auth/LoginPage.jsx';
+import RegisterPage from './pages/auth/RegisterPage.jsx';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 
@@ -123,7 +122,6 @@ const AppContent = () => {
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/signup" element={<SignupPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/terms-of-service" element={<TermsOfServicePage />} />
 

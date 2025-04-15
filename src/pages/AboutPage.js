@@ -4,9 +4,7 @@ import { Link } from 'react-router-dom';
 import { useDarkMode } from '../context/DarkModeContext';
 import { 
   Users, 
-  Code, 
   Smartphone, 
-  Database, 
   Zap,
   Rocket, 
   Handshake, 
@@ -103,7 +101,7 @@ const AboutPage = () => {
       }
     },
     {
-      name: 'Eliud Samuel',
+      name: 'Eliud Samwel',
       role: 'CTO',
       image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
       description: 'Technical expert specializing in software architecture and innovation.',

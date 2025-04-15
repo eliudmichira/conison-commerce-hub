@@ -269,6 +269,15 @@
     to { opacity: 1; }
   }
 
+  @keyframes shimmer {
+    0% {
+      background-position: -300px 0;
+    }
+    100% {
+      background-position: 300px 0;
+    }
+  }
+
   /* Add dark mode visibility improvements */
   .dark .particles-container {
     z-index: 0;

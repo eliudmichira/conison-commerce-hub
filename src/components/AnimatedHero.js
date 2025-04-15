@@ -38,10 +38,10 @@ function AnimatedHero() {
   }, [titleNumber, animationsEnabled, rotateTitles]);
 
   return (
-    <div className="w-full relative overflow-hidden min-h-[80vh] flex items-center">
-      {/* Blob decoration elements */}
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-purple-600 opacity-10 rounded-full blur-3xl"></div>
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-pink-600 opacity-10 rounded-full blur-3xl"></div>
+    <div className="w-full relative overflow-hidden min-h-[75vh] sm:min-h-[80vh] md:min-h-[85vh] flex items-center">
+      {/* Blob decoration elements - adjusted for better mobile appearance */}
+      <div className="absolute -top-16 -left-16 xs:-top-20 xs:-left-20 sm:-top-40 sm:-left-40 w-48 xs:w-64 sm:w-96 h-48 xs:h-64 sm:h-96 bg-purple-600 opacity-10 rounded-full blur-3xl"></div>
+      <div className="absolute -bottom-16 -right-16 xs:-bottom-20 xs:-right-20 sm:-bottom-40 sm:-right-40 w-48 xs:w-64 sm:w-96 h-48 xs:h-64 sm:h-96 bg-pink-600 opacity-10 rounded-full blur-3xl"></div>
       
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
@@ -50,9 +50,10 @@ function AnimatedHero() {
           alt="Modern technology workspace" 
           className="w-full h-full object-cover"
           aria-hidden="true"
+          loading="eager"
         />
         <div 
-          className={`absolute inset-0 bg-gradient-to-br from-gray-900/70 via-gray-900/60 to-gray-900/80`}
+          className="absolute inset-0 bg-gradient-to-br from-gray-900/80 via-gray-900/70 to-gray-900/80"
         ></div>
       </div>
       
@@ -60,30 +61,61 @@ function AnimatedHero() {
       <div className="absolute inset-0 opacity-10" style={{ 
         backgroundImage: `url(${process.env.PUBLIC_URL}/images/grid-pattern.svg)`,
         backgroundRepeat: 'repeat',
-        backgroundSize: '10px 10px'
+        backgroundSize: '5px 5px',
+        backgroundPosition: 'center',
       }}></div>
       
-      <div className="container mx-auto relative z-10 px-4">
+      <div className="container mx-auto relative z-10 px-3 xs:px-4 sm:px-6">
         <motion.div 
-          className="flex gap-8 py-20 items-center justify-center flex-col"
+          className="flex gap-4 xs:gap-5 sm:gap-8 py-8 xs:py-12 sm:py-16 md:py-20 items-center justify-center flex-col"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <div className="flex gap-6 flex-col items-center">
+          <div className="flex gap-3 xs:gap-4 sm:gap-6 flex-col items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 px-6 py-2 border border-purple-500/30 mb-4"
+              className="relative rounded-full overflow-hidden px-3 xs:px-4 sm:px-6 py-1 xs:py-1.5 sm:py-2 mb-1 xs:mb-2 sm:mb-4"
+              style={{
+                background: isDarkMode 
+                  ? 'linear-gradient(to right, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15))' 
+                  : 'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))',
+                borderRadius: '9999px',
+                border: '1px solid rgba(139, 92, 246, 0.3)',
+                boxShadow: '0 0 20px rgba(139, 92, 246, 0.2)'
+              }}
             >
-              <span className="text-sm font-medium text-purple-200">
+              {/* Multiple background layers for depth */}
+              <div className="absolute inset-0 opacity-30" 
+                style={{ 
+                  backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(139, 92, 246, 0.1) 10px, rgba(139, 92, 246, 0.1) 20px)',
+                }} 
+              />
+              <div className="absolute inset-0 opacity-30" 
+                style={{ 
+                  backgroundImage: 'repeating-linear-gradient(135deg, transparent, transparent 15px, rgba(236, 72, 153, 0.1) 15px, rgba(236, 72, 153, 0.1) 30px)',
+                }} 
+              />
+              <div className="absolute inset-0" 
+                style={{ 
+                  backgroundImage: 'linear-gradient(to right, rgba(139, 92, 246, 0.05), rgba(236, 72, 153, 0.05), rgba(139, 92, 246, 0.05))',
+                  backgroundSize: '600px 100%',
+                  animation: 'shimmer 3s infinite linear'
+                }} 
+              />
+              <span className="relative z-10 text-xs sm:text-sm font-medium" 
+                style={{ 
+                  color: isDarkMode ? '#e9d5ff' : '#7e22ce' 
+                }}
+              >
                 Technology Solutions Provider
               </span>
             </motion.div>
             
             <motion.h1 
-              className="text-5xl md:text-7xl max-w-3xl mx-auto text-center font-bold"
+              className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl max-w-3xl mx-auto text-center font-bold tracking-tight leading-tight"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
@@ -91,16 +123,16 @@ function AnimatedHero() {
               <span className="text-white">
                 Conison
               </span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 ml-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 ml-1 xs:ml-2 sm:ml-4">
                 Technologies
               </span>
             </motion.h1>
             
-            {/* Rotating adjectives with better spacing */}
-            <div className="relative flex w-full justify-center overflow-hidden text-center h-24 md:h-28 my-2">
+            {/* Rotating adjectives with better spacing and responsive height */}
+            <div className="relative flex w-full justify-center overflow-hidden text-center h-12 xs:h-16 sm:h-20 md:h-24 my-1 sm:my-2">
               {/* Show static first title for immediate LCP */}
               {!animationsEnabled && (
-                <span className="text-4xl md:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
+                <span className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
                   {titles[0]}
                 </span>
               )}
@@ -110,7 +142,7 @@ function AnimatedHero() {
                 {animationsEnabled && (
                   <motion.span
                     key={titleNumber}
-                    className="absolute text-4xl md:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500"
+                    className="absolute text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500"
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -40 }}
@@ -127,19 +159,23 @@ function AnimatedHero() {
             </div>
 
             <motion.p 
-              className="text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl mx-auto text-center"
+              className="text-sm xs:text-base sm:text-lg md:text-xl leading-relaxed max-w-xs xs:max-w-lg sm:max-w-xl md:max-w-2xl mx-auto text-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
+              style={{
+                textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                color: isDarkMode ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.95)'
+              }}
             >
-              Empowering businesses with innovative digital solutions.
-              <br />
-              From web development to AI integration, we transform your vision into reality.
+              <span className="font-medium">Empowering businesses with innovative digital solutions.</span>
+              <br className="hidden xs:block" />
+              <span className="opacity-90">From web development to AI integration, we transform your vision into reality.</span>
             </motion.p>
           </div>
           
           <motion.div 
-            className="flex flex-col sm:flex-row gap-4 mt-8"
+            className="flex flex-col xs:flex-row gap-2 xs:gap-3 sm:gap-4 mt-4 xs:mt-5 sm:mt-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
@@ -147,42 +183,42 @@ function AnimatedHero() {
             <Link to="/contact">
               <Button 
                 size="lg" 
-                className="group gap-3 px-6 py-6 text-base bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border-0 rounded-xl shadow-sm" 
+                className="group gap-1.5 xs:gap-2 sm:gap-3 px-3 xs:px-4 sm:px-6 py-1.5 xs:py-2 sm:py-5 md:py-6 text-xs xs:text-sm sm:text-base bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border-0 rounded-xl shadow-sm w-full xs:w-auto" 
                 variant="outline"
               >
                 Schedule a call 
-                <PhoneCall className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                <PhoneCall className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 group-hover:rotate-12 transition-transform" />
               </Button>
             </Link>
             <Link to="/login">
               <Button 
                 size="lg" 
-                className="group gap-3 px-6 py-6 text-base bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 rounded-xl shadow-md"
+                className="group gap-1.5 xs:gap-2 sm:gap-3 px-3 xs:px-4 sm:px-6 py-1.5 xs:py-2 sm:py-5 md:py-6 text-xs xs:text-sm sm:text-base bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 rounded-xl shadow-md w-full xs:w-auto"
               >
                 Get started today
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </motion.div>
           
-          {/* Stats section */}
+          {/* Stats section - Made more responsive */}
           <motion.div 
-            className="flex flex-wrap justify-center gap-8 mt-16 w-full max-w-3xl"
+            className="flex flex-wrap justify-center gap-3 xs:gap-4 sm:gap-8 mt-6 xs:mt-10 sm:mt-16 w-full max-w-[280px] xs:max-w-xs sm:max-w-xl md:max-w-3xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.6 }}
           >
-            <div className="text-center px-6 text-white/90">
-              <div className="text-3xl font-bold mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">500+</div>
-              <div className="text-sm text-gray-400">Happy Clients</div>
+            <div className="text-center px-2 xs:px-3 sm:px-6 text-white/90">
+              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-0.5 xs:mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">500+</div>
+              <div className="text-[10px] xs:text-xs sm:text-sm text-gray-400">Happy Clients</div>
             </div>
-            <div className="text-center px-6 text-white/90">
-              <div className="text-3xl font-bold mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">98%</div>
-              <div className="text-sm text-gray-400">Success Rate</div>
+            <div className="text-center px-2 xs:px-3 sm:px-6 text-white/90">
+              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-0.5 xs:mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">98%</div>
+              <div className="text-[10px] xs:text-xs sm:text-sm text-gray-400">Success Rate</div>
             </div>
-            <div className="text-center px-6 text-white/90">
-              <div className="text-3xl font-bold mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">12+</div>
-              <div className="text-sm text-gray-400">Years Experience</div>
+            <div className="text-center px-2 xs:px-3 sm:px-6 text-white/90">
+              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-0.5 xs:mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">12+</div>
+              <div className="text-[10px] xs:text-xs sm:text-sm text-gray-400">Years Experience</div>
             </div>
           </motion.div>
         </motion.div>

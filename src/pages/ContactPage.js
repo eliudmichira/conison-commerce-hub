@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 import { 
   FaPhone, 
   FaEnvelope, 
@@ -98,13 +99,25 @@ const ContactPage = () => {
     setSubmitStatus(null);
 
     try {
-      // TODO: Replace with actual API endpoint for form submission
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulated API call
-      
-      // For demo purposes, randomly succeed or fail
-      const success = Math.random() > 0.1; // 90% success rate for demo
-      
-      if (success) {
+      // Using EmailJS to send the form data directly to info@conisontechnologies.com
+      const templateParams = {
+        to_email: 'info@conisontechnologies.com',
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        company: formData.company || 'Not provided',
+        phone: formData.phone || 'Not provided',
+        service: selectedService || 'Not selected'
+      };
+
+      // Replace these IDs with your actual EmailJS account details
+      const serviceID = process.env.REACT_APP_EMAILJS_SERVICE_ID; 
+      const templateID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+
+      const response = await emailjs.send(serviceID, templateID, templateParams);
+
+      if (response.status === 200) {
         setSubmitStatus('success');
         setFormData({
           name: '',
