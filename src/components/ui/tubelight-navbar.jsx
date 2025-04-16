@@ -14,6 +14,7 @@ const NavBar = ({ items = [] }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { isDarkMode } = useDarkMode();
 
   // Improved navigation items structure
   const defaultItems = [
@@ -22,13 +23,6 @@ const NavBar = ({ items = [] }) => {
       name: 'Services', 
       path: '/services', 
       icon: FaCogs, 
-      subItems: [
-        { name: 'Web Development', path: '/services/web-development' },
-        { name: 'Mobile Development', path: '/services/mobile-development' },
-        { name: 'AI/ML Solutions', path: '/services/ai-ml' },
-        { name: 'Cloud Solutions', path: '/services/cloud-solutions' },
-        { name: 'Business Consulting', path: '/services/consulting' }
-      ]
     },
     { 
       name: 'Portfolio', 
@@ -110,11 +104,16 @@ const NavBar = ({ items = [] }) => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  // Determine if we're on the homepage for special styling
+  const isHomePage = location.pathname === '/';
+
   return (
-    <motion.nav
-      className={`fixed top-0 w-full z-50 transition-shadow duration-300 ${
-        isScrolled
-          ? 'shadow-md backdrop-blur-xl bg-white/90 dark:bg-gray-900/90'
+    <motion.nav 
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        isScrolled 
+          ? isDarkMode 
+            ? 'bg-gray-900/85 backdrop-blur-md shadow-lg shadow-black/10'
+            : 'bg-white/85 backdrop-blur-md shadow-lg'
           : 'bg-transparent'
       }`}
       initial={{ y: -100 }}
@@ -136,16 +135,24 @@ const NavBar = ({ items = [] }) => {
 
           {/* Desktop Navigation - Centered */}
           <div className="hidden md:flex flex-1 items-center justify-center">
-            <div className="flex items-center rounded-xl bg-gray-100 dark:bg-gray-800/50 p-1">
+            <div className={`flex items-center rounded-xl ${
+              isScrolled || !isHomePage 
+                ? 'bg-gray-100/80 dark:bg-gray-800/70' 
+                : 'bg-gray-900/30 dark:bg-gray-900/40 backdrop-blur-sm'
+            } p-1`}>
               {navItems.map((item, index) => (
                 <div key={index} className="relative">
                   <div className="flex items-center">
-                    <Link
+                <Link
                       to={item.path || '#'}
                       className={`flex items-center px-2.5 lg:px-3 py-1.5 lg:py-2 text-sm lg:text-base font-medium rounded-lg transition-colors duration-200 ${
                         activeIndex === index
-                          ? 'text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800'
-                          : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                          ? isScrolled || !isHomePage
+                            ? 'text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800'
+                            : 'text-white bg-white/20 backdrop-blur-sm'
+                          : isScrolled || !isHomePage
+                            ? 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                            : 'text-gray-100 hover:text-white hover:bg-white/10'
                       }`}
                       onClick={(e) => {
                         if (item.subItems) {
@@ -193,7 +200,7 @@ const NavBar = ({ items = [] }) => {
                             >
                               <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70 mr-2.5"></span>
                               {subItem.name}
-                            </Link>
+                </Link>
                           ))}
                         </motion.div>
                       )}
@@ -203,36 +210,41 @@ const NavBar = ({ items = [] }) => {
               ))}
             </div>
           </div>
-          
-          {/* Desktop ThemeToggle & Auth */}
-          <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
-            <ThemeToggle className="mr-0.5 lg:mr-1" />
+
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-2 md:gap-3">
+            {/* Dark Mode Toggle - Always visible */}
+            <ThemeToggle />
             
+            {/* Login/Account Button - Simple version optimized for mobile */}
             {isAuthenticated ? (
               <button
                 onClick={handleLogout}
-                className="px-3 lg:px-4 py-1.5 lg:py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white text-sm lg:text-base font-medium shadow-sm transition-colors duration-200"
+                className="flex items-center space-x-1 rounded-lg px-3 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors"
               >
-                Sign Out
+                <span className="hidden xs:inline">Logout</span>
               </button>
             ) : (
-              <Link 
-                to="/login" 
-                className="px-3 lg:px-4 py-1.5 lg:py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white text-sm lg:text-base font-medium shadow-sm transition-colors duration-200"
-              >
-                Sign In
+              <Link to="/login" className={`flex items-center space-x-1 rounded-lg px-3 py-2 text-sm font-medium shadow-sm transition-colors ${
+                isScrolled || !isHomePage
+                  ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                  : 'bg-indigo-600/90 hover:bg-indigo-600 text-white backdrop-blur-sm'
+              }`}>
+                <span className="xs:inline">Login</span>
               </Link>
             )}
-          </div>
-          
-          {/* Mobile Navigation Controls - Improved for touch */}
-          <div className="flex items-center md:hidden space-x-1">
-            <ThemeToggle size="sm" />
-            
+
+            {/* Mobile menu button */}
             <button
+              className={`md:hidden rounded-lg p-1.5 shadow-sm border ${
+                isDarkMode 
+                  ? 'bg-gray-800 text-gray-100 border-gray-700 hover:bg-gray-700' 
+                  : isScrolled || !isHomePage
+                    ? 'bg-gray-200 text-gray-800 border-gray-300 hover:bg-gray-300'
+                    : 'bg-white/30 text-white border-white/30 hover:bg-white/40 backdrop-blur-sm'
+              }`}
               onClick={toggleMobileMenu}
-              className="p-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
-              aria-label="Toggle mobile menu"
+              aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
                 <X className="w-5 h-5" />
@@ -242,18 +254,16 @@ const NavBar = ({ items = [] }) => {
             </button>
           </div>
         </div>
-      </div>
-      
-      {/* Mobile Menu - Enhanced for better touch and readability */}
-      <div className="md:hidden">
+
+        {/* Mobile menu - Enhanced with animations */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="overflow-hidden bg-white dark:bg-gray-900 shadow-lg"
+              transition={{ duration: 0.2 }}
+              className="md:hidden overflow-hidden"
             >
               <div className="container mx-auto px-4 pb-4">
                 <div className="py-3 space-y-1.5">
@@ -266,17 +276,17 @@ const NavBar = ({ items = [] }) => {
                           ? 'bg-indigo-50 dark:bg-indigo-900/20' 
                           : ''
                       }`}>
-                        <Link
+                    <Link
                           to={item.path || '#'}
                           className={`flex items-center space-x-3 py-2.5 px-3 flex-1 font-medium text-sm ${
-                            activeIndex === index
+                        activeIndex === index
                               ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
                               : 'text-gray-800 dark:text-gray-200'
                           } ${item.subItems ? '' : 'rounded-lg'}`}
-                          onClick={() => {
+                      onClick={() => {
                             if (!item.subItems) {
-                              setActiveIndex(index);
-                              setIsMobileMenuOpen(false);
+                        setActiveIndex(index);
+                        setIsMobileMenuOpen(false);
                             }
                           }}
                         >
@@ -322,7 +332,7 @@ const NavBar = ({ items = [] }) => {
                                   >
                                     <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70 mr-2.5"></span>
                                     {subItem.name}
-                                  </Link>
+                    </Link>
                                 ))}
                               </div>
                             </motion.div>
@@ -340,14 +350,14 @@ const NavBar = ({ items = [] }) => {
                           handleLogout();
                           setIsMobileMenuOpen(false);
                         }}
-                        className="w-full py-2.5 px-4 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-medium text-sm shadow-sm"
+                        className="w-full py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm shadow-sm transition-colors"
                       >
                         Sign Out
                       </button>
                     ) : (
                       <Link 
                         to="/login" 
-                        className="block w-full text-center py-2.5 px-4 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-medium text-sm shadow-sm"
+                        className="block w-full text-center py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm shadow-sm transition-colors"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Sign In
@@ -364,20 +374,24 @@ const NavBar = ({ items = [] }) => {
   );
 };
 
-// ThemeToggle component
-const ThemeToggle = ({ className = '', size = 'md' }) => {
+// Theme toggle component
+const ThemeToggle = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   
   return (
     <button
       onClick={toggleDarkMode}
-      className={`p-${size === 'sm' ? '1' : '2'} rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${className}`}
-      aria-label="Toggle dark mode"
+      className={`rounded-lg p-1.5 shadow-sm border ${
+        isDarkMode 
+          ? 'bg-gray-800 text-yellow-300 border-gray-700 hover:bg-gray-700' 
+          : 'bg-indigo-100 text-indigo-800 border-indigo-200 hover:bg-indigo-200'
+      }`}
+      aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
     >
       {isDarkMode ? (
-        <FaSun className={`w-${size === 'sm' ? '4' : '5'} h-${size === 'sm' ? '4' : '5'}`} />
+        <FaSun className="w-4 h-4" />
       ) : (
-        <FaMoon className={`w-${size === 'sm' ? '4' : '5'} h-${size === 'sm' ? '4' : '5'}`} />
+        <FaMoon className="w-4 h-4" />
       )}
     </button>
   );

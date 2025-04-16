@@ -91,7 +91,7 @@ const LoginPage = () => {
         
         // Delayed redirect for better UX
         setTimeout(() => {
-          navigate(redirectPath);
+        navigate(redirectPath);
         }, 1000);
       } else {
         // Fallback for when auth context is not available
@@ -101,14 +101,14 @@ const LoginPage = () => {
           localStorage.setItem('userRole', 'admin');
           setShowSuccessMessage(true);
           setTimeout(() => {
-            navigate('/admin');
+          navigate('/admin');
           }, 1000);
         } else if (email === 'client@conison.com' && password === 'client123') {
           localStorage.setItem('isAuthenticated', 'true');
           localStorage.setItem('userRole', 'client');
           setShowSuccessMessage(true);
           setTimeout(() => {
-            navigate('/client');
+          navigate('/client');
           }, 1000);
         } else {
           setLoginError('Invalid email or password');
@@ -258,10 +258,10 @@ const LoginPage = () => {
                 Log in to access your dashboard
               </p>
             </motion.div>
-            
-            {/* Display error message */}
+          
+          {/* Display error message */}
             <AnimatePresence>
-              {loginError && (
+          {loginError && (
                 <motion.div 
                   initial="hidden"
                   animate="visible"
@@ -272,13 +272,13 @@ const LoginPage = () => {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
-                  {loginError}
+              {loginError}
                 </motion.div>
-              )}
+          )}
             </AnimatePresence>
-            
+          
             <motion.form onSubmit={handleSubmit} className="space-y-6 mt-8" variants={itemVariants}>
-              {/* Email input */}
+            {/* Email input */}
               <div className="space-y-1">
                 <label 
                   htmlFor="email" 
@@ -293,10 +293,10 @@ const LoginPage = () => {
                   <input
                     id="email"
                     name="email"
-                    type="email"
+              type="email"
                     ref={emailInputRef}
                     required
-                    value={email}
+              value={email}
                     onChange={handleEmailChange}
                     className={`appearance-none rounded-lg w-full px-3 py-3 pl-12 border ${
                       themeColors.inputBg} ${themeColors.inputBorder} ${!emailValid ? 'border-red-500 focus:ring-red-500/20' : themeColors.inputBorderFocus + ' ' + themeColors.inputRing
@@ -319,8 +319,8 @@ const LoginPage = () => {
                   </p>
                 )}
               </div>
-              
-              {/* Password input */}
+            
+            {/* Password input */}
               <div className="space-y-1">
                 <label 
                   htmlFor="password" 
@@ -345,18 +345,18 @@ const LoginPage = () => {
                     placeholder="••••••••"
                     required
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showPassword ? (
+                >
+                  {showPassword ? (
                       <FaEyeSlash className={`h-5 w-5 ${themeColors.tertiaryText} hover:${themeColors.secondaryText}`} />
-                    ) : (
+                  ) : (
                       <FaEye className={`h-5 w-5 ${themeColors.tertiaryText} hover:${themeColors.secondaryText}`} />
-                    )}
-                  </button>
-                </div>
+                  )}
+                </button>
+              </div>
                 
                 {/* Password requirements hint */}
                 <AnimatePresence>
@@ -374,62 +374,62 @@ const LoginPage = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
-              
-              {/* Remember me checkbox */}
+            </div>
+            
+            {/* Remember me checkbox */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
                     className={`h-4 w-4 rounded border ${themeColors.checkbox} focus:ring-2 ${themeColors.focusRing} focus:ring-offset-2`}
-                  />
+              />
                   <label 
                     htmlFor="remember-me" 
                     className={`ml-2 block text-sm ${themeColors.secondaryText}`}
                   >
-                    Remember me
-                  </label>
+                Remember me
+              </label>
                 </div>
-                <Link 
-                  to="/forgot-password" 
+              <Link 
+                to="/forgot-password" 
                   className={`text-sm font-medium ${themeColors.link} focus:outline-none focus:underline transition-colors`}
-                >
-                  Forgot password?
-                </Link>
-              </div>
-              
-              {/* Submit button */}
-              <div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
+              >
+                Forgot password?
+              </Link>
+            </div>
+            
+            {/* Submit button */}
+            <div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
                   className={`group relative w-full flex justify-center py-3.5 px-4 text-base font-semibold rounded-lg ${themeColors.primaryButton} ${themeColors.primaryButtonText}
                     focus:outline-none focus:ring-2 focus:ring-offset-2 ${themeColors.focusRing} 
                     transition-all duration-200 shadow-md hover:shadow-lg ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-                >
-                  {isSubmitting ? (
+              >
+                {isSubmitting ? (
                     <span className="flex items-center justify-center">
-                      <LoadingSpinner size="sm" className="mr-2" />
-                      Signing in...
-                    </span>
-                  ) : 'Sign in'}
-                </button>
-              </div>
+                    <LoadingSpinner size="sm" className="mr-2" />
+                    Signing in...
+                  </span>
+                ) : 'Sign in'}
+              </button>
+            </div>
             </motion.form>
-            
-            {/* Sign up link */}
+          
+          {/* Sign up link */}
             <motion.div variants={itemVariants} className="text-center mt-6">
               <p className={`text-sm ${themeColors.secondaryText}`}>
                 Don't have an account?{' '}
-                <Link
-                  to="/signup"
+              <Link
+                to="/signup"
                   className={`font-medium ${themeColors.link} focus:outline-none focus:underline transition-colors`}
-                >
+              >
                   Sign up for free
-                </Link>
+              </Link>
               </p>
             </motion.div>
           </>
@@ -442,7 +442,7 @@ const LoginPage = () => {
           <Link to="/terms" className={`hover:underline ${themeColors.link}`}>Terms of Service</Link>
           <Link to="/privacy" className={`hover:underline ${themeColors.link}`}>Privacy Policy</Link>
           <Link to="/help" className={`hover:underline ${themeColors.link}`}>Help Center</Link>
-        </div>
+          </div>
         <div className={`mt-2 text-xs ${themeColors.tertiaryText}`}>
           © {new Date().getFullYear()} Conison Technologies. All rights reserved.
         </div>
@@ -451,4 +451,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default LoginPage; 

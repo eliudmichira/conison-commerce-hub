@@ -136,10 +136,10 @@ const RateCardPage = () => {
       {/* Rate Card Section */}
       <section className={`py-16 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white'}`}>
         <div className="container mx-auto px-6 lg:px-8">
-          <RateCard />
+            <RateCard />
         </div>
       </section>
-
+      
       {/* FAQ Section */}
       <section 
         ref={faqRef}
@@ -157,7 +157,7 @@ const RateCardPage = () => {
               Find answers to common questions about our pricing and services
             </p>
           </motion.div>
-
+          
           <div className="max-w-3xl mx-auto">
             {faqItems.map((item, index) => (
               <motion.div
@@ -176,7 +176,7 @@ const RateCardPage = () => {
                   onClick={() => setActiveFaq(activeFaq === index ? null : index)}
                 >
                   <span className="font-medium">{item.question}</span>
-                  <ChevronDown
+                  <ChevronDown 
                     className={`w-5 h-5 transform transition-transform ${
                       activeFaq === index ? 'rotate-180' : ''
                     }`}

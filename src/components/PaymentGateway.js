@@ -18,6 +18,13 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY)
     return Promise.resolve(null);
   });
 
+// MTN Mobile Money configuration from environment variables
+const MTN_CONFIG = {
+  consumerKey: process.env.REACT_APP_MTN_CONSUMER_KEY || 'OoYJlo8LDQNDyZQuePd89ugymdCAqxXF',
+  consumerSecret: process.env.REACT_APP_MTN_CONSUMER_SECRET || 'EXTxFsuL5MZzUa7X',
+  apiUrl: process.env.REACT_APP_MTN_API_URL || 'https://sandbox.momodeveloper.mtn.com'
+};
+
 // Helper function to format currency values
 const formatCurrency = (value, currencyCode = 'USD') => {
   try {
@@ -315,6 +322,193 @@ const PayPalForm = ({ amount, currency, onSuccess, onError }) => {
   );
 };
 
+// MTN Mobile Money Form Component
+const MTNMomoForm = ({ amount, currency, onSuccess, onError }) => {
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [transactionId, setTransactionId] = useState('');
+  const [verificationStep, setVerificationStep] = useState(0);
+  const [pollInterval, setPollInterval] = useState(null);
+
+  useEffect(() => {
+    // Clean up polling interval on unmount
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
+  }, [pollInterval]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    if (!phoneNumber || phoneNumber.length < 10) {
+      setErrorMessage('Please enter a valid phone number');
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage('');
+
+    try {
+      // Call Firebase function to initiate payment
+      const response = await fetch('/api/createMTNPayment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber,
+          amount: amount,
+          currency: currency
+        })
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to initiate payment');
+      }
+
+      const mtnTxnId = data.transactionId;
+      setTransactionId(mtnTxnId);
+      setVerificationStep(1);
+      
+      // Start polling for payment status
+      const interval = setInterval(async () => {
+        await checkPaymentStatus(mtnTxnId);
+      }, 3000);
+      
+      setPollInterval(interval);
+      
+    } catch (err) {
+      console.error('Payment initiation error:', err);
+      setErrorMessage('Failed to initiate payment. Please try again.');
+      onError(err);
+      setLoading(false);
+    }
+  };
+
+  const checkPaymentStatus = async (txnId) => {
+    try {
+      const response = await fetch(`/api/checkMTNPaymentStatus?transactionId=${txnId}`);
+      const data = await response.json();
+      
+      if (response.ok && data.status === 'SUCCESSFUL') {
+        // Clear polling interval
+        if (pollInterval) {
+          clearInterval(pollInterval);
+        }
+        
+        onSuccess({
+          transactionId: txnId,
+          method: 'mtn',
+          amount,
+          currency,
+          phoneNumber,
+          status: 'completed'
+        });
+      }
+    } catch (error) {
+      console.error('Error checking payment status:', error);
+      // Don't stop polling on error, just log it
+    }
+  };
+
+  const formatPhoneNumber = (input) => {
+    // Format phone number for display
+    let value = input.replace(/\D/g, '');
+    if (value.length > 0) {
+      // For demonstration, handle different country formats
+      if (!value.startsWith('2')) {
+        // If number doesn't start with country code, assume it's a local number
+        // and add country code (e.g., 234 for Nigeria, 233 for Ghana)
+        value = `2${value}`;
+      }
+    }
+    setPhoneNumber(value);
+  };
+
+  return (
+    <div>
+      {verificationStep === 0 ? (
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label htmlFor="mtnPhone" className="block text-gray-700 dark:text-gray-300 mb-2">
+              MTN Mobile Number
+            </label>
+            <div className="flex">
+              <input
+                type="tel"
+                id="mtnPhone"
+                className="w-full p-3 border rounded-md bg-white dark:bg-gray-700 dark:text-white"
+                placeholder="e.g. 23470XXXXXXX"
+                value={phoneNumber}
+                onChange={(e) => formatPhoneNumber(e.target.value)}
+              />
+            </div>
+            {errorMessage && (
+              <div className="text-red-600 text-sm mt-2">
+                {errorMessage}
+              </div>
+            )}
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              You will receive an MTN Mobile Money prompt on this phone number to complete payment.
+            </p>
+          </div>
+          
+          <div className="bg-yellow-50 dark:bg-yellow-900/30 p-3 rounded-md mb-4">
+            <p className="text-sm text-yellow-800 dark:text-yellow-200">
+              <strong>Important:</strong> Make sure you have sufficient balance in your MTN Mobile Money account.
+            </p>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full bg-yellow-500 text-white py-3 px-8 rounded-lg shadow hover:bg-yellow-600 transition ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Initiating Payment...
+              </div>
+            ) : (
+              `Pay ${formatCurrency(amount, currency)} with MTN Mobile Money`
+            )}
+          </button>
+        </form>
+      ) : (
+        <div className="text-center">
+          <div className="animate-pulse mb-4">
+            <div className="w-16 h-16 mx-auto rounded-full bg-yellow-100 flex items-center justify-center">
+              <svg className="w-8 h-8 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+            </div>
+          </div>
+          <h3 className="text-lg font-bold mb-2 dark:text-white">Processing Payment</h3>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            A payment request has been sent to <strong>{phoneNumber}</strong>
+          </p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
+            Please check your phone and approve the payment request. This page will update automatically.
+          </p>
+          <p className="text-gray-500 dark:text-gray-400 text-xs">
+            Transaction ID: {transactionId}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Main PaymentGateway component
 const PaymentGateway = ({ amount = 0, currency = 'USD', onSuccess, onCancel }) => {
   const [selectedMethod, setSelectedMethod] = useState('');
@@ -328,7 +522,7 @@ const PaymentGateway = ({ amount = 0, currency = 'USD', onSuccess, onCancel }) =
     { id: 'card', name: 'Credit/Debit Card', icon: 'credit-card', available: true },
     { id: 'paypal', name: 'PayPal', icon: 'paypal', available: true },
     { id: 'mpesa', name: 'M-PESA', icon: 'mobile', available: showMobilePayments },
-    { id: 'momo', name: 'Mobile Money', icon: 'mobile', available: showMobilePayments },
+    { id: 'mtn', name: 'MTN Mobile Money', icon: 'mobile', available: true },
     { id: 'bank', name: 'Bank Transfer', icon: 'bank', available: true }
   ];
 
@@ -485,7 +679,7 @@ const PaymentGateway = ({ amount = 0, currency = 'USD', onSuccess, onCancel }) =
                     {method.id === 'card' && 'Visa, Mastercard, etc.'}
                     {method.id === 'paypal' && 'Pay with your PayPal account'}
                     {method.id === 'mpesa' && 'Pay using M-PESA mobile money'}
-                    {method.id === 'momo' && 'MTN, Airtel, and other mobile money services'}
+                    {method.id === 'mtn' && 'Pay with MTN Mobile Money'}
                     {method.id === 'bank' && 'Direct bank transfer'}
                   </p>
                 </div>
@@ -556,6 +750,15 @@ const PaymentGateway = ({ amount = 0, currency = 'USD', onSuccess, onCancel }) =
             />
           )}
           
+          {selectedMethod === 'mtn' && (
+            <MTNMomoForm 
+              amount={amount} 
+              currency={currency} 
+              onSuccess={handlePaymentSuccess}
+              onError={handlePaymentError}
+            />
+          )}
+          
           {selectedMethod === 'bank' && (
             <div>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
@@ -585,34 +788,6 @@ const PaymentGateway = ({ amount = 0, currency = 'USD', onSuccess, onCancel }) =
                 className="w-full bg-conison-magenta text-white py-3 px-8 rounded-lg shadow hover:bg-conison-cyan transition"
               >
                 I've Made the Transfer
-              </button>
-            </div>
-          )}
-          
-          {selectedMethod === 'momo' && (
-            <div>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Please send your Mobile Money payment to:
-              </p>
-              <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mb-4">
-                <p className="mb-2"><strong>Number:</strong> +254 712 345 678</p>
-                <p className="mb-2"><strong>Name:</strong> Conison Technologies</p>
-                <p className="mb-0"><strong>Reference:</strong> INV-{Math.floor(Math.random() * 10000)}</p>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                After making the payment, please wait for confirmation. You will receive a receipt via SMS.
-              </p>
-              <button 
-                onClick={() => handlePaymentSuccess({ 
-                  transactionId: `momo_${Math.random().toString(36).substr(2, 9)}`,
-                  method: 'momo',
-                  amount,
-                  currency,
-                  status: 'pending'
-                })}
-                className="w-full bg-conison-magenta text-white py-3 px-8 rounded-lg shadow hover:bg-conison-cyan transition"
-              >
-                I've Made the Payment
               </button>
             </div>
           )}

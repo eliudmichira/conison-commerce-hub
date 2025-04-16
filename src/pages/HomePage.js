@@ -6,7 +6,7 @@ import AnimatedHero from '../components/AnimatedHero';
 import { 
   FaLaptopCode, FaShoppingCart, 
   FaProjectDiagram, FaRocket,
-  FaPlay, FaStar, FaComments
+  FaStar, FaComments
 } from 'react-icons/fa';
 import { MoveRight, PhoneCall, CheckCircle, ArrowUpRight, Users } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -29,7 +29,7 @@ const HomePage = () => {
       title: "Graphic Design",
       description: "Complete online stores with secure checkout, inventory management, and customer analytics.",
       link: "/services/digital-marketing",
-      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
+      image: "/images/graphics.jpg",
       features: ["Secure Payments", "Inventory System", "Customer Insights"]
     },
     {
@@ -37,7 +37,7 @@ const HomePage = () => {
       title: "Branding Identity",
       description: "Strategic planning to maximize your digital presence and achieve business objectives.",
       link: "/services",
-      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
+      image: "/images/Brand Identity.jpg",
       features: ["Market Analysis", "Competitive Research", "Growth Roadmap"]
     },
     {
@@ -316,22 +316,20 @@ const HomePage = () => {
               transition={{ duration: 0.5 }}
               className="relative"
             >
-              <div className="aspect-video overflow-hidden rounded-xl shadow-xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
-                  alt="Team working together" 
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-center justify-center">
-                  <button 
-                    className="w-16 h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition-transform hover:scale-110 shadow-lg"
-                    aria-label="Play video"
-                  >
-                    <FaPlay className="h-5 w-5 text-white ml-1" />
-                  </button>
+              <div className="aspect-video overflow-hidden rounded-xl shadow-2xl relative">
+              <img 
+                src="/images/digital-transformation.jpg" 
+                alt="Digital transformation showcase"
+                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/30 flex items-end">
+                <div className="p-6 w-full">
+                  <h3 className="text-white text-xl font-bold mb-2">Digital Transformation Solutions</h3>
+                  <p className="text-white/80">Empowering businesses with innovative technology</p>
                 </div>
               </div>
+            </div>
               
               <div className="absolute -bottom-8 -left-8 max-w-xs">
                 <div className={`p-4 rounded-lg shadow-lg ${
@@ -350,7 +348,7 @@ const HomePage = () => {
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full overflow-hidden">
                       <img 
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+                        src="images/Affluent Black.png" 
                         alt="Client testimonial" 
                         className="w-full h-full object-cover"
                         loading="lazy"

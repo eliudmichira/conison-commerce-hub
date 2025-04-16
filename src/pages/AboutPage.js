@@ -91,9 +91,9 @@ const AboutPage = () => {
   // Team members with high-quality images
   const teamMembers = [
     {
-      name: 'Elisha Arende',
-      role: 'CEO & Founder',
-      image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
+      name: 'Abraham Deng Garang',
+      role: 'Client Engagement Officer',
+      image: '/images/Abraham Deng Garang.jpeg',
       description: 'Visionary leader with 15+ years of experience in technology and business development.',
       social: {
         linkedin: 'https://linkedin.com',
@@ -101,9 +101,9 @@ const AboutPage = () => {
       }
     },
     {
-      name: 'Eliud Samwel',
+      name: 'Eliud Samwels',
       role: 'CTO',
-      image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
+      image: '/images/Eliud Samwel.jpeg',
       description: 'Technical expert specializing in software architecture and innovation.',
       social: {
         linkedin: 'https://linkedin.com',
@@ -113,7 +113,7 @@ const AboutPage = () => {
     {
       name: 'Dennis Muasya',
       role: 'Lead Developer',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
+      image: '/images/Dennis Mutisya.jpeg',
       description: 'Full-stack developer with expertise in modern web technologies.',
       social: {
         linkedin: 'https://linkedin.com',
@@ -123,7 +123,7 @@ const AboutPage = () => {
     {
       name: 'Sarah Williams',
       role: 'UX Designer',
-      image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
+      image: '/images/Sarah.png',
       description: 'Creative designer focused on user experience and interface design.',
       social: {
         linkedin: 'https://linkedin.com',
@@ -140,12 +140,7 @@ const AboutPage = () => {
       caption: 'Innovative Workspace'
     },
     {
-      src: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
-      alt: 'Team collaboration area',
-      caption: 'Collaboration Hub'
-    },
-    {
-      src: 'https://images.unsplash.com/photo-1565728744382-61accd4aa148?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1773&q=80',
+      src: '/images/Teamwork Collaboration.png',
       alt: 'Meeting room',
       caption: 'Creative Meetings'
     }
@@ -444,11 +439,11 @@ const AboutPage = () => {
                   isDarkMode ? 'bg-gray-800 hover:bg-gray-750' : 'bg-white hover:bg-gray-50'
                 }`}
               >
-                <div className="relative h-64">
+                <div className="relative aspect-[3/4] overflow-hidden">
                   <img 
                     src={member.image} 
                     alt={member.name}
-                    className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent">

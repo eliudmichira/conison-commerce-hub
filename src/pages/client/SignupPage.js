@@ -103,12 +103,12 @@ const SignupPage = () => {
     <div className={`min-h-screen flex flex-col justify-center pt-24 pb-12 sm:px-6 lg:px-8 ${
       isDarkMode ? 'bg-dark-primary' : 'bg-light'
     }`}>
-      <motion.div 
+          <motion.div 
         className="sm:mx-auto sm:w-full sm:max-w-md"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
         <Link to="/">
           <div className="flex items-center justify-center">
             <span className={`text-3xl font-bold text-center ${
@@ -286,7 +286,7 @@ const SignupPage = () => {
                   isDarkMode ? 'text-dark-text-secondary' : 'text-text-secondary'
                 }`}>
                   Password <span className="text-error">*</span>
-                </label>
+              </label>
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}

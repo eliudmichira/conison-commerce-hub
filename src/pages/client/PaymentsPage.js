@@ -40,6 +40,9 @@ const PaymentsPage = () => {
       case 'paypal':
         return <FaPaypal className="text-blue-700" />;
       case 'mpesa':
+        return <FaMobile className="text-green-600" />;
+      case 'mtn':
+        return <FaMobile className="text-yellow-500" />;
       case 'mobile':
         return <FaMobile className="text-green-600" />;
       case 'bank':
@@ -157,7 +160,9 @@ const PaymentsPage = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                             <span className="mr-2">{getMethodIcon(payment.method)}</span>
-                            <span className="capitalize">{payment.method}</span>
+                            <span className="capitalize">
+                              {payment.method === 'mtn' ? 'MTN Mobile Money' : payment.method}
+                            </span>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">

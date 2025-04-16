@@ -16,6 +16,27 @@ const initializeStorage = () => {
   if (!localStorage.getItem('payments')) {
     localStorage.setItem('payments', JSON.stringify([]));
   }
+  
+  // Add a test MTN payment if no payments exist yet
+  const payments = JSON.parse(localStorage.getItem('payments') || '[]');
+  if (payments.length === 0) {
+    const testPayment = {
+      id: 'test_mtn_payment',
+      userId: 'test_user',
+      transactionId: 'mtn_1234567890',
+      method: 'mtn',
+      amount: 199.99,
+      currency: 'USD',
+      status: 'completed',
+      date: new Date().toISOString(),
+      quoteId: 'test_quote',
+      service: 'Web Development',
+      customerEmail: 'test@example.com',
+      customerName: 'Test User'
+    };
+    payments.push(testPayment);
+    localStorage.setItem('payments', JSON.stringify(payments));
+  }
 };
 
 // Initialize storage on load

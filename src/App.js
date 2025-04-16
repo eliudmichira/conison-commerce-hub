@@ -85,12 +85,15 @@ const AppContent = () => {
     pathname.startsWith('/client') || 
     pathname.startsWith('/admin'),
   [pathname]);
+  
+  // Check if we're on the homepage
+  const isHomePage = pathname === '/';
 
   return (
     <div className="min-h-screen flex flex-col">
       {!isDashboardRoute && <NavBar />}
       
-      <main className={`flex-grow ${!isDashboardRoute ? 'pt-24' : ''}`}>
+      <main className={`flex-grow ${(!isDashboardRoute && !isHomePage) ? 'pt-24' : ''}`}>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
@@ -141,6 +144,7 @@ const AppContent = () => {
             <Route path="projects" element={<ClientProjectsPage />} />
             <Route path="quotes" element={<ClientQuotesPage />} />
             <Route path="payments" element={<ClientPaymentsPage />} />
+            <Route path="payments/make" element={<ClientPaymentPage />} />
             <Route path="payment/:id" element={<ClientPaymentPage />} />
             <Route path="settings" element={<ClientSettingsPage />} />
           </Route>
