@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useDarkMode } from '../../context/DarkModeContext';
@@ -15,6 +15,7 @@ const NavBar = ({ items = [] }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { isDarkMode } = useDarkMode();
+  const previousPathRef = useRef(location.pathname);
 
   // Improved navigation items structure
   const defaultItems = [
@@ -43,6 +44,7 @@ const NavBar = ({ items = [] }) => {
 
   const navItems = items.length > 0 ? items : defaultItems;
 
+  // Effect for handling location changes
   useEffect(() => {
     const currentPath = location.pathname;
     
@@ -60,8 +62,14 @@ const NavBar = ({ items = [] }) => {
       setActiveIndex(index);
     }
     
-    // Close mobile menu on navigation
-    setIsMobileMenuOpen(false);
+    // Close mobile menu only on actual route changes, not on initial load
+    if (previousPathRef.current !== currentPath) {
+      // Small delay before closing mobile menu to allow any animations to complete
+      setTimeout(() => {
+        setIsMobileMenuOpen(false);
+      }, 150);
+      previousPathRef.current = currentPath;
+    }
   }, [location, navItems]);
 
   useEffect(() => {
@@ -98,6 +106,20 @@ const NavBar = ({ items = [] }) => {
 
   const handleDropdownToggle = (index) => {
     setActiveDropdown(activeDropdown === index ? null : index);
+  };
+
+  const handleMobileItemClick = (e, item, index) => {
+    // For items with submenus, toggle the dropdown
+    if (item.subItems) {
+      e.preventDefault();
+      handleDropdownToggle(index);
+    } else {
+      // For regular items, set active index but don't close the menu immediately
+      // The useEffect with location change will handle menu closure
+      setActiveIndex(index);
+      // Navigate to the path
+      navigate(item.path);
+    }
   };
 
   const toggleMobileMenu = () => {
@@ -264,6 +286,7 @@ const NavBar = ({ items = [] }) => {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
               className="md:hidden overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="container mx-auto px-4 pb-4">
                 <div className="py-3 space-y-1.5">
@@ -283,12 +306,7 @@ const NavBar = ({ items = [] }) => {
                               ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
                               : 'text-gray-800 dark:text-gray-200'
                           } ${item.subItems ? '' : 'rounded-lg'}`}
-                      onClick={() => {
-                            if (!item.subItems) {
-                        setActiveIndex(index);
-                        setIsMobileMenuOpen(false);
-                            }
-                          }}
+                      onClick={(e) => handleMobileItemClick(e, item, index)}
                         >
                           {React.createElement(item.icon, { className: 'w-4 h-4 opacity-80' })}
                           <span>{item.name}</span>
@@ -296,7 +314,10 @@ const NavBar = ({ items = [] }) => {
                         
                         {item.subItems && (
                           <button
-                            onClick={() => handleDropdownToggle(index)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDropdownToggle(index);
+                            }}
                             className="p-2.5 text-gray-600 dark:text-gray-300"
                           >
                             <FaChevronDown 
@@ -328,12 +349,17 @@ const NavBar = ({ items = [] }) => {
                                         ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
                                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
                                     }`}
-                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    onClick={() => {
+                                      setActiveIndex(navItems.findIndex(nav => 
+                                        nav.subItems?.some(sub => sub.path === subItem.path)
+                                      ));
+                                      setActiveDropdown(null);
+                                    }}
                                   >
                                     <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70 mr-2.5"></span>
                                     {subItem.name}
                     </Link>
-                                ))}
+                                  ))}
                               </div>
                             </motion.div>
                           )}
