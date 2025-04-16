@@ -218,33 +218,31 @@ const ServicesPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero Banner */}
-      <div className={`w-full ${isDarkMode ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-r from-conison-cyan to-conison-magenta'} relative overflow-hidden`}>
+      <div className="services-hero">
         <ParticleBackground />
-        <div className="container mx-auto px-6 py-24 text-center relative z-10">
-          <motion.h1 
-            className="text-5xl md:text-6xl font-bold text-white mb-6"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            Our Services
-          </motion.h1>
-          <motion.p 
-            className="text-white/80 text-xl max-w-3xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            We offer a comprehensive range of digital services to help your business thrive in today's competitive landscape.
-            Explore our services below to find the perfect solution for your needs.
-          </motion.p>
-        </div>
+        <motion.h1 
+          className="services-title"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          Our Services
+        </motion.h1>
+        <motion.p 
+          className="services-description"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          We offer a comprehensive range of digital services to help your business thrive in today's competitive landscape.
+          Explore our services below to find the perfect solution for your needs.
+        </motion.p>
       </div>
 
       {/* Category Filter */}
-      <div className="bg-white dark:bg-gray-800 sticky top-16 z-10 shadow-md">
+      <div className="bg-white dark:bg-gray-800 sticky top-16 z-10 shadow-md services-tabs-container">
         <div className="container mx-auto px-6 py-4 overflow-x-auto">
           <div className="flex space-x-2 justify-center">
             {categories.map(category => (

@@ -100,10 +100,12 @@ const HomePage = () => {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      <AnimatedHero />
+      <div className="hero-section">
+        <AnimatedHero />
+      </div>
 
       {/* Core Services Section */}
-      <section className={`py-24 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      <section id="expertise" className={`py-24 md:py-32 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

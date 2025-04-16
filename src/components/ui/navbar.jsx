@@ -5,6 +5,7 @@ import { useDarkMode } from '../../context/DarkModeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaHome, FaBriefcase, FaCogs, FaSun, FaMoon, FaChevronDown, FaPhoneAlt, FaInfoCircle } from 'react-icons/fa';
 import { X, Menu } from 'lucide-react';
+import MobileMenu from './MobileMenu';
 
 const NavBar = ({ items = [] }) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -14,7 +15,7 @@ const NavBar = ({ items = [] }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { isDarkMode } = useDarkMode();
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   // Improved navigation items structure
   const defaultItems = [
@@ -100,10 +101,6 @@ const NavBar = ({ items = [] }) => {
     setActiveDropdown(activeDropdown === index ? null : index);
   };
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
   // Determine if we're on the homepage for special styling
   const isHomePage = location.pathname === '/';
 
@@ -120,15 +117,15 @@ const NavBar = ({ items = [] }) => {
       animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="container mx-auto px-2 sm:px-3 lg:px-4">
-        <div className="flex justify-between items-center h-12 sm:h-14 md:h-16">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6">
+        <div className="flex justify-between items-center h-14 sm:h-16 md:h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center" onClick={() => setActiveIndex(0)}>
               <img 
                 src="/images/conison_logo_large.png" 
                 alt="Conison Technologies" 
-                className="h-7 sm:h-8 md:h-9"
+                className="h-8 sm:h-9 md:h-10"
               />
             </Link>
           </div>
@@ -141,9 +138,9 @@ const NavBar = ({ items = [] }) => {
                 : 'bg-gray-900/30 dark:bg-gray-900/40 backdrop-blur-sm'
             } p-1`}>
               {navItems.map((item, index) => (
-                <div key={index} className="relative mx-0.5">
+                <div key={index} className="relative">
                   <div className="flex items-center">
-                <Link
+                    <Link
                       to={item.path || '#'}
                       className={`flex items-center px-2.5 lg:px-3 py-1.5 lg:py-2 text-sm lg:text-base font-medium rounded-lg transition-colors duration-200 ${
                         activeIndex === index
@@ -163,11 +160,11 @@ const NavBar = ({ items = [] }) => {
                         }
                       }}
                     >
-                      {React.createElement(item.icon, { className: 'mr-1.5 w-3.5 h-3.5 opacity-80' })}
+                      {React.createElement(item.icon, { className: 'mr-1.5 w-4 h-4 opacity-80' })}
                       {item.name}
                       {item.subItems && (
                         <FaChevronDown 
-                          className={`ml-1.5 w-2.5 h-2.5 transition-transform duration-200 ${
+                          className={`ml-1 w-3 h-3 transition-transform duration-200 ${
                             activeDropdown === index ? 'rotate-180' : ''
                           }`} 
                         />
@@ -200,7 +197,7 @@ const NavBar = ({ items = [] }) => {
                             >
                               <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70 mr-2.5"></span>
                               {subItem.name}
-                </Link>
+                            </Link>
                           ))}
                         </motion.div>
                       )}
@@ -217,158 +214,42 @@ const NavBar = ({ items = [] }) => {
             <ThemeToggle />
             
             {/* Login/Account Button - Simple version optimized for mobile */}
-            {isAuthenticated ? (
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-1 rounded-lg px-3 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors"
-              >
-                <span className="hidden xs:inline">Logout</span>
-              </button>
-            ) : (
-              <Link to="/login" className={`flex items-center space-x-1 rounded-lg px-3 py-2 text-sm font-medium shadow-sm transition-colors ${
-                isScrolled || !isHomePage
-                  ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                  : 'bg-indigo-600/90 hover:bg-indigo-600 text-white backdrop-blur-sm'
-              }`}>
-                <span className="xs:inline">Login</span>
-              </Link>
-            )}
-
-            {/* Mobile menu button */}
-            <button
-              className={`md:hidden rounded-lg p-1.5 shadow-sm border ${
-                isDarkMode 
-                  ? 'bg-gray-800 text-gray-100 border-gray-700 hover:bg-gray-700' 
-                  : isScrolled || !isHomePage
-                    ? 'bg-gray-200 text-gray-800 border-gray-300 hover:bg-gray-300'
-                    : 'bg-white/30 text-white border-white/30 hover:bg-white/40 backdrop-blur-sm'
-              }`}
-              onClick={toggleMobileMenu}
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-5 h-5" />
+            <div className="hidden md:block">
+              {isAuthenticated ? (
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-1 rounded-lg px-3 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors"
+                >
+                  <span className="hidden xs:inline">Logout</span>
+                </button>
               ) : (
-                <Menu className="w-5 h-5" />
+                <Link to="/login" className={`flex items-center space-x-1 rounded-lg px-3 py-2 text-sm font-medium shadow-sm transition-colors ${
+                  isScrolled || !isHomePage
+                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                    : 'bg-indigo-600/90 hover:bg-indigo-600 text-white backdrop-blur-sm'
+                }`}>
+                  <span className="xs:inline">Login</span>
+                </Link>
               )}
-            </button>
+            </div>
+
+            {/* Use our MobileMenu component with the styling of the example */}
+            <MobileMenu 
+              navItems={navItems}
+              activeIndex={activeIndex}
+              setActiveIndex={setActiveIndex}
+              isMobileMenuOpen={isMobileMenuOpen}
+              setIsMobileMenuOpen={setIsMobileMenuOpen}
+              isScrolled={isScrolled}
+              isAuthenticated={isAuthenticated}
+              handleLogout={handleLogout}
+              isDarkMode={isDarkMode}
+              isHomePage={isHomePage}
+              activeDropdown={activeDropdown}
+              handleDropdownToggle={handleDropdownToggle}
+            />
           </div>
         </div>
-
-        {/* Mobile menu - Enhanced with animations */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden overflow-hidden"
-            >
-              <div className="container mx-auto px-4 pb-4">
-                <div className="py-3 space-y-1.5">
-                  {navItems.map((item, index) => (
-                    <div key={index} className="rounded-lg overflow-hidden">
-                      <div className={`flex items-center justify-between ${
-                        item.subItems ? 'pr-1' : 'rounded-lg'
-                      } ${
-                        activeIndex === index && !item.subItems 
-                          ? 'bg-indigo-50 dark:bg-indigo-900/20' 
-                          : ''
-                      }`}>
-                    <Link
-                          to={item.path || '#'}
-                          className={`flex items-center space-x-3 py-2.5 px-3 flex-1 font-medium text-sm ${
-                        activeIndex === index
-                              ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
-                              : 'text-gray-800 dark:text-gray-200'
-                          } ${item.subItems ? '' : 'rounded-lg'}`}
-                      onClick={() => {
-                            if (!item.subItems) {
-                        setActiveIndex(index);
-                        setIsMobileMenuOpen(false);
-                            }
-                          }}
-                        >
-                          {React.createElement(item.icon, { className: 'w-4 h-4 opacity-80' })}
-                          <span>{item.name}</span>
-                        </Link>
-                        
-                        {item.subItems && (
-                          <button
-                            onClick={() => handleDropdownToggle(index)}
-                            className="p-2.5 text-gray-600 dark:text-gray-300"
-                          >
-                            <FaChevronDown 
-                              className={`w-3 h-3 transition-transform duration-200 ${
-                                activeDropdown === index ? 'rotate-180' : ''
-                              }`} 
-                            />
-                          </button>
-                        )}
-                      </div>
-                      
-                      {item.subItems && (
-                        <AnimatePresence>
-                          {activeDropdown === index && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.2 }}
-                              className="bg-gray-50 dark:bg-gray-800/50 rounded-b-lg overflow-hidden"
-                            >
-                              <div className="pt-1 pb-1.5 px-2">
-                                {item.subItems.map((subItem) => (
-                                  <Link
-                                    key={subItem.path}
-                                    to={subItem.path}
-                                    className={`flex items-center rounded-md px-3 py-2 my-0.5 text-sm ${
-                                      location.pathname === subItem.path
-                                        ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
-                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
-                                    }`}
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                  >
-                                    <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70 mr-2.5"></span>
-                                    {subItem.name}
-                    </Link>
-                                ))}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      )}
-                    </div>
-                  ))}
-
-                  {/* Login/Logout button for mobile - Improved touch target */}
-                  <div className="mt-3 px-2">
-                    {isAuthenticated ? (
-                      <button
-                        onClick={() => {
-                          handleLogout();
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="w-full py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm shadow-sm transition-colors"
-                      >
-                        Sign Out
-                      </button>
-                    ) : (
-                      <Link 
-                        to="/login" 
-                        className="block w-full text-center py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm shadow-sm transition-colors"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Sign In
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </motion.nav>
   );

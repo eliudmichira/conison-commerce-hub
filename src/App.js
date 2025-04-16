@@ -54,6 +54,7 @@ import PrivateRoute from './components/PrivateRoute';
 
 // Styles
 import './styles/colors.css';
+import './styles/hero.css';
 
 import ChatAssistant from './components/ChatAssistant';
 

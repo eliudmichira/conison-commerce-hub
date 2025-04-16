@@ -1,0 +1,146 @@
+/* Hero Section Styles */
+.hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6rem;
+  background: linear-gradient(to top, var(--bg-primary), transparent);
+  z-index: 1;
+}
+
+/* Create space between hero and next section */
+#expertise {
+  position: relative;
+  padding-top: 3rem;
+  margin-top: 2rem;
+}
+
+/* Stats container styles */
+.hero-section .stats-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.hero-section .stat-item {
+  text-align: center;
+}
+
+.hero-section .stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-section .stat-label {
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+}
+
+/* Services page hero section fix */
+.services-hero {
+  min-height: 40vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 2rem 2.5rem;
+  padding-top: calc(3rem + 60px);
+  background: linear-gradient(90deg, #0e6973 0%, #4b367c 50%, #9f2f6a 100%);
+  background-size: cover;
+  position: relative;
+  text-align: center;
+  margin-top: 0;
+}
+
+/* Ensure particles are visible but don't interfere with content */
+.services-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Style for the services title */
+.services-title {
+  font-size: 2.75rem;
+  margin-bottom: 1.5rem;
+  color: white;
+  position: relative;
+  z-index: 2;
+}
+
+/* Style for the services description */
+.services-description {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  position: relative;
+  z-index: 2;
+}
+
+/* Add more spacing before the tabs section */
+.services-tabs-container {
+  margin-top: 0;
+}
+
+/* Media query for responsiveness */
+@media (max-height: 700px) {
+  .services-hero {
+    min-height: 50vh;
+    padding: 2.5rem 2rem 2rem;
+    padding-top: calc(2.5rem + 60px);
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-section {
+    margin-bottom: 3rem;
+  }
+  
+  #expertise {
+    padding-top: 4rem;
+    margin-top: 3rem;
+  }
+  
+  .hero-section .stat-value {
+    font-size: 2.5rem;
+  }
+  
+  .hero-section .stat-label {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-section {
+    margin-bottom: 4rem;
+  }
+  
+  #expertise {
+    padding-top: 5rem;
+    margin-top: 4rem;
+  }
+} 

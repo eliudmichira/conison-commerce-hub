@@ -38,7 +38,7 @@ function AnimatedHero() {
   }, [titleNumber, animationsEnabled, rotateTitles]);
 
   return (
-    <div className="w-full relative overflow-hidden min-h-[75vh] sm:min-h-[80vh] md:min-h-[85vh] flex items-center">
+    <div className="w-full relative overflow-hidden min-h-screen flex items-center mb-16 sm:mb-24">
       {/* Blob decoration elements - adjusted for better mobile appearance */}
       <div className="absolute -top-16 -left-16 xs:-top-20 xs:-left-20 sm:-top-40 sm:-left-40 w-48 xs:w-64 sm:w-96 h-48 xs:h-64 sm:h-96 bg-purple-600 opacity-10 rounded-full blur-3xl"></div>
       <div className="absolute -bottom-16 -right-16 xs:-bottom-20 xs:-right-20 sm:-bottom-40 sm:-right-40 w-48 xs:w-64 sm:w-96 h-48 xs:h-64 sm:h-96 bg-pink-600 opacity-10 rounded-full blur-3xl"></div>
@@ -175,7 +175,7 @@ function AnimatedHero() {
           </div>
           
           <motion.div 
-            className="flex flex-col xs:flex-row gap-2 xs:gap-3 sm:gap-4 mt-4 xs:mt-5 sm:mt-8"
+            className="flex flex-col xs:flex-row gap-2 xs:gap-3 sm:gap-4 mt-8 xs:mt-10 sm:mt-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
@@ -203,7 +203,7 @@ function AnimatedHero() {
           
           {/* Stats section - Made more responsive */}
           <motion.div 
-            className="flex flex-wrap justify-center gap-3 xs:gap-4 sm:gap-8 mt-6 xs:mt-10 sm:mt-16 w-full max-w-[280px] xs:max-w-xs sm:max-w-xl md:max-w-3xl"
+            className="flex flex-wrap justify-center gap-3 xs:gap-4 sm:gap-8 mt-8 xs:mt-12 sm:mt-16 w-full max-w-[280px] xs:max-w-xs sm:max-w-xl md:max-w-3xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.6 }}
@@ -223,6 +223,9 @@ function AnimatedHero() {
           </motion.div>
         </motion.div>
       </div>
+      
+      {/* Added visual separator for better transition to next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white dark:from-gray-900 to-transparent"></div>
     </div>
   );
 }
