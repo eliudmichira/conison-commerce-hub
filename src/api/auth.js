@@ -1,10 +1,16 @@
-import { auth } from '../firebase/config';
+import { auth } from '../firebase';
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut, 
+  updateProfile 
+} from 'firebase/auth';
 import { userService } from '../services/userService';
 
 export const authService = {
   login: async (email, password) => {
     try {
-      const userCredential = await auth.signInWithEmailAndPassword(email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const userData = await userService.getUserById(userCredential.user.uid);
       return {
         ...userCredential.user,
@@ -17,8 +23,8 @@ export const authService = {
 
   register: async (email, password, name, role = 'client', company = null) => {
     try {
-      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-      await userCredential.user.updateProfile({ displayName: name });
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName: name });
 
       const userData = {
         uid: userCredential.user.uid,
@@ -41,7 +47,7 @@ export const authService = {
 
   logout: async () => {
     try {
-      await auth.signOut();
+      await signOut(auth);
     } catch (error) {
       throw new Error(error.message);
     }

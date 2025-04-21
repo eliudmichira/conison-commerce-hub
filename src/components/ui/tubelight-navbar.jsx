@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useDarkMode } from '../../context/DarkModeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaHome, FaBriefcase, FaCogs, FaSun, FaMoon, FaChevronDown, FaPhoneAlt, FaInfoCircle } from 'react-icons/fa';
+import { FaHome, FaBriefcase, FaCogs, FaSun, FaMoon, FaChevronDown, FaPhoneAlt, FaInfoCircle, FaFileAlt } from 'react-icons/fa';
 import { X, Menu } from 'lucide-react';
 
 const NavBar = ({ items = [] }) => {
@@ -39,6 +39,7 @@ const NavBar = ({ items = [] }) => {
         { name: 'Rate Card', path: '/rate-card' }
       ]
     },
+    { name: 'Quote Request', path: '/quote-request', icon: FaFileAlt },
     { name: 'Contact', path: '/contact', icon: FaPhoneAlt }
   ];
 

@@ -53,14 +53,24 @@ const ChatAssistant = () => {
       console.error('Chat error:', error);
       let errorMessage = "I'm having trouble connecting to the AI service.";
       
+      // Add detailed debugging information
+      console.log('Error details:', {
+        message: error.message,
+        responseData: error.response?.data,
+        responseStatus: error.response?.status,
+        envVarSet: !!process.env.REACT_APP_GEMINI_API_KEY
+      });
+      
       if (error.message === 'API key is missing') {
-        errorMessage = "The API key is missing. Please check your .env.local file.";
-      } else if (error.response?.status === 401) {
-        errorMessage = "Invalid API key. Please check your OpenAI API key.";
+        errorMessage = "The Gemini API key is missing. Please check your .env.local file and restart the server.";
+      } else if (error.response?.status === 400) {
+        errorMessage = "Invalid request to Gemini API. Please try again with different input.";
+      } else if (error.response?.status === 401 || error.response?.status === 403) {
+        errorMessage = "Invalid or unauthorized Gemini API key. Please check your API key.";
       } else if (error.response?.status === 429) {
         errorMessage = "Rate limit exceeded. Please try again later.";
       } else if (error.response?.data?.error?.message) {
-        errorMessage = error.response.data.error.message;
+        errorMessage = `Gemini API error: ${error.response.data.error.message}`;
       }
       
       setError(errorMessage);

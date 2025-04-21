@@ -31,7 +31,7 @@ Before you begin, ensure you have the following installed:
 2. Install dependencies:
    ```bash
    npm install
-   ```
+   ``` xvcvc
 
 3. Set up Firebase configuration:
    - Create a `.env` file in the root directory with your Firebase configuration:

@@ -50,7 +50,7 @@ const ClientPaymentPage = () => {
   const handlePaymentSuccess = async (paymentData) => {
     try {
       // Validate payment data
-      if (!paymentData.transactionId || !paymentData.amount) {
+      if (!paymentData || !paymentData.transactionId || !paymentData.amount) {
         throw new Error('Invalid payment data received');
       }
 
@@ -61,8 +61,8 @@ const ClientPaymentPage = () => {
         status: 'completed',
         date: new Date().toISOString(),
         service: quote.service,
-        customerEmail: quote.contactEmail,
-        customerName: quote.contactName
+        customerEmail: quote.contactEmail || '',
+        customerName: quote.contactName || ''
       };
       
       // Add payment to the system
@@ -78,6 +78,8 @@ const ClientPaymentPage = () => {
     } catch (error) {
       console.error('Error registering payment:', error);
       setError(error.message || 'There was an error processing your payment. Please try again.');
+      // Make sure the user can try again
+      setIsProcessingPayment(false);
     }
   };
 
@@ -189,6 +191,16 @@ const ClientPaymentPage = () => {
   // Normal payment flow
   return (
     <div className="pb-12">
+      {isProcessingPayment && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-conison-magenta mx-auto mb-4"></div>
+            <p className="text-gray-800 dark:text-white font-medium">Processing your payment...</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">Please do not close this window.</p>
+          </div>
+        </div>
+      )}
+      
       <motion.div
         className="mb-8"
         initial={{ opacity: 0, y: -20 }}
