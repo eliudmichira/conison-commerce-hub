@@ -1,6 +1,7 @@
 // App.js
 import React, { useEffect, memo, useMemo } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 
 // Contexts
 import { DarkModeProvider } from './context/DarkModeContext';
@@ -11,6 +12,7 @@ import { ClientDataProvider } from './context/ClientDataContext';
 import NavBar from './components/ui/tubelight-navbar';
 import Footer from './components/Footer';
 import ClientLayout from './components/client/ClientLayout';
+import AdminLayout from './components/admin/AdminLayout';
 
 // Public Pages
 import HomePage from './pages/HomePage';
@@ -49,6 +51,14 @@ import ClientPaymentsPage from './pages/client/PaymentsPage';
 import ClientPaymentPage from './pages/client/ClientPaymentPage';
 import ClientSettingsPage from './pages/client/SettingsPage';
 
+// Admin Pages
+import AdminDashboard from './pages/admin/AdminDashboard';
+import ClientManagement from './pages/admin/ClientManagement';
+import QuoteManagement from './pages/admin/QuoteManagement';
+import ProjectManagement from './pages/admin/ProjectManagement';
+import PaymentManagement from './pages/admin/PaymentManagement';
+import SettingsPage from './pages/admin/SettingsPage';
+
 // Auth Components
 import PrivateRoute from './components/PrivateRoute';
 
@@ -58,13 +68,9 @@ import './styles/hero.css';
 
 import ChatAssistant from './components/ChatAssistant';
 
-// Temporary Admin Dashboard Component
-const AdminPlaceholder = memo(() => (
-  <div className="p-8 text-center">
-    <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-    <p className="text-lg">Admin dashboard is under construction.</p>
-  </div>
-));
+// Development-only component
+import TestAdminCreation from './components/TestAdminCreation';
+import DiagnosticPage from './pages/DiagnosticPage';
 
 // Dashboard redirect component
 const DashboardRedirect = () => {
@@ -129,6 +135,14 @@ const AppContent = () => {
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/terms-of-service" element={<TermsOfServicePage />} />
 
+          {/* Development-only route */}
+          {process.env.NODE_ENV === 'development' && (
+            <>
+              <Route path="/dev/create-admin" element={<TestAdminCreation />} />
+              <Route path="/dev/diagnostics" element={<DiagnosticPage />} />
+            </>
+          )}
+
           {/* Client Portal Routes */}
           <Route 
             path="/client/*" 
@@ -155,10 +169,18 @@ const AppContent = () => {
             path="/admin/*" 
             element={
               <PrivateRoute requiredRole="admin">
-                <AdminPlaceholder />
+                <AdminLayout />
               </PrivateRoute>
             } 
-          />
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="clients" element={<ClientManagement />} />
+            <Route path="quotes" element={<QuoteManagement />} />
+            <Route path="projects" element={<ProjectManagement />} />
+            <Route path="payments" element={<PaymentManagement />} />
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
 
           {/* Dashboard redirect route */}
           <Route 
@@ -186,6 +208,7 @@ const App = () => {
     <AuthProvider>
       <DarkModeProvider>
         <AppContent />
+        <ToastContainer position="top-right" autoClose={3000} />
       </DarkModeProvider>
     </AuthProvider>
   );

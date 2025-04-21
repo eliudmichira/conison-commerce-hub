@@ -11,7 +11,7 @@ import {
   browserSessionPersistence
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../firebase/config';
+import { auth, db } from '../firebase';
 
 // Create the auth context
 const AuthContext = createContext();
