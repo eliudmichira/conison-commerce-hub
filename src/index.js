@@ -8,8 +8,16 @@ import { DarkModeProvider } from './context/DarkModeContext';
 import { AuthProvider } from './context/AuthContext';
 import emailjs from '@emailjs/browser';
 
-// Initialize EmailJS
-emailjs.init(process.env.REACT_APP_EMAILJS_PUBLIC_KEY); // Initialize with your EmailJS public key
+// Initialize EmailJS with your public key
+const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+console.log('Initializing EmailJS with public key:', publicKey ? 'Public key exists' : 'Public key missing');
+
+// Make sure we're using the correct initialization method
+emailjs.init({
+  publicKey: publicKey,
+  // Uncomment the following line if site is in development
+  limitRate: false,
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

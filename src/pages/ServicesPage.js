@@ -64,7 +64,7 @@ const ServicesPage = () => {
     const displayServices = [
       {
         id: 'graphic-design',
-        title: 'Graphic Design',
+        title: 'Graphics Design',
         description: 'Professional graphic design services for all your visual communication needs.',
         icon: <FaPalette className="w-8 h-8" />,
         image: 'https://images.unsplash.com/photo-1626785774625-ddcddc3445e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
