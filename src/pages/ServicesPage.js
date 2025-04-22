@@ -251,7 +251,7 @@ const ServicesPage = () => {
                 onClick={() => setActiveCategory(category.id)}
                 className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap
                   ${activeCategory === category.id
-                    ? 'bg-gradient-to-r from-conison-cyan to-conison-magenta text-white shadow-lg'
+                    ? 'bg-gradient-to-r from-red-600 to-blue-600 text-white shadow-lg'
                     : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`
                 }
@@ -315,7 +315,7 @@ const ServicesPage = () => {
                     
                     <div className="space-y-4">
                       <h3 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
-                        <span className="w-8 h-1 bg-gradient-to-r from-conison-cyan to-conison-magenta rounded-full mr-3"></span>
+                        <span className="w-8 h-1 bg-gradient-to-r from-red-600 to-blue-600 rounded-full mr-3"></span>
                         What We Offer
                       </h3>
                       <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -324,7 +324,7 @@ const ServicesPage = () => {
                             key={idx} 
                             className="flex items-start"
                           >
-                            <div className="flex-shrink-0 h-6 w-6 rounded-full bg-gradient-to-r from-conison-cyan to-conison-magenta flex items-center justify-center mt-0.5">
+                            <div className="flex-shrink-0 h-6 w-6 rounded-full bg-gradient-to-r from-red-600 to-blue-600 flex items-center justify-center mt-0.5">
                               <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                               </svg>
@@ -337,7 +337,7 @@ const ServicesPage = () => {
                     
                     <div className="pt-6">
                       <motion.button 
-                        className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-conison-cyan to-conison-magenta text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+                        className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-red-600 to-blue-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
                         onClick={() => navigate(service.link)}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -362,7 +362,7 @@ const ServicesPage = () => {
       </div>
       
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-conison-cyan to-conison-magenta relative overflow-hidden">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-red-600 to-blue-600 relative overflow-hidden">
         <ParticleBackground />
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <h2 className="text-4xl font-bold text-white mb-6">Ready to Get Started?</h2>
@@ -372,7 +372,7 @@ const ServicesPage = () => {
           <div className="flex flex-wrap justify-center gap-4">
             <motion.button
               onClick={() => navigate('/quote-request')}
-              className="inline-flex items-center justify-center bg-white text-conison-magenta font-semibold py-4 px-8 rounded-full hover:shadow-lg transition-all duration-300"
+              className="inline-flex items-center justify-center bg-white text-red-600 font-semibold py-4 px-8 rounded-full hover:shadow-lg transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

@@ -40,8 +40,8 @@ function AnimatedHero() {
   return (
     <div className="w-full relative overflow-hidden min-h-screen flex items-center mb-16 sm:mb-24">
       {/* Blob decoration elements - adjusted for better mobile appearance */}
-      <div className="absolute -top-16 -left-16 xs:-top-20 xs:-left-20 sm:-top-40 sm:-left-40 w-48 xs:w-64 sm:w-96 h-48 xs:h-64 sm:h-96 bg-purple-600 opacity-10 rounded-full blur-3xl"></div>
-      <div className="absolute -bottom-16 -right-16 xs:-bottom-20 xs:-right-20 sm:-bottom-40 sm:-right-40 w-48 xs:w-64 sm:w-96 h-48 xs:h-64 sm:h-96 bg-pink-600 opacity-10 rounded-full blur-3xl"></div>
+      <div className="absolute -top-16 -left-16 xs:-top-20 xs:-left-20 sm:-top-40 sm:-left-40 w-48 xs:w-64 sm:w-96 h-48 xs:h-64 sm:h-96 bg-red-600 opacity-10 rounded-full blur-3xl"></div>
+      <div className="absolute -bottom-16 -right-16 xs:-bottom-20 xs:-right-20 sm:-bottom-40 sm:-right-40 w-48 xs:w-64 sm:w-96 h-48 xs:h-64 sm:h-96 bg-blue-600 opacity-10 rounded-full blur-3xl"></div>
       
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
@@ -80,34 +80,34 @@ function AnimatedHero() {
               className="relative rounded-full overflow-hidden px-3 xs:px-4 sm:px-6 py-1 xs:py-1.5 sm:py-2 mb-1 xs:mb-2 sm:mb-4"
               style={{
                 background: isDarkMode 
-                  ? 'linear-gradient(to right, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15))' 
-                  : 'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))',
+                  ? 'linear-gradient(to right, rgba(220, 38, 38, 0.15), rgba(37, 99, 235, 0.15))' 
+                  : 'linear-gradient(to right, rgba(220, 38, 38, 0.2), rgba(37, 99, 235, 0.2))',
                 borderRadius: '9999px',
-                border: '1px solid rgba(139, 92, 246, 0.3)',
-                boxShadow: '0 0 20px rgba(139, 92, 246, 0.2)'
+                border: '1px solid rgba(220, 38, 38, 0.3)',
+                boxShadow: '0 0 20px rgba(220, 38, 38, 0.2)'
               }}
             >
               {/* Multiple background layers for depth */}
               <div className="absolute inset-0 opacity-30" 
                 style={{ 
-                  backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(139, 92, 246, 0.1) 10px, rgba(139, 92, 246, 0.1) 20px)',
+                  backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(220, 38, 38, 0.1) 10px, rgba(220, 38, 38, 0.1) 20px)',
                 }} 
               />
               <div className="absolute inset-0 opacity-30" 
                 style={{ 
-                  backgroundImage: 'repeating-linear-gradient(135deg, transparent, transparent 15px, rgba(236, 72, 153, 0.1) 15px, rgba(236, 72, 153, 0.1) 30px)',
+                  backgroundImage: 'repeating-linear-gradient(135deg, transparent, transparent 15px, rgba(37, 99, 235, 0.1) 15px, rgba(37, 99, 235, 0.1) 30px)',
                 }} 
               />
               <div className="absolute inset-0" 
                 style={{ 
-                  backgroundImage: 'linear-gradient(to right, rgba(139, 92, 246, 0.05), rgba(236, 72, 153, 0.05), rgba(139, 92, 246, 0.05))',
+                  backgroundImage: 'linear-gradient(to right, rgba(220, 38, 38, 0.05), rgba(37, 99, 235, 0.05), rgba(220, 38, 38, 0.05))',
                   backgroundSize: '600px 100%',
                   animation: 'shimmer 3s infinite linear'
                 }} 
               />
               <span className="relative z-10 text-xs sm:text-sm font-medium" 
                 style={{ 
-                  color: isDarkMode ? '#e9d5ff' : '#7e22ce' 
+                  color: isDarkMode ? '#fecaca' : '#b91c1c' 
                 }}
               >
                 Technology Solutions Provider
@@ -123,7 +123,7 @@ function AnimatedHero() {
               <span className="text-white">
                 Conison
               </span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 ml-1 xs:ml-2 sm:ml-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-blue-600 ml-1 xs:ml-2 sm:ml-4">
                 Technologies
               </span>
             </motion.h1>
@@ -132,7 +132,7 @@ function AnimatedHero() {
             <div className="relative flex w-full justify-center overflow-hidden text-center h-12 xs:h-16 sm:h-20 md:h-24 my-1 sm:my-2">
               {/* Show static first title for immediate LCP */}
               {!animationsEnabled && (
-                <span className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
+                <span className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-blue-500">
                   {titles[0]}
                 </span>
               )}
@@ -142,7 +142,7 @@ function AnimatedHero() {
                 {animationsEnabled && (
                   <motion.span
                     key={titleNumber}
-                    className="absolute text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500"
+                    className="absolute text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-blue-500"
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -40 }}
@@ -193,7 +193,7 @@ function AnimatedHero() {
             <Link to="/login">
               <Button 
                 size="lg" 
-                className="group gap-1.5 xs:gap-2 sm:gap-3 px-3 xs:px-4 sm:px-6 py-1.5 xs:py-2 sm:py-5 md:py-6 text-xs xs:text-sm sm:text-base bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 rounded-xl shadow-md w-full xs:w-auto"
+                className="group gap-1.5 xs:gap-2 sm:gap-3 px-3 xs:px-4 sm:px-6 py-1.5 xs:py-2 sm:py-5 md:py-6 text-xs xs:text-sm sm:text-base bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-700 hover:to-blue-700 text-white border-0 rounded-xl shadow-md w-full xs:w-auto"
               >
                 Get started today
                 <ArrowRight className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
@@ -209,15 +209,15 @@ function AnimatedHero() {
             transition={{ delay: 0.9, duration: 0.6 }}
           >
             <div className="text-center px-2 xs:px-3 sm:px-6 text-white/90">
-              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-0.5 xs:mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">500+</div>
+              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-0.5 xs:mb-1 bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-500">500+</div>
               <div className="text-[10px] xs:text-xs sm:text-sm text-gray-400">Happy Clients</div>
             </div>
             <div className="text-center px-2 xs:px-3 sm:px-6 text-white/90">
-              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-0.5 xs:mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">98%</div>
+              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-0.5 xs:mb-1 bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-500">98%</div>
               <div className="text-[10px] xs:text-xs sm:text-sm text-gray-400">Success Rate</div>
             </div>
             <div className="text-center px-2 xs:px-3 sm:px-6 text-white/90">
-              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-0.5 xs:mb-1 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">12+</div>
+              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-0.5 xs:mb-1 bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-500">12+</div>
               <div className="text-[10px] xs:text-xs sm:text-sm text-gray-400">Years Experience</div>
             </div>
           </motion.div>

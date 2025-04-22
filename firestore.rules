@@ -40,8 +40,8 @@ service cloud.firestore {
       // Clients can read their own quotes
       allow read: if isAuth() && resource.data.userId == request.auth.uid;
       
-      // Clients can create quotes
-      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      // Anyone can create quotes (including anonymous users)
+      allow create: if true;
       
       // Only admins can update or delete quotes
       allow update, delete: if isAdmin();

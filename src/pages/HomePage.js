@@ -115,7 +115,7 @@ const HomePage = () => {
             className="text-center mb-16"
           >
             <span className={`inline-block px-4 py-1 rounded-full text-sm font-medium mb-4 ${
-              isDarkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-800'
+              isDarkMode ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-800'
             }`}>
               Our Expertise
             </span>
@@ -160,7 +160,7 @@ const HomePage = () => {
                   }`} />
                   <div className="absolute bottom-4 left-4">
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                      isDarkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-800'
+                      isDarkMode ? 'bg-red-500/20 text-red-300' : 'bg-red-100 text-red-800'
                     }`}>
                       <service.Icon className="mr-1" /> {service.title.split(' ')[0]}
                     </span>
@@ -185,7 +185,7 @@ const HomePage = () => {
                         isDarkMode ? 'text-gray-300' : 'text-gray-700'
                       }`}>
                         <CheckCircle className={`h-4 w-4 mr-2 ${
-                          isDarkMode ? 'text-blue-400' : 'text-blue-600'
+                          isDarkMode ? 'text-red-400' : 'text-red-600'
                         }`} />
                         <span className="text-sm">{feature}</span>
                       </li>
@@ -196,8 +196,8 @@ const HomePage = () => {
                     to={service.link}
                     className={`inline-flex items-center ${
                       isDarkMode 
-                        ? 'text-blue-400 hover:text-blue-300' 
-                        : 'text-blue-600 hover:text-blue-500'
+                        ? 'text-red-400 hover:text-red-300' 
+                        : 'text-red-600 hover:text-red-500'
                     } font-medium group/link`}
                   >
                     Learn more
@@ -221,7 +221,7 @@ const HomePage = () => {
               transition={{ duration: 0.5 }}
             >
               <span className={`inline-block px-4 py-1 rounded-full text-sm font-medium mb-4 ${
-                isDarkMode ? 'bg-purple-900/30 text-purple-400' : 'bg-purple-100 text-purple-800'
+                isDarkMode ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-800'
               }`}>
                 Why Us
               </span>
@@ -241,10 +241,10 @@ const HomePage = () => {
                   isDarkMode ? 'bg-gray-700/50' : 'bg-white'
                 } shadow-sm`}>
                   <div className={`p-3 rounded-lg ${
-                    isDarkMode ? 'bg-blue-500/20' : 'bg-blue-50'
+                    isDarkMode ? 'bg-red-500/20' : 'bg-red-50'
                   }`}>
                     <Users className={`h-6 w-6 ${
-                      isDarkMode ? 'text-blue-300' : 'text-blue-600'
+                      isDarkMode ? 'text-red-300' : 'text-red-600'
                     }`} />
                   </div>
                   <div>
@@ -265,10 +265,10 @@ const HomePage = () => {
                   isDarkMode ? 'bg-gray-700/50' : 'bg-white'
                 } shadow-sm`}>
                   <div className={`p-3 rounded-lg ${
-                    isDarkMode ? 'bg-purple-500/20' : 'bg-purple-50'
+                    isDarkMode ? 'bg-red-500/20' : 'bg-red-50'
                   }`}>
                     <FaRocket className={`h-6 w-6 ${
-                      isDarkMode ? 'text-purple-300' : 'text-purple-600'
+                      isDarkMode ? 'text-red-300' : 'text-red-600'
                     }`} />
                   </div>
                   <div>
@@ -289,10 +289,10 @@ const HomePage = () => {
                   isDarkMode ? 'bg-gray-700/50' : 'bg-white'
                 } shadow-sm`}>
                   <div className={`p-3 rounded-lg ${
-                    isDarkMode ? 'bg-teal-500/20' : 'bg-teal-50'
+                    isDarkMode ? 'bg-red-500/20' : 'bg-red-50'
                   }`}>
                     <FaComments className={`h-6 w-6 ${
-                      isDarkMode ? 'text-teal-300' : 'text-teal-600'
+                      isDarkMode ? 'text-red-300' : 'text-red-600'
                     }`} />
                   </div>
                   <div>
@@ -406,7 +406,7 @@ const HomePage = () => {
               href="https://web.facebook.com/Conisontech213/reviews"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              className="inline-block bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors"
             >
               Read More Reviews on Facebook
             </a>
@@ -419,7 +419,7 @@ const HomePage = () => {
         className={`relative py-16 px-4 sm:px-6 lg:px-8 ${
           isDarkMode 
             ? 'bg-gradient-to-br from-gray-800 to-gray-900' 
-            : 'bg-gradient-to-br from-blue-50 to-indigo-100'
+            : 'bg-gradient-to-br from-red-50 to-blue-100'
         }`}
       >
         <div className="absolute inset-0 overflow-hidden opacity-10">
@@ -455,7 +455,7 @@ const HomePage = () => {
                   className={`group gap-3 px-8 py-6 text-lg ${
                     isDarkMode 
                       ? 'bg-white text-gray-900 hover:bg-gray-100' 
-                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-red-600 text-white hover:bg-red-700'
                   }`} 
                 >
                   Get Started 
@@ -468,7 +468,7 @@ const HomePage = () => {
                   className={`gap-3 px-8 py-6 text-lg ${
                     isDarkMode
                       ? 'bg-transparent border border-white text-white hover:bg-white/10' 
-                      : 'bg-white text-blue-600 border border-blue-600 hover:bg-blue-50'
+                      : 'bg-white text-red-600 border border-red-600 hover:bg-red-50'
                   }`}
                   variant="outline"
                 >

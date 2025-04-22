@@ -241,7 +241,7 @@ const ContactPage = () => {
       {/* Hero Section */}
       <div className={`relative w-full overflow-hidden ${isDarkMode ? 'bg-gray-800' : 'bg-white'} py-24`}>
         <div className="absolute inset-0 overflow-hidden opacity-10">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-600 rounded-full blur-3xl"></div>
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-red-600 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-600 rounded-full blur-3xl"></div>
         </div>
         
@@ -252,11 +252,11 @@ const ContactPage = () => {
             transition={{ duration: 0.5 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <div className="inline-block px-4 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-sm text-purple-700 dark:text-purple-300 font-medium text-sm mb-6">
+            <div className="inline-block px-4 py-1 rounded-full bg-gradient-to-r from-red-500/20 to-blue-500/20 backdrop-blur-sm text-red-700 dark:text-red-300 font-medium text-sm mb-6">
               Let's Connect
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
-              Get in <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">Touch</span>
+              Get in <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-blue-600">Touch</span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
               Have a project in mind or questions about our services? 
@@ -277,7 +277,7 @@ const ContactPage = () => {
                       : 'bg-gray-100 hover:bg-gray-200'
                   } transition-colors`}
                 >
-                  <social.icon className="w-5 h-5 text-purple-600" />
+                  <social.icon className="w-5 h-5 text-red-600" />
                 </a>
               ))}
             </div>
@@ -322,7 +322,7 @@ const ContactPage = () => {
                       {item.link ? (
                         <a
                           href={item.link}
-                          className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                          className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                           target={item.title === 'Address' ? '_blank' : undefined}
                           rel={item.title === 'Address' ? 'noopener noreferrer' : undefined}
                         >
@@ -425,7 +425,7 @@ const ContactPage = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="p-6 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-xl mb-6"
+                    className="p-6 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-xl mb-6"
                   >
                     <h3 className="font-semibold text-lg mb-3">How would you rate your experience?</h3>
                     <div className="flex gap-2 mb-4">
@@ -436,7 +436,7 @@ const ContactPage = () => {
                           onClick={() => setFeedbackRating(rating)}
                           className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
                             feedbackRating >= rating 
-                              ? 'bg-purple-600 text-white' 
+                              ? 'bg-red-600 text-white' 
                               : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
                           }`}
                         >
@@ -446,7 +446,7 @@ const ContactPage = () => {
                     </div>
                     <button
                       onClick={handleFeedbackSubmit}
-                      className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
                     >
                       Submit Feedback
                     </button>
@@ -471,7 +471,7 @@ const ContactPage = () => {
                         isDarkMode 
                           ? 'bg-gray-700 border-gray-600 text-white' 
                           : 'bg-white border-gray-300 text-gray-900'
-                      } focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors ${
+                      } focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors ${
                         errors.name ? 'border-red-500 focus:ring-red-500' : ''
                       }`}
                     />
@@ -495,7 +495,7 @@ const ContactPage = () => {
                         isDarkMode 
                           ? 'bg-gray-700 border-gray-600 text-white' 
                           : 'bg-white border-gray-300 text-gray-900'
-                      } focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors ${
+                      } focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors ${
                         errors.email ? 'border-red-500 focus:ring-red-500' : ''
                       }`}
                     />
@@ -521,7 +521,7 @@ const ContactPage = () => {
                         isDarkMode 
                           ? 'bg-gray-700 border-gray-600 text-white' 
                           : 'bg-white border-gray-300 text-gray-900'
-                      } focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors`}
+                      } focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors`}
                     />
                   </div>
 
@@ -540,7 +540,7 @@ const ContactPage = () => {
                         isDarkMode 
                           ? 'bg-gray-700 border-gray-600 text-white' 
                           : 'bg-white border-gray-300 text-gray-900'
-                      } focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors ${
+                      } focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors ${
                         errors.phone ? 'border-red-500 focus:ring-red-500' : ''
                       }`}
                     />
@@ -562,7 +562,7 @@ const ContactPage = () => {
                       isDarkMode 
                         ? 'bg-gray-700 border-gray-600 text-white' 
                         : 'bg-white border-gray-300 text-gray-900'
-                    } focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors`}
+                    } focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors`}
                   >
                     <option value="">Select a service</option>
                     {services.map((service) => (
@@ -588,7 +588,7 @@ const ContactPage = () => {
                       isDarkMode 
                         ? 'bg-gray-700 border-gray-600 text-white' 
                         : 'bg-white border-gray-300 text-gray-900'
-                    } focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors ${
+                    } focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors ${
                       errors.subject ? 'border-red-500 focus:ring-red-500' : ''
                     }`}
                   />
@@ -612,7 +612,7 @@ const ContactPage = () => {
                       isDarkMode 
                         ? 'bg-gray-700 border-gray-600 text-white' 
                         : 'bg-white border-gray-300 text-gray-900'
-                    } focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors ${
+                    } focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors ${
                       errors.message ? 'border-red-500 focus:ring-red-500' : ''
                     }`}
                   ></textarea>
@@ -625,14 +625,14 @@ const ContactPage = () => {
                   <input
                     type="checkbox"
                     id="privacy-policy"
-                    className="h-4 w-4 text-purple-600 rounded border-gray-300 focus:ring-purple-500"
+                    className="h-4 w-4 text-red-600 rounded border-gray-300 focus:ring-red-500"
                     required
                   />
                   <label htmlFor="privacy-policy" className="ml-2 block text-sm">
                     I agree to the{' '}
                     <a 
                       href="/privacy-policy" 
-                      className="text-purple-600 hover:text-purple-500 dark:text-purple-400"
+                      className="text-red-600 hover:text-red-500 dark:text-red-400"
                     >
                       Privacy Policy
                     </a>
@@ -643,7 +643,7 @@ const ContactPage = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full py-3.5 px-4 rounded-lg font-medium text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all transform hover:scale-[1.01] ${
+                    className={`w-full py-3.5 px-4 rounded-lg font-medium text-white bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all transform hover:scale-[1.01] ${
                       isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
                     } flex items-center justify-center`}
                   >
@@ -720,10 +720,10 @@ const ContactPage = () => {
         {/* CTA Section */}
         <div className="mt-20">
           <div className={`rounded-2xl overflow-hidden relative ${
-            isDarkMode ? 'bg-gray-800' : 'bg-gradient-to-br from-purple-50 to-blue-50'
+            isDarkMode ? 'bg-gray-800' : 'bg-gradient-to-br from-red-50 to-blue-50'
           } p-10 shadow-lg`}>
             <div className="absolute inset-0 overflow-hidden opacity-10">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600 rounded-full blur-3xl"></div>
+              <div className="absolute top-0 right-0 w-96 h-96 bg-red-600 rounded-full blur-3xl"></div>
               <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600 rounded-full blur-3xl"></div>
             </div>
             
@@ -735,7 +735,7 @@ const ContactPage = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a 
                   href="tel:+211920504110" 
-                  className="py-3 px-6 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium flex items-center justify-center transition-colors"
+                  className="py-3 px-6 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium flex items-center justify-center transition-colors"
                 >
                   <FaPhone className="mr-2" />
                   Call Us Now

@@ -111,8 +111,8 @@ const LoginPage = () => {
     ${errors[fieldName] 
       ? 'border-error focus:border-error focus:ring-error/30' 
       : isDarkMode 
-        ? 'border-dark-border focus:border-primary-purple' 
-        : 'border-light-border focus:border-primary-blue'
+        ? 'border-dark-border focus:border-red-600' 
+        : 'border-light-border focus:border-blue-600'
     }
     ${isDarkMode 
       ? 'bg-dark-secondary text-dark-text-primary' 
@@ -268,8 +268,8 @@ const LoginPage = () => {
                   type="button"
                   className={`absolute inset-y-0 right-0 pr-3 flex items-center rounded-r-lg transition-colors ${
                     isDarkMode 
-                      ? 'hover:text-primary-purple text-dark-text-tertiary' 
-                      : 'hover:text-primary-blue text-text-tertiary'
+                      ? 'hover:text-red-600 text-dark-text-tertiary' 
+                      : 'hover:text-blue-600 text-text-tertiary'
                   }`}
                   onClick={togglePasswordVisibility}
                   aria-label={showPassword ? "Hide password" : "Show password"}
@@ -302,7 +302,7 @@ const LoginPage = () => {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className={`h-4 w-4 rounded border-gray-300 text-primary-blue focus:ring-primary-blue ${
+                className={`h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-600 ${
                   isDarkMode ? 'bg-dark-tertiary border-dark-border' : ''
                 }`}
               />
@@ -319,8 +319,8 @@ const LoginPage = () => {
               to="/forgot-password"
               className={`text-sm font-medium ${
                 isDarkMode 
-                  ? 'text-primary-purple hover:text-primary-teal' 
-                  : 'text-primary-blue hover:text-primary-purple'
+                  ? 'text-red-600 hover:text-blue-600' 
+                  : 'text-blue-600 hover:text-red-600'
               } focus:outline-none focus:underline transition-colors`}
             >
               Forgot password?
@@ -332,12 +332,9 @@ const LoginPage = () => {
               type="submit"
               disabled={isLoading}
               className={`group relative w-full flex justify-center py-3 px-4 text-base font-medium rounded-lg text-white 
-                ${isDarkMode 
-                  ? 'bg-primary-purple hover:bg-primary-purple/90' 
-                  : 'bg-primary-blue hover:bg-primary-blue/90'
-                }
+                bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-700 hover:to-blue-700
                 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                  isDarkMode ? 'focus:ring-primary-purple' : 'focus:ring-primary-blue'
+                  isDarkMode ? 'focus:ring-red-600' : 'focus:ring-blue-600'
                 }
                 transition-colors duration-200 ${
                   isLoading ? 'opacity-70 cursor-not-allowed' : ''
@@ -364,8 +361,8 @@ const LoginPage = () => {
               to="/register"
               className={`font-medium ${
                 isDarkMode 
-                  ? 'text-primary-purple hover:text-primary-teal' 
-                  : 'text-primary-blue hover:text-primary-purple'
+                  ? 'text-red-600 hover:text-blue-600' 
+                  : 'text-blue-600 hover:text-red-600'
               } focus:outline-none focus:underline transition-colors`}
             >
               Sign up
@@ -381,11 +378,11 @@ const LoginPage = () => {
             isDarkMode ? 'text-dark-text-tertiary' : 'text-text-tertiary'
           }`}>
             By signing in, you agree to our{' '}
-            <Link to="/terms" className="underline hover:text-primary-blue dark:hover:text-primary-purple">
+            <Link to="/terms" className="underline hover:text-red-600 dark:hover:text-blue-600">
               Terms of Service
             </Link>{' '}
             and{' '}
-            <Link to="/privacy" className="underline hover:text-primary-blue dark:hover:text-primary-purple">
+            <Link to="/privacy" className="underline hover:text-red-600 dark:hover:text-blue-600">
               Privacy Policy
             </Link>
           </div>

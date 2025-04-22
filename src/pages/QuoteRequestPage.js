@@ -3,6 +3,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDarkMode } from '../context/DarkModeContext';
 import QuoteForm from '../components/QuoteForm';
+import { addDoc, collection } from 'firebase/firestore';
+import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
+import { db } from '../firebase';
 
 // New component imports
 import PricingSlider from '../components/PricingSlider';
@@ -14,6 +18,7 @@ const QuoteRequestPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const formRef = useRef(null);
+  const { currentUser } = useAuth();
   
   // Main state
   const [currentStep, setCurrentStep] = useState(1);
@@ -212,9 +217,18 @@ const QuoteRequestPage = () => {
 
   // Handle budget selection
   const handleBudgetSelect = (range) => {
-    setBudgetRange(range);
+    // Validate budget range values
+    const validatedRange = [
+      Math.max(range[0], selectedService?.service?.minBudget || 1000),
+      Math.min(range[1], selectedService?.service?.maxBudget || 5000)
+    ];
+    
+    // Set the validated range
+    setBudgetRange(validatedRange);
+    
+    // Update form data with formatted budget
     updateFormData({
-      estimatedBudget: `$${range[0]} - $${range[1]}`
+      estimatedBudget: `$${validatedRange[0]} - $${validatedRange[1]}`
     });
     
     // Move to next step
@@ -223,19 +237,67 @@ const QuoteRequestPage = () => {
 
   // Handle form submission from step 3
   const handleFormSubmit = (formValues) => {
+    // Generate the reference number first
+    const referenceNumber = `CQ-${Math.floor(Math.random() * 900) + 100}`;
+    
     // Combine all form data
     const finalFormData = {
       ...formData,
-      ...formValues
+      ...formValues,
+      // Add required metadata
+      status: 'pending',
+      createdAt: new Date(),
+      userId: currentUser?.uid || 'anonymous',
+      userEmail: currentUser?.email || formValues.email,
+      referenceNumber: referenceNumber, // Use the generated reference number
     };
+    
+    // Immediately update form data with reference number
+    setFormData(prev => ({ 
+      ...prev, 
+      ...formValues,
+      referenceNumber: referenceNumber 
+    }));
     
     console.log("Final form submission:", finalFormData);
     
     // Move to final step
     setCurrentStep(4);
     
-    // Here you would normally submit the data to your backend
-    // For now we'll just simulate a success message
+    // Submit data to Firebase
+    const submitQuote = async () => {
+      try {
+        // If the user is authenticated, use their user ID
+        if (currentUser) {
+          // Add to Firestore quotes collection
+          const docRef = await addDoc(collection(db, 'quotes'), finalFormData);
+          console.log("Quote submitted with ID:", docRef.id);
+          
+          // Send email notification to admin (would implement server-side)
+          // This would typically be handled by a Cloud Function
+          
+        } else {
+          // For anonymous users, still store the data
+          const docRef = await addDoc(collection(db, 'quotes'), {
+            ...finalFormData,
+            isAnonymous: true
+          });
+          console.log("Anonymous quote submitted with ID:", docRef.id);
+          
+        }
+        
+        // Show success message
+        toast.success("Your quote request has been submitted successfully!");
+        
+      } catch (error) {
+        console.error("Error submitting quote:", error);
+        // Show error message to user
+        toast.error("There was an error submitting your quote. Please try again.");
+      }
+    };
+    
+    // Execute the submission
+    submitQuote();
     
     // Optionally redirect to a thank you page after a delay
     // setTimeout(() => navigate('/thank-you'), 3000);
@@ -298,7 +360,7 @@ const QuoteRequestPage = () => {
       <header className={`relative overflow-hidden ${
         isDarkMode 
           ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' 
-          : 'bg-gradient-to-r from-conison-cyan via-conison-magenta to-conison-cyan'
+          : 'bg-gradient-to-r from-red-600 via-blue-600 to-red-600'
       }`}>
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         
@@ -316,7 +378,7 @@ const QuoteRequestPage = () => {
               </p>
               <button 
                 onClick={() => formRef.current.scrollIntoView({ behavior: 'smooth' })}
-                className="inline-flex items-center px-6 py-3 bg-white text-conison-magenta rounded-lg shadow-lg hover:shadow-xl transition duration-300 font-medium"
+                className="inline-flex items-center px-6 py-3 bg-white text-red-600 rounded-lg shadow-lg hover:shadow-xl transition duration-300 font-medium"
               >
                 Start Your Quote
                 <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -328,17 +390,65 @@ const QuoteRequestPage = () => {
           
           {/* Process Step Indicators */}
           <MotionWrapper delay={0.3}>
-            <div className="mt-16 max-w-5xl mx-auto">
-              <StepIndicator 
-                steps={processSteps} 
-                currentStep={currentStep} 
-                onStepClick={(step) => {
-                  // Only allow going back to previous steps
-                  if (step < currentStep) {
-                    setCurrentStep(step);
-                  }
-                }}
-              />
+            <div className="mt-16 max-w-5xl mx-auto bg-white/10 dark:bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-3">
+                {processSteps.map((step, index) => {
+                  // Define classes based on step status
+                  const isActive = step.number === currentStep;
+                  const isCompleted = step.number < currentStep;
+                  const isPending = step.number > currentStep;
+                  
+                  // Set colors based on status
+                  const circleClasses = isActive 
+                    ? "bg-gradient-to-r from-red-600 to-blue-600 text-white ring-4 ring-red-200 dark:ring-red-900/50 shadow-lg"
+                    : isCompleted 
+                      ? "bg-green-500 text-white" 
+                      : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400";
+                      
+                  const titleClasses = isActive
+                    ? "text-white dark:text-white font-bold text-lg"
+                    : isCompleted
+                      ? "text-white dark:text-white font-bold"
+                      : "text-white/80 dark:text-white/80";
+                      
+                  const descClasses = isActive
+                    ? "text-white/90 dark:text-white/90 font-medium"
+                    : "text-white/70 dark:text-white/70";
+                  
+                  return (
+                    <div key={step.number} className={`relative ${isActive ? 'z-10' : 'z-0'}`}>
+                      {/* Connect line for desktop */}
+                      {index > 0 && (
+                        <div className="hidden md:block absolute h-1 bg-gray-300 dark:bg-gray-700 left-0 right-0 top-8 -translate-y-1/2 -z-10"
+                          style={{ width: "calc(100% - 1rem)", left: "-50%" }}
+                        />
+                      )}
+                      
+                      <div 
+                        className={`flex flex-col items-center text-center p-4 rounded-xl transition-all duration-300
+                          ${isActive 
+                            ? 'bg-gradient-to-br from-red-600/20 to-blue-600/20 transform scale-105 shadow-lg border border-white/10' 
+                            : ''}`}
+                      >
+                        {/* Number Circle */}
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-all duration-300 ${circleClasses}`}>
+                          {isCompleted ? (
+                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : (
+                            <span className="text-2xl font-bold">{step.number}</span>
+                          )}
+                        </div>
+                        
+                        {/* Title & Description */}
+                        <h3 className={`font-semibold mb-2 ${titleClasses}`}>{step.title}</h3>
+                        <p className={`text-sm ${descClasses}`}>{step.description}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </MotionWrapper>
         </div>
@@ -366,7 +476,7 @@ const QuoteRequestPage = () => {
                     className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-all hover:shadow-xl duration-300"
                   >
                     <div className="flex items-center mb-4">
-                      <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-gray-700' : 'bg-conison-cyan/10'} text-conison-cyan mr-4`}>
+                      <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-gray-700' : 'bg-red-100/10'} text-red-600 mr-4`}>
                         {category.icon}
                       </div>
                       <h3 className="text-xl font-semibold dark:text-white">{category.name}</h3>
@@ -387,7 +497,7 @@ const QuoteRequestPage = () => {
                             <h4 className="font-medium dark:text-white">{service.name}</h4>
                             <span className="text-sm text-gray-500 dark:text-gray-400">Starting from {service.price}</span>
                           </div>
-                          <svg className="w-5 h-5 text-conison-magenta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
                           </svg>
                         </div>
@@ -415,18 +525,18 @@ const QuoteRequestPage = () => {
               
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
                 <div className="flex items-center mb-8">
-                  <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-gray-700' : 'bg-conison-cyan/10'} text-conison-cyan mr-4`}>
+                  <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-gray-700' : 'bg-red-100'} text-red-600 dark:text-red-400 mr-4`}>
                     {selectedService.category.icon}
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold dark:text-white">{selectedService.category.name}</h3>
-                    <p className="text-conison-magenta">{selectedService.service.name}</p>
+                    <p className="text-red-600 dark:text-red-400">{selectedService.service.name}</p>
                   </div>
                 </div>
                 
                 <div className="mb-8">
                   <h4 className="font-medium mb-2 dark:text-white">Estimated Price Range:</h4>
-                  <div className="text-2xl font-bold text-conison-magenta mb-6">
+                  <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-blue-600 mb-6">
                     ${selectedService.service.minBudget} - ${selectedService.service.maxBudget}
                   </div>
                   
@@ -436,6 +546,30 @@ const QuoteRequestPage = () => {
                     value={budgetRange}
                     onChange={setBudgetRange}
                   />
+                  
+                  {/* Helper text for small budget ranges */}
+                  {(selectedService.service.maxBudget - selectedService.service.minBudget) < 500 && (
+                    <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                      <p className="flex items-center">
+                        <svg className="w-4 h-4 mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Tip: You can either drag the slider handles or directly type your preferred budget in the input fields.
+                      </p>
+                    </div>
+                  )}
+                  
+                  <div className="mt-4 text-center">
+                    <button 
+                      onClick={() => handleBudgetSelect(budgetRange)}
+                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-600 to-blue-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all"
+                    >
+                      Set Budget
+                      <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
                 
                 <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl mb-8">
@@ -477,7 +611,7 @@ const QuoteRequestPage = () => {
                   </button>
                   <button 
                     onClick={() => handleBudgetSelect(budgetRange)}
-                    className="px-6 py-2 bg-conison-magenta text-white rounded-lg shadow-md hover:shadow-lg transition-all"
+                    className="px-6 py-2 bg-gradient-to-r from-red-600 to-blue-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all"
                   >
                     Continue
                   </button>
@@ -514,9 +648,36 @@ const QuoteRequestPage = () => {
                         <span className="text-sm text-gray-500 dark:text-gray-400">Type:</span>
                         <p className="font-medium dark:text-white">{formData.serviceType}</p>
                       </div>
-                      <div>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">Budget Range:</span>
-                        <p className="font-medium text-conison-magenta">{formData.estimatedBudget}</p>
+                      </div>
+                    
+                    {/* Enhanced budget display */}
+                    <div className="mt-4 p-3 bg-white/50 dark:bg-black/20 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Your Budget Range:</span>
+                        <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-blue-600">{formData.estimatedBudget}</span>
+                      </div>
+                      
+                      {/* Visual budget indicator */}
+                      <div className="mt-2">
+                        <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-600 overflow-hidden">
+                          <div 
+                            className="h-full rounded-full bg-gradient-to-r from-red-600 to-blue-600"
+                            style={{
+                              width: `${((
+                                parseInt(formData.estimatedBudget?.split(' - ')[1]?.replace(/[^0-9]/g, '')) - 
+                                parseInt(formData.estimatedBudget?.split(' - ')[0]?.replace(/[^0-9]/g, ''))
+                              ) / (selectedService.service.maxBudget - selectedService.service.minBudget)) * 100}%`,
+                              marginLeft: `${((
+                                parseInt(formData.estimatedBudget?.split(' - ')[0]?.replace(/[^0-9]/g, '')) - 
+                                selectedService.service.minBudget
+                              ) / (selectedService.service.maxBudget - selectedService.service.minBudget)) * 100}%`
+                            }}
+                          />
+                        </div>
+                        <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          <span>${selectedService.service.minBudget}</span>
+                          <span>${selectedService.service.maxBudget}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -534,27 +695,28 @@ const QuoteRequestPage = () => {
           </MotionWrapper>
         )}
         
-        {/* Step 4: Submission Confirmation */}
+        {/* Step 4: Confirmation */}
         {currentStep === 4 && (
           <MotionWrapper>
-            <div className="max-w-3xl mx-auto text-center">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
-                  <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mb-6">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                   </svg>
                 </div>
-                
                 <h2 className="text-2xl md:text-3xl font-bold mb-4 dark:text-white">
                   Quote Request Submitted!
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-8">
-                  Thank you for your quote request. Our team will review your project details and get back to you with a detailed quote within 48 hours.
+                <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                  Thank you for your quote request. Our team will review your project details and get back to you 
+                  with a detailed quote within 48 hours.
                 </p>
-                
-                <div className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-xl mb-6 text-left">
-                  <h3 className="font-medium mb-4 dark:text-white">Your Request Summary:</h3>
-                  <div className="grid grid-cols-2 gap-4 mb-4">
+              </div>
+              
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-12">
+                <h3 className="text-lg font-semibold mb-4 dark:text-white">Your Request Summary:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                       <span className="text-sm text-gray-500 dark:text-gray-400">Service:</span>
                       <p className="font-medium dark:text-white">{formData.serviceCategory}</p>
@@ -564,44 +726,51 @@ const QuoteRequestPage = () => {
                       <p className="font-medium dark:text-white">{formData.serviceType}</p>
                     </div>
                     <div>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">Budget Range:</span>
-                      <p className="font-medium text-conison-magenta">{formData.estimatedBudget}</p>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Your Budget Range:</span>
+                    <p className="font-medium dark:text-white">{formData.estimatedBudget}</p>
                     </div>
                     <div>
                       <span className="text-sm text-gray-500 dark:text-gray-400">Reference Number:</span>
-                      <p className="font-medium dark:text-white">CQ-{Math.floor(Math.random() * 10000)}</p>
+                    <p className="font-medium dark:text-white">{formData.referenceNumber}</p>
                     </div>
                   </div>
                   
-                  <div>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Next Steps:</span>
-                    <ul className="mt-2 space-y-2 text-gray-600 dark:text-gray-400">
+                {/* Next Steps */}
+                <div className="mt-8">
+                  <h4 className="text-base font-semibold mb-3 dark:text-white">Next Steps:</h4>
+                  <ol className="space-y-4">
                       <li className="flex items-start">
-                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-conison-cyan/20 text-conison-cyan text-xs mr-2 flex-shrink-0">1</span>
-                        <span>Our team will review your request and prepare a detailed quote.</span>
+                      <div className="flex-shrink-0 h-6 w-6 bg-gradient-to-r from-red-600 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3 mt-0.5">
+                        1
+                      </div>
+                      <p className="text-gray-600 dark:text-gray-400">Our team will review your request and prepare a detailed quote.</p>
                       </li>
                       <li className="flex items-start">
-                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-conison-cyan/20 text-conison-cyan text-xs mr-2 flex-shrink-0">2</span>
-                        <span>You'll receive your quote via email within 48 hours.</span>
+                      <div className="flex-shrink-0 h-6 w-6 bg-gradient-to-r from-red-600 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3 mt-0.5">
+                        2
+                      </div>
+                      <p className="text-gray-600 dark:text-gray-400">You'll receive your quote via email within 48 hours.</p>
                       </li>
                       <li className="flex items-start">
-                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-conison-cyan/20 text-conison-cyan text-xs mr-2 flex-shrink-0">3</span>
-                        <span>We'll schedule a consultation call to discuss your quote and project details.</span>
+                      <div className="flex-shrink-0 h-6 w-6 bg-gradient-to-r from-red-600 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3 mt-0.5">
+                        3
+                      </div>
+                      <p className="text-gray-600 dark:text-gray-400">We'll schedule a consultation call to discuss your quote and project details.</p>
                       </li>
-                    </ul>
-                  </div>
+                  </ol>
                 </div>
                 
-                <div className="flex flex-wrap justify-center gap-4">
+                {/* Action buttons */}
+                <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
                   <Link
                     to="/"
-                    className="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                    className="inline-flex items-center justify-center px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                   >
                     Return to Home
                   </Link>
                   <Link
                     to="/services"
-                    className="px-6 py-3 bg-conison-magenta text-white rounded-lg shadow-md hover:shadow-lg transition-all"
+                    className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-red-600 to-blue-600 text-white rounded-lg hover:from-red-700 hover:to-blue-700 transition-colors"
                   >
                     Explore Our Services
                   </Link>
@@ -653,7 +822,7 @@ const QuoteRequestPage = () => {
                     {[1, 2, 3, 4, 5].map(star => (
                       <svg 
                         key={star} 
-                        className={`w-5 h-5 ${star <= testimonial.stars ? 'text-conison-yellow' : 'text-gray-300 dark:text-gray-600'}`} 
+                        className={`w-5 h-5 ${star <= testimonial.stars ? 'text-red-500' : 'text-gray-300 dark:text-gray-600'}`} 
                         fill="currentColor" 
                         viewBox="0 0 20 20"
                       >
@@ -694,7 +863,7 @@ const QuoteRequestPage = () => {
                   <summary className="flex justify-between items-center cursor-pointer p-6 list-none">
                     <h5 className="text-gray-800 dark:text-white font-medium">{faq.question}</h5>
                     <span className={`ml-6 p-1.5 rounded-full ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'} transform group-open:rotate-180 transition-transform duration-200`}>
-                      <svg className={`w-4 h-4 ${isDarkMode ? 'text-conison-cyan' : 'text-conison-magenta'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className={`w-4 h-4 ${isDarkMode ? 'text-red-500' : 'text-red-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                       </svg>
                     </span>
@@ -712,7 +881,7 @@ const QuoteRequestPage = () => {
               </p>
               <Link
                 to="/contact"
-                className="inline-flex items-center px-6 py-3 bg-conison-cyan text-white rounded-lg shadow-md hover:shadow-lg transition-all"
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-600 to-blue-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
@@ -731,7 +900,7 @@ const QuoteRequestPage = () => {
             <div className={`rounded-3xl overflow-hidden shadow-xl ${
               isDarkMode 
                 ? 'bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 border border-gray-700' 
-                : 'bg-gradient-to-r from-conison-cyan via-conison-magenta to-conison-cyan'
+                : 'bg-gradient-to-r from-red-600 via-blue-600 to-red-600'
             }`}>
               <div className="p-8 md:p-12 text-center">
                 <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
@@ -745,7 +914,7 @@ const QuoteRequestPage = () => {
                     setCurrentStep(1);
                     formRef.current.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="inline-flex items-center px-8 py-4 bg-white text-conison-magenta rounded-lg shadow-lg hover:shadow-xl transition-all font-medium text-lg"
+                  className="inline-flex items-center px-8 py-4 bg-white text-red-600 rounded-lg shadow-lg hover:shadow-xl transition-all font-medium text-lg"
                 >
                   Get Your Quote Now
                   <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

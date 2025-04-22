@@ -126,6 +126,93 @@ const Dashboard = () => {
   const recentActivity = getRecentActivity();
   const hasNoData = quotes.length === 0 && projects.length === 0 && payments.length === 0;
 
+  // Add a section to display quote requests in the dashboard
+  const renderQuoteRequestsSection = () => {
+    // Filter to show only quotes
+    const clientQuotes = quotes.filter(item => item.type === 'quote' || !item.type);
+    
+    if (clientQuotes.length === 0) {
+      return (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+          <h2 className="text-xl font-bold mb-4">Your Quote Requests</h2>
+          <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-4 rounded-lg">
+            <p className="font-medium">You haven't submitted any quote requests yet.</p>
+            <Link 
+              to="/quote-request" 
+              className="mt-3 inline-flex items-center text-blue-600 dark:text-blue-400 font-medium hover:underline"
+            >
+              Request a quote now
+              <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </Link>
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+        <h2 className="text-xl font-bold mb-4">Your Quote Requests</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Reference</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Service</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Budget</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              {clientQuotes.map((quote, index) => (
+                <tr key={quote.id || index} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">{quote.referenceNumber || 'CQ-000'}</div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="text-sm text-gray-900 dark:text-white">{quote.serviceCategory || quote.service || 'Service'}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{quote.serviceType || ''}</div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="text-sm text-gray-900 dark:text-white">{quote.estimatedBudget || '$0 - $0'}</div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      {quote.createdAt ? new Date(quote.createdAt.seconds * 1000).toLocaleDateString() : 'Unknown date'}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      quote.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                      quote.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                      quote.status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
+                      quote.status === 'converted' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
+                      'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                    }`}>
+                      {quote.status ? quote.status.charAt(0).toUpperCase() + quote.status.slice(1) : 'Pending'}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-4 text-right">
+          <Link 
+            to="/quote-request" 
+            className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+          >
+            New Quote Request
+          </Link>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="p-6">
       <div className="mb-6">
@@ -151,184 +238,120 @@ const Dashboard = () => {
       )}
 
       {/* Stats cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-gray-600 dark:text-gray-400">Total Quotes</h3>
-            <FaFileInvoiceDollar className="text-purple-500 text-xl" />
-          </div>
-          <p className="text-2xl font-bold">{stats.totalQuotes}</p>
-          <div className="mt-2">
-            <Link to="/client/quotes" className="text-purple-500 text-sm hover:underline">
-              View all quotes
-            </Link>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-gray-600 dark:text-gray-400">Active Projects</h3>
-            <FaProjectDiagram className="text-blue-500 text-xl" />
-          </div>
-          <p className="text-2xl font-bold">{stats.activeProjects}</p>
-          <div className="mt-2">
-            <Link to="/client/projects" className="text-blue-500 text-sm hover:underline">
-              View active projects
-            </Link>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-gray-600 dark:text-gray-400">Total Paid</h3>
-            <FaMoneyBillWave className="text-green-500 text-xl" />
-          </div>
-          <p className="text-2xl font-bold">${stats.totalPaid.toLocaleString()}</p>
-          <div className="mt-2">
-            <Link to="/client/payments" className="text-green-500 text-sm hover:underline">
-              View payment history
-            </Link>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-gray-600 dark:text-gray-400">Pending Payments</h3>
-            <FaCreditCard className="text-yellow-500 text-xl" />
-          </div>
-          <p className="text-2xl font-bold">${stats.pendingPayments.toLocaleString()}</p>
-          <div className="mt-2">
-            <Link to="/client/payments/pending" className="text-yellow-500 text-sm hover:underline">
-              View pending payments
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Quote Requests */}
       {!hasNoData && (
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Quick Quote Requests</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {quotes.filter(quote => quote.isQuickQuote).map((quote) => (
-              <div key={quote.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-conison-cyan">
-                <div className="flex justify-between mb-4">
-                  <h3 className="font-medium">{quote.service}</h3>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    quote.status === 'pending' 
-                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' 
-                      : quote.status === 'approved' 
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                        : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-                  }`}>
-                    {quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}
-                  </span>
-                </div>
-                <div className="mb-3">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    <strong>Amount:</strong> ${quote.amount?.toLocaleString() || 'Pending'}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    <strong>Requested:</strong> {new Date(quote.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="flex justify-between items-center">
-                  <Link to={`/client/quotes/${quote.id}`} className="text-conison-magenta text-sm hover:underline">
-                    View Details
-                  </Link>
-                  {quote.status === 'approved' && (
-                    <button 
-                      onClick={() => window.location.href = `/payment?quoteId=${quote.id}`}
-                      className="bg-conison-cyan text-white text-sm py-1 px-3 rounded hover:bg-conison-cyan-dark"
-                    >
-                      Make Payment
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-            
-            {quotes.filter(quote => quote.isQuickQuote).length === 0 && (
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 col-span-3 text-center">
-                <p className="text-gray-600 dark:text-gray-300 mb-4">You haven't requested any quick quotes yet.</p>
-                <Link 
-                  to="/" 
-                  className="inline-block bg-conison-magenta text-white py-2 px-4 rounded hover:bg-conison-magenta-dark transition-colors"
-                >
-                  Browse Quick Quote Options
-                </Link>
-              </div>
-            )}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-gray-600 dark:text-gray-400">Total Quotes</h3>
+              <FaFileInvoiceDollar className="text-purple-500 text-xl" />
+            </div>
+            <p className="text-2xl font-bold">{stats.totalQuotes}</p>
+            <div className="mt-2">
+              <Link to="/client/quotes" className="text-purple-500 text-sm hover:underline">
+                View all quotes
+              </Link>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-gray-600 dark:text-gray-400">Active Projects</h3>
+              <FaProjectDiagram className="text-blue-500 text-xl" />
+            </div>
+            <p className="text-2xl font-bold">{stats.activeProjects}</p>
+            <div className="mt-2">
+              <Link to="/client/projects" className="text-blue-500 text-sm hover:underline">
+                View active projects
+              </Link>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-gray-600 dark:text-gray-400">Total Paid</h3>
+              <FaMoneyBillWave className="text-green-500 text-xl" />
+            </div>
+            <p className="text-2xl font-bold">${stats.totalPaid.toLocaleString()}</p>
+            <div className="mt-2">
+              <Link to="/client/payments" className="text-green-500 text-sm hover:underline">
+                View payment history
+              </Link>
+            </div>
           </div>
         </div>
       )}
-
+      
+      {/* Quote Requests - New Section */}
+      {renderQuoteRequestsSection()}
+      
       {/* Recent Activity */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-        <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
-        {recentActivity.length > 0 ? (
-          <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {recentActivity.map((activity) => (
-              <div key={`${activity.type}-${activity.id}`} className="py-4">
-                <div className="flex justify-between">
-                  <div>
-                    <h4 className="font-medium">{activity.title}</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {new Date(activity.date).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    {activity.type === 'project' ? (
-                      <div>
-                        <span 
-                          className={`text-sm px-2 py-1 rounded-full ${
-                            activity.status === 'completed' 
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
-                              : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                          }`}
-                        >
-                          {activity.status === 'in_progress' ? 'In Progress' : activity.status}
-                        </span>
-                        <p className="text-sm mt-1">{activity.progress}% complete</p>
-                      </div>
-                    ) : activity.type === 'payment' ? (
-                      <div>
-                        <span 
-                          className={`text-sm px-2 py-1 rounded-full ${
-                            activity.status === 'completed' 
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
-                              : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                          }`}
-                        >
-                          {activity.status}
-                        </span>
-                        <p className="text-sm mt-1">${activity.amount.toLocaleString()}</p>
-                      </div>
-                    ) : (
-                      <div>
-                        <span 
-                          className={`text-sm px-2 py-1 rounded-full ${
-                            activity.status === 'approved' 
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
-                              : activity.status === 'pending'
-                                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                                : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                          }`}
-                        >
-                          {activity.status}
-                        </span>
-                        <p className="text-sm mt-1">${activity.amount.toLocaleString()}</p>
-                      </div>
-                    )}
+      {!hasNoData && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
+          <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
+          {recentActivity.length > 0 ? (
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+              {recentActivity.map((activity) => (
+                <div key={`${activity.type}-${activity.id}`} className="py-4">
+                  <div className="flex justify-between">
+                    <div>
+                      <h4 className="font-medium">{activity.title}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {new Date(activity.date).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      {activity.type === 'project' ? (
+                        <div>
+                          <span 
+                            className={`text-sm px-2 py-1 rounded-full ${
+                              activity.status === 'completed' 
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                            }`}
+                          >
+                            {activity.status === 'in_progress' ? 'In Progress' : activity.status}
+                          </span>
+                          <p className="text-sm mt-1">{activity.progress}% complete</p>
+                        </div>
+                      ) : activity.type === 'payment' ? (
+                        <div>
+                          <span 
+                            className={`text-sm px-2 py-1 rounded-full ${
+                              activity.status === 'completed' 
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                                : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                            }`}
+                          >
+                            {activity.status}
+                          </span>
+                          <p className="text-sm mt-1">${activity.amount.toLocaleString()}</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <span 
+                            className={`text-sm px-2 py-1 rounded-full ${
+                              activity.status === 'approved' 
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                                : activity.status === 'pending'
+                                  ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                                  : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                            }`}
+                          >
+                            {activity.status}
+                          </span>
+                          <p className="text-sm mt-1">${activity.amount.toLocaleString()}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-600 dark:text-gray-400">No recent activity found.</p>
-        )}
-      </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600 dark:text-gray-400">No recent activity found.</p>
+          )}
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">

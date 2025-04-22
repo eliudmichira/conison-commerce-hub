@@ -141,7 +141,7 @@ const RateCard = ({ categoryFilter = 'all', searchQuery = '', onRequestQuote }) 
                 window.location.href = '/rate-card';
               }
             }}
-            className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors inline-flex items-center"
+            className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors inline-flex items-center"
           >
             <Filter className="w-4 h-4 mr-2" />
             Reset Filters
@@ -162,7 +162,7 @@ const RateCard = ({ categoryFilter = 'all', searchQuery = '', onRequestQuote }) 
             <button
               className={`w-full flex items-center justify-between p-6 text-left transition-colors ${
                 expandedCategory === category.id
-                  ? isDarkMode ? 'bg-gray-700' : 'bg-purple-50'
+                  ? isDarkMode ? 'bg-gray-700' : 'bg-red-50'
                   : isDarkMode ? 'bg-gray-800' : 'bg-white'
               }`}
               onClick={() => toggleCategory(category.id)}
@@ -172,7 +172,7 @@ const RateCard = ({ categoryFilter = 'all', searchQuery = '', onRequestQuote }) 
                 <p className="text-gray-600 dark:text-gray-300 mt-1">{category.description}</p>
               </div>
               <ChevronDown 
-                className={`w-6 h-6 text-purple-600 transform transition-transform ${
+                className={`w-6 h-6 text-red-600 transform transition-transform ${
                   expandedCategory === category.id ? 'rotate-180' : ''
                 }`} 
               />
@@ -206,7 +206,7 @@ const RateCard = ({ categoryFilter = 'all', searchQuery = '', onRequestQuote }) 
                           className={`${
                             isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
                           } transition-colors ${
-                            service.popular ? 'bg-purple-50/50 dark:bg-purple-900/10' : ''
+                            service.popular ? 'bg-red-50/50 dark:bg-red-900/10' : ''
                           }`}
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -215,7 +215,7 @@ const RateCard = ({ categoryFilter = 'all', searchQuery = '', onRequestQuote }) 
                                 <div className="font-medium">
                                   {service.name}
                                   {service.popular && (
-                                    <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                                    <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
                                       Popular
                                     </span>
                                   )}
@@ -224,7 +224,7 @@ const RateCard = ({ categoryFilter = 'all', searchQuery = '', onRequestQuote }) 
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                            <div className="text-sm font-medium text-red-600 dark:text-red-400">
                               {service.price}
                             </div>
                           </td>
@@ -236,7 +236,7 @@ const RateCard = ({ categoryFilter = 'all', searchQuery = '', onRequestQuote }) 
                           <td className="px-6 py-4 whitespace-nowrap text-right">
                             <button
                               onClick={() => handleRequestQuote(category.id, service.id)}
-                              className="inline-flex items-center px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors"
+                              className="inline-flex items-center px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors"
                             >
                               Get Quote
                               <ArrowRight className="ml-1 w-3.5 h-3.5" />
@@ -275,7 +275,7 @@ const RateCard = ({ categoryFilter = 'all', searchQuery = '', onRequestQuote }) 
         </p>
         <Link
           to="/quote"
-          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
+          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-700 hover:to-blue-700 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
         >
           Request a Custom Quote
           <ArrowRight className="ml-2 w-5 h-5" />

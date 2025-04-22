@@ -119,6 +119,23 @@ const RegisterPage = () => {
     visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }
   };
 
+  // Common input class function 
+  const getInputClasses = (fieldName) => `appearance-none rounded-lg w-full px-3 py-3 pl-12 border ${
+    errors[fieldName] 
+      ? isDarkMode ? 'border-red-500 focus:border-red-500' : 'border-red-500 focus:border-red-500' 
+      : isDarkMode 
+        ? 'border-gray-600 focus:border-red-600' 
+        : 'border-gray-300 focus:border-blue-600'
+    } ${
+      isDarkMode 
+        ? 'bg-gray-700 text-white' 
+        : 'bg-gray-50 text-gray-900'
+    } placeholder-gray-400 focus:outline-none focus:ring-2 ${
+      errors[fieldName]
+        ? 'focus:ring-red-500/20'
+        : isDarkMode ? 'focus:ring-red-600/20' : 'focus:ring-blue-600/20'
+    } transition-colors duration-200 text-base`;
+
   return (
     <div className={`min-h-screen flex flex-col justify-center py-12 px-6 sm:px-6 lg:px-8 ${
       isDarkMode ? 'bg-gray-900' : 'bg-gray-50'
@@ -195,21 +212,7 @@ const RegisterPage = () => {
                   autoComplete="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`appearance-none rounded-lg w-full px-3 py-3 pl-12 border ${
-                    errors.name 
-                      ? isDarkMode ? 'border-red-500 focus:border-red-500' : 'border-red-500 focus:border-red-500' 
-                      : isDarkMode 
-                        ? 'border-gray-600 focus:border-indigo-500' 
-                        : 'border-gray-300 focus:border-blue-500'
-                  } ${
-                    isDarkMode 
-                      ? 'bg-gray-700 text-white' 
-                      : 'bg-gray-50 text-gray-900'
-                  } placeholder-gray-400 focus:outline-none focus:ring-2 ${
-                    errors.name
-                      ? 'focus:ring-red-500/20'
-                      : isDarkMode ? 'focus:ring-indigo-500/20' : 'focus:ring-blue-500/20'
-                  } transition-colors duration-200 text-base`}
+                  className={getInputClasses('name')}
                   placeholder="John Doe"
                   aria-label="Full Name"
                   aria-invalid={!!errors.name}
@@ -251,21 +254,7 @@ const RegisterPage = () => {
                   autoComplete="organization"
                   value={formData.company}
                   onChange={handleChange}
-                  className={`appearance-none rounded-lg w-full px-3 py-3 pl-12 border ${
-                    errors.company 
-                      ? isDarkMode ? 'border-red-500 focus:border-red-500' : 'border-red-500 focus:border-red-500' 
-                      : isDarkMode 
-                        ? 'border-gray-600 focus:border-indigo-500' 
-                        : 'border-gray-300 focus:border-blue-500'
-                  } ${
-                    isDarkMode 
-                      ? 'bg-gray-700 text-white' 
-                      : 'bg-gray-50 text-gray-900'
-                  } placeholder-gray-400 focus:outline-none focus:ring-2 ${
-                    errors.company
-                      ? 'focus:ring-red-500/20'
-                      : isDarkMode ? 'focus:ring-indigo-500/20' : 'focus:ring-blue-500/20'
-                  } transition-colors duration-200 text-base`}
+                  className={getInputClasses('company')}
                   placeholder="Company Inc."
                   aria-label="Company Name"
                   aria-invalid={!!errors.company}
@@ -307,21 +296,7 @@ const RegisterPage = () => {
                   autoComplete="tel"
                   value={formData.phone}
                   onChange={handleChange}
-                  className={`appearance-none rounded-lg w-full px-3 py-3 pl-12 border ${
-                    errors.phone 
-                      ? isDarkMode ? 'border-red-500 focus:border-red-500' : 'border-red-500 focus:border-red-500' 
-                      : isDarkMode 
-                        ? 'border-gray-600 focus:border-indigo-500' 
-                        : 'border-gray-300 focus:border-blue-500'
-                  } ${
-                    isDarkMode 
-                      ? 'bg-gray-700 text-white' 
-                      : 'bg-gray-50 text-gray-900'
-                  } placeholder-gray-400 focus:outline-none focus:ring-2 ${
-                    errors.phone
-                      ? 'focus:ring-red-500/20'
-                      : isDarkMode ? 'focus:ring-indigo-500/20' : 'focus:ring-blue-500/20'
-                  } transition-colors duration-200 text-base`}
+                  className={getInputClasses('phone')}
                   placeholder="+1 (555) 123-4567"
                   aria-label="Phone Number"
                   aria-invalid={!!errors.phone}
@@ -339,7 +314,7 @@ const RegisterPage = () => {
                 </motion.p>
               )}
             </div>
-
+            
             {/* Email Field */}
             <div className="space-y-1">
               <label 
@@ -363,21 +338,7 @@ const RegisterPage = () => {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`appearance-none rounded-lg w-full px-3 py-3 pl-12 border ${
-                    errors.email 
-                      ? isDarkMode ? 'border-red-500 focus:border-red-500' : 'border-red-500 focus:border-red-500' 
-                      : isDarkMode 
-                        ? 'border-gray-600 focus:border-indigo-500' 
-                        : 'border-gray-300 focus:border-blue-500'
-                  } ${
-                    isDarkMode 
-                      ? 'bg-gray-700 text-white' 
-                      : 'bg-gray-50 text-gray-900'
-                  } placeholder-gray-400 focus:outline-none focus:ring-2 ${
-                    errors.email
-                      ? 'focus:ring-red-500/20'
-                      : isDarkMode ? 'focus:ring-indigo-500/20' : 'focus:ring-blue-500/20'
-                  } transition-colors duration-200 text-base`}
+                  className={getInputClasses('email')}
                   placeholder="name@example.com"
                   aria-label="Email Address"
                   aria-invalid={!!errors.email}
@@ -395,7 +356,7 @@ const RegisterPage = () => {
                 </motion.p>
               )}
             </div>
-
+            
             {/* Password Field */}
             <div className="space-y-1">
               <label 
@@ -419,21 +380,7 @@ const RegisterPage = () => {
                   autoComplete="new-password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`appearance-none rounded-lg w-full px-3 py-3 pl-12 pr-10 border ${
-                    errors.password 
-                      ? isDarkMode ? 'border-red-500 focus:border-red-500' : 'border-red-500 focus:border-red-500' 
-                      : isDarkMode 
-                        ? 'border-gray-600 focus:border-indigo-500' 
-                        : 'border-gray-300 focus:border-blue-500'
-                  } ${
-                    isDarkMode 
-                      ? 'bg-gray-700 text-white' 
-                      : 'bg-gray-50 text-gray-900'
-                  } placeholder-gray-400 focus:outline-none focus:ring-2 ${
-                    errors.password
-                      ? 'focus:ring-red-500/20'
-                      : isDarkMode ? 'focus:ring-indigo-500/20' : 'focus:ring-blue-500/20'
-                  } transition-colors duration-200 text-base`}
+                  className={`${getInputClasses('password')} pr-12`}
                   placeholder="••••••••"
                   aria-label="Password"
                   aria-invalid={!!errors.password}
@@ -441,18 +388,15 @@ const RegisterPage = () => {
                 />
                 <button
                   type="button"
+                  className={`absolute inset-y-0 right-0 pr-3 flex items-center transition-colors ${
+                    isDarkMode 
+                      ? 'hover:text-red-500' 
+                      : 'hover:text-blue-600'
+                  }`}
                   onClick={togglePasswordVisibility}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? (
-                    <FaEyeSlash className={`h-5 w-5 ${
-                      isDarkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-600'
-                    } transition-colors`} />
-                  ) : (
-                    <FaEye className={`h-5 w-5 ${
-                      isDarkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-600'
-                    } transition-colors`} />
-                  )}
+                  {showPassword ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />}
                 </button>
               </div>
               {errors.password && (
@@ -466,7 +410,7 @@ const RegisterPage = () => {
                 </motion.p>
               )}
             </div>
-
+            
             {/* Confirm Password Field */}
             <div className="space-y-1">
               <label 
@@ -490,21 +434,7 @@ const RegisterPage = () => {
                   autoComplete="new-password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className={`appearance-none rounded-lg w-full px-3 py-3 pl-12 border ${
-                    errors.confirmPassword 
-                      ? isDarkMode ? 'border-red-500 focus:border-red-500' : 'border-red-500 focus:border-red-500' 
-                      : isDarkMode 
-                        ? 'border-gray-600 focus:border-indigo-500' 
-                        : 'border-gray-300 focus:border-blue-500'
-                  } ${
-                    isDarkMode 
-                      ? 'bg-gray-700 text-white' 
-                      : 'bg-gray-50 text-gray-900'
-                  } placeholder-gray-400 focus:outline-none focus:ring-2 ${
-                    errors.confirmPassword
-                      ? 'focus:ring-red-500/20'
-                      : isDarkMode ? 'focus:ring-indigo-500/20' : 'focus:ring-blue-500/20'
-                  } transition-colors duration-200 text-base`}
+                  className={getInputClasses('confirmPassword')}
                   placeholder="••••••••"
                   aria-label="Confirm Password"
                   aria-invalid={!!errors.confirmPassword}
@@ -528,44 +458,61 @@ const RegisterPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full py-3 px-4 flex justify-center items-center rounded-lg text-white font-semibold text-sm transition-all duration-300 ${
-                isDarkMode 
-                  ? 'bg-indigo-500 hover:bg-indigo-600 focus:ring-indigo-500/30'
-                  : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500/30'
-              } focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                isLoading ? 'opacity-70 cursor-not-allowed' : ''
-              }`}
+              className={`group relative w-full flex justify-center py-3 px-4 text-base font-medium rounded-lg text-white 
+                bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-700 hover:to-blue-700
+                focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  isDarkMode ? 'focus:ring-red-500' : 'focus:ring-blue-500'
+                }
+                transition-colors duration-200 ${
+                  isLoading ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
             >
               {isLoading ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Creating Account...
-                </>
-              ) : 'Create Account'}
+                </span>
+              ) : null}
+              Create Account
             </button>
           </div>
-
-          <motion.div variants={itemVariants} className="text-center">
-            <p className={`text-sm ${
-              isDarkMode ? 'text-gray-300' : 'text-gray-600'
-            }`}>
-              Already have an account?{' '}
-              <Link 
-                to="/login" 
-                className={`font-medium ${
-                  isDarkMode 
-                    ? 'text-indigo-400 hover:text-indigo-300' 
-                    : 'text-blue-600 hover:text-blue-700'
-                } focus:outline-none focus:underline transition-colors`}
-              >
-                Sign in
-              </Link>
-            </p>
-          </motion.div>
+          
+          <div className={`text-center mt-6 text-sm ${
+            isDarkMode ? 'text-gray-300' : 'text-gray-600'
+          }`}>
+            Already have an account?{' '}
+            <Link
+              to="/login"
+              className={`font-medium ${
+                isDarkMode 
+                  ? 'text-red-500 hover:text-blue-400' 
+                  : 'text-blue-600 hover:text-red-600'
+              } focus:outline-none focus:underline transition-colors`}
+            >
+              Sign in
+            </Link>
+          </div>
         </motion.form>
+
+        <motion.div 
+          variants={itemVariants}
+          className="pt-5 mt-6 border-t border-gray-200 dark:border-gray-700"
+        >
+          <div className={`text-center text-xs ${
+            isDarkMode ? 'text-gray-500' : 'text-gray-500'
+          }`}>
+            By creating an account, you agree to our{' '}
+            <Link to="/terms" className="underline hover:text-red-600 dark:hover:text-blue-400">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link to="/privacy" className="underline hover:text-red-600 dark:hover:text-blue-400">
+              Privacy Policy
+            </Link>
+          </div>
+        </motion.div>
       </motion.div>
     </div>
   );

@@ -34,29 +34,29 @@ const AboutPage = () => {
       icon: Zap,
       title: 'Innovation',
       description: 'Constantly exploring emerging technologies to deliver cutting-edge solutions that keep our clients ahead of the competition.',
-      color: 'text-blue-500',
-      bgColor: isDarkMode ? 'bg-blue-900/20' : 'bg-blue-100'
+      color: 'text-red-500',
+      bgColor: isDarkMode ? 'bg-red-500/20' : 'bg-red-100'
     },
     {
       icon: Users,
       title: 'Client Partnership',
       description: 'Building collaborative relationships with clients, understanding their unique needs, and becoming an extension of their team.',
-      color: 'text-purple-500',
-      bgColor: isDarkMode ? 'bg-purple-900/20' : 'bg-purple-100'
+      color: 'text-red-500',
+      bgColor: isDarkMode ? 'bg-red-500/20' : 'bg-red-100'
     },
     {
       icon: Rocket,
       title: 'Excellence',
       description: 'Committed to delivering high-quality, performant, and scalable solutions that exceed expectations and create long-term value.',
-      color: 'text-teal-500',
-      bgColor: isDarkMode ? 'bg-teal-900/20' : 'bg-teal-100'
+      color: 'text-red-500',
+      bgColor: isDarkMode ? 'bg-red-500/20' : 'bg-red-100'
     },
     {
       icon: Handshake,
       title: 'Integrity',
       description: 'Operating with transparency, honesty, and ethical standards in all our business relationships and practices.',
-      color: 'text-amber-500',
-      bgColor: isDarkMode ? 'bg-amber-900/20' : 'bg-amber-100'
+      color: 'text-red-500',
+      bgColor: isDarkMode ? 'bg-red-500/20' : 'bg-red-100'
     }
   ];
 
@@ -66,25 +66,25 @@ const AboutPage = () => {
       icon: Smartphone,
       title: 'Mobile Applications',
       description: 'Native and cross-platform mobile solutions for iOS and Android that deliver exceptional user experiences.',
-      color: 'from-green-500 to-emerald-400',
-      iconBg: isDarkMode ? 'bg-green-900/20' : 'bg-green-100',
-      iconColor: 'text-green-500'
+      color: 'from-red-600 to-blue-600',
+      iconBg: isDarkMode ? 'bg-red-500/20' : 'bg-red-100',
+      iconColor: 'text-red-500'
     },
     {
       icon: Cloud,
       title: 'Cloud Solutions',
       description: 'Scalable cloud infrastructure and migration services to optimize performance and reduce operational costs.',
-      color: 'from-purple-500 to-violet-400',
-      iconBg: isDarkMode ? 'bg-purple-900/20' : 'bg-purple-100',
-      iconColor: 'text-purple-500'
+      color: 'from-red-600 to-blue-600',
+      iconBg: isDarkMode ? 'bg-red-500/20' : 'bg-red-100',
+      iconColor: 'text-red-500'
     },
     {
       icon: TrendingUp,
       title: 'Digital Marketing',
       description: 'Strategic marketing services including SEO, social media management, and content creation to boost your online presence.',
-      color: 'from-pink-500 to-rose-400',
-      iconBg: isDarkMode ? 'bg-pink-900/20' : 'bg-pink-100',
-      iconColor: 'text-pink-500'
+      color: 'from-red-600 to-blue-600',
+      iconBg: isDarkMode ? 'bg-red-500/20' : 'bg-red-100',
+      iconColor: 'text-red-500'
     }
   ];
 
@@ -169,7 +169,7 @@ const AboutPage = () => {
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-teal-500 text-white">
+      <section className="relative overflow-hidden py-20 bg-gradient-to-r from-red-600 to-blue-600 text-white">
         <div className="absolute inset-0 opacity-40 pointer-events-none">
           <ParticleBackground />
         </div>
@@ -217,7 +217,7 @@ const AboutPage = () => {
               viewport={{ once: true, margin: "-100px" }}
             >
               <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-4 ${
-                isDarkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-800'
+                isDarkMode ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-800'
               }`}>
                 Our Journey
               </span>
@@ -235,7 +235,7 @@ const AboutPage = () => {
                 <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg ${
                   isDarkMode ? 'bg-gray-800' : 'bg-gray-100'
                 }`}>
-                  <Users className="h-5 w-5 text-blue-500" />
+                  <Users className="h-5 w-5 text-red-500" />
                   <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
                     25+ Team Members
                   </span>
@@ -243,7 +243,7 @@ const AboutPage = () => {
                 <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg ${
                   isDarkMode ? 'bg-gray-800' : 'bg-gray-100'
                 }`}>
-                  <Target className="h-5 w-5 text-purple-500" />
+                  <Target className="h-5 w-5 text-red-500" />
                   <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
                     50+ Projects Completed
                   </span>
@@ -251,7 +251,7 @@ const AboutPage = () => {
                 <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg ${
                   isDarkMode ? 'bg-gray-800' : 'bg-gray-100'
                 }`}>
-                  <Shield className="h-5 w-5 text-teal-500" />
+                  <Shield className="h-5 w-5 text-red-500" />
                   <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
                     100% Client Satisfaction
                   </span>
@@ -354,7 +354,7 @@ const AboutPage = () => {
             viewport={{ once: true }}
           >
             <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-4 ${
-              isDarkMode ? 'bg-purple-900/30 text-purple-400' : 'bg-purple-100 text-purple-800'
+              isDarkMode ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-800'
             }`}>
               What We Do Best
             </span>
@@ -391,7 +391,7 @@ const AboutPage = () => {
                   {item.description}
                 </p>
                 <Link to={`/services#${item.title.toLowerCase().replace(/\s+/g, '-')}`} className={`inline-flex items-center ${
-                  isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'
+                  isDarkMode ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-700'
                 } font-medium`}>
                   Learn more <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -412,7 +412,7 @@ const AboutPage = () => {
             viewport={{ once: true }}
           >
             <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-4 ${
-              isDarkMode ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-800'
+              isDarkMode ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-800'
             }`}>
               Our Team
             </span>
@@ -459,7 +459,7 @@ const AboutPage = () => {
                   <h3 className={`text-xl font-bold mb-1 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                     {member.name}
                   </h3>
-                  <p className={`text-blue-500 mb-4`}>{member.role}</p>
+                  <p className={`text-red-500 mb-4`}>{member.role}</p>
                   <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     {member.description}
                   </p>
@@ -472,7 +472,7 @@ const AboutPage = () => {
 
       {/* CTA Section */}
       <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-teal-500 opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-blue-600 opacity-90"></div>
         <div className="absolute inset-0 opacity-10" 
              style={{
                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
@@ -496,7 +496,7 @@ const AboutPage = () => {
               <Link to="/contact">
                 <Button 
                   size="lg" 
-                  className="group gap-3 px-8 py-6 text-base bg-white text-blue-600 hover:bg-white/90"
+                  className="group gap-3 px-8 py-6 text-base bg-white text-red-600 hover:bg-white/90"
                 >
                   Get in Touch
                   <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />

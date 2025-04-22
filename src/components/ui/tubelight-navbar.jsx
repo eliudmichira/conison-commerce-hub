@@ -171,7 +171,7 @@ const NavBar = ({ items = [] }) => {
                       className={`flex items-center px-2.5 lg:px-3 py-1.5 lg:py-2 text-sm lg:text-base font-medium rounded-lg transition-colors duration-200 ${
                         activeIndex === index
                           ? isScrolled || !isHomePage
-                            ? 'text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800'
+                            ? 'text-red-600 dark:text-blue-400 bg-white dark:bg-gray-800'
                             : 'text-white bg-white/20 backdrop-blur-sm'
                           : isScrolled || !isHomePage
                             ? 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
@@ -216,7 +216,7 @@ const NavBar = ({ items = [] }) => {
                               to={subItem.path}
                               className={`flex items-center px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 ${
                                 location.pathname === subItem.path
-                                  ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
+                                  ? 'text-red-600 dark:text-blue-400 bg-red-50 dark:bg-blue-900/20'
                                   : 'text-gray-700 dark:text-gray-300'
                               }`}
                               onClick={() => setActiveDropdown(null)}
@@ -243,15 +243,15 @@ const NavBar = ({ items = [] }) => {
             {isAuthenticated ? (
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-1 rounded-lg px-3 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors"
+                className="flex items-center space-x-1 rounded-lg px-3 py-2 text-sm font-medium bg-red-600 hover:bg-red-700 text-white shadow-sm transition-colors"
               >
                 <span className="hidden xs:inline">Logout</span>
               </button>
             ) : (
               <Link to="/login" className={`flex items-center space-x-1 rounded-lg px-3 py-2 text-sm font-medium shadow-sm transition-colors ${
                 isScrolled || !isHomePage
-                  ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                  : 'bg-indigo-600/90 hover:bg-indigo-600 text-white backdrop-blur-sm'
+                  ? 'bg-red-600 hover:bg-red-700 text-white'
+                  : 'bg-red-600/90 hover:bg-red-600 text-white backdrop-blur-sm'
               }`}>
                 <span className="xs:inline">Login</span>
               </Link>
@@ -297,14 +297,14 @@ const NavBar = ({ items = [] }) => {
                         item.subItems ? 'pr-1' : 'rounded-lg'
                       } ${
                         activeIndex === index && !item.subItems 
-                          ? 'bg-indigo-50 dark:bg-indigo-900/20' 
+                          ? 'bg-red-50 dark:bg-blue-900/20' 
                           : ''
                       }`}>
                     <Link
                           to={item.path || '#'}
                           className={`flex items-center space-x-3 py-2.5 px-3 flex-1 font-medium text-sm ${
                         activeIndex === index
-                              ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
+                              ? 'text-red-600 dark:text-blue-400 bg-red-50 dark:bg-blue-900/20'
                               : 'text-gray-800 dark:text-gray-200'
                           } ${item.subItems ? '' : 'rounded-lg'}`}
                       onClick={(e) => handleMobileItemClick(e, item, index)}
@@ -347,7 +347,7 @@ const NavBar = ({ items = [] }) => {
                                     to={subItem.path}
                                     className={`flex items-center rounded-md px-3 py-2 my-0.5 text-sm ${
                                       location.pathname === subItem.path
-                                        ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
+                                        ? 'text-red-600 dark:text-blue-400 bg-red-50 dark:bg-blue-900/20'
                                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
                                     }`}
                                     onClick={() => {
@@ -377,14 +377,14 @@ const NavBar = ({ items = [] }) => {
                           handleLogout();
                           setIsMobileMenuOpen(false);
                         }}
-                        className="w-full py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm shadow-sm transition-colors"
+                        className="w-full py-2.5 px-4 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium text-sm shadow-sm transition-colors"
                       >
                         Sign Out
                       </button>
                     ) : (
                       <Link 
                         to="/login" 
-                        className="block w-full text-center py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm shadow-sm transition-colors"
+                        className="block w-full text-center py-2.5 px-4 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium text-sm shadow-sm transition-colors"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Sign In
@@ -411,7 +411,7 @@ const ThemeToggle = () => {
       className={`rounded-lg p-1.5 shadow-sm border ${
         isDarkMode 
           ? 'bg-gray-800 text-yellow-300 border-gray-700 hover:bg-gray-700' 
-          : 'bg-indigo-100 text-indigo-800 border-indigo-200 hover:bg-indigo-200'
+          : 'bg-blue-100 text-red-800 border-blue-200 hover:bg-blue-200'
       }`}
       aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
     >

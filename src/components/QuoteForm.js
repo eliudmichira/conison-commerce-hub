@@ -1,860 +1,418 @@
-// src/components/QuoteForm.js
-import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate, useLocation } from 'react-router-dom';
-import services from '../data/ServiceData';
+// components/QuoteForm.js
+import React, { useState } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
-import { useAuth } from '../context/AuthContext';
-import { createQuote } from '../api/clientApi';
 
-// Form field components for reusability
-const FormInput = ({ id, label, type = "text", register, errors, validation = {}, placeholder = "", required = false }) => (
-  <div>
-    <label htmlFor={id} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-      {label} {required && '*'}
-    </label>
-    <input
-      type={type}
-      id={id}
-      {...register(id, validation)}
-      className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-        errors[id] ? "border-red-500 dark:border-red-500" : "border-gray-300"
-      }`}
-      placeholder={placeholder}
-    />
-    {errors[id] && (
-      <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors[id].message}</p>
-    )}
-  </div>
-);
-
-const FormSelect = ({ id, label, options = [], register, errors, validation = {}, placeholder = "Select an option", disabled = false, required = false }) => (
-  <div>
-    <label htmlFor={id} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-      {label} {required && '*'}
-    </label>
-    <select
-      id={id}
-      {...register(id, validation)}
-      className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-        errors[id] ? "border-red-500 dark:border-red-500" : "border-gray-300"
-      }`}
-      disabled={disabled}
-    >
-      <option value="">{placeholder}</option>
-      {Array.isArray(options) && options.map((option, index) => {
-        if (option === undefined || option === null) return null;
-        return (
-          <option key={index} value={typeof option === 'string' ? option : (option.value || '')}>
-            {typeof option === 'string' ? option : (option.label || option.value || 'Unknown option')}
-          </option>
-        );
-      })}
-    </select>
-    {errors[id] && (
-      <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors[id].message}</p>
-    )}
-  </div>
-);
-
-const FormTextarea = ({ id, label, register, errors, validation = {}, rows = 4, placeholder = "", helpText = "", required = false }) => (
-  <div>
-    <label htmlFor={id} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-      {label} {required && '*'}
-    </label>
-    <textarea
-      id={id}
-      {...register(id, validation)}
-      rows={rows}
-      className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-        errors[id] ? "border-red-500 dark:border-red-500" : "border-gray-300"
-      }`}
-      placeholder={placeholder}
-    ></textarea>
-    {errors[id] && (
-      <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors[id].message}</p>
-    )}
-    {helpText && (
-      <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">{helpText}</div>
-    )}
-  </div>
-);
-
-const FormCheckboxGroup = ({ label, name, options, register }) => (
-  <div>
-    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-      {label}
-    </label>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-      {options.map((option, index) => (
-        <div key={index} className="flex items-start">
-          <input
-            type="checkbox"
-            id={`${name}-${index}`}
-            value={option}
-            {...register(name)}
-            className="mt-1 h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
-          />
-          <label htmlFor={`${name}-${index}`} className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-            {option}
-          </label>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
-const FormRadioGroup = ({ id, label, options, register, errors, validation = {}, required = false }) => (
-  <div>
-    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-      {label} {required && '*'}
-    </label>
-    <div className="space-y-2">
-      {options.map((option, index) => (
-        <div key={index} className="flex items-center">
-          <input
-            type="radio"
-            id={`${id}-${index}`}
-            value={option.value || option}
-            {...register(id, validation)}
-            className="h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300 dark:bg-gray-700 dark:border-gray-600"
-          />
-          <label htmlFor={`${id}-${index}`} className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-            {option.label || option}
-          </label>
-        </div>
-      ))}
-    </div>
-    {errors[id] && (
-      <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors[id].message}</p>
-    )}
-  </div>
-);
-
-// Rating component for scales of 1-5
-const FormRating = ({ id, label, options, register, errors, validation = {}, helpText = "", required = false }) => (
-  <div>
-    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-      {label} {required && '*'}
-    </label>
-    {helpText && (
-      <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">{helpText}</div>
-    )}
-    <div className="flex flex-wrap gap-4">
-      {options.map((option) => (
-        <div key={option.value} className="flex flex-col items-center">
-          <input
-            type="radio"
-            id={`${id}-${option.value}`}
-            value={option.value}
-            {...register(id, validation)}
-            className="sr-only"
-          />
-          <label 
-            htmlFor={`${id}-${option.value}`}
-            className={`flex flex-col items-center cursor-pointer transition-all duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700`}
-          >
-            <div className={`w-12 h-12 flex items-center justify-center rounded-full border-2 mb-1 text-lg font-medium
-              ${errors[id] ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'}
-              peer-checked:border-conison-magenta peer-checked:bg-conison-magenta`}
-            >
-              {option.value}
-            </div>
-            <span className="text-xs text-center text-gray-600 dark:text-gray-400">{option.label}</span>
-          </label>
-        </div>
-      ))}
-    </div>
-    {errors[id] && (
-      <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors[id].message}</p>
-    )}
-  </div>
-);
-
-// Constants
-const BUDGET_OPTIONS = [
-  { value: "under-1000", label: "Under $1,000" },
-  { value: "1000-5000", label: "$1,000 - $5,000" },
-  { value: "5000-10000", label: "$5,000 - $10,000" },
-  { value: "10000-20000", label: "$10,000 - $20,000" },
-  { value: "20000-50000", label: "$20,000 - $50,000" },
-  { value: "50000-plus", label: "$50,000+" },
-  { value: "not-sure", label: "Not sure yet / Need consultation" }
-];
-
-const TIMELINE_OPTIONS = [
-  'Less than 1 month',
-  '1-2 months',
-  '3-6 months',
-  '6+ months',
-  'Ongoing support'
-];
-
-const HEAR_ABOUT_US_OPTIONS = [
-  'Google Search',
-  'Social Media',
-  'Referral from a friend',
-  'Previous Client',
-  'Other'
-];
-
-const PRIORITY_OPTIONS = [
-  { value: 'low', label: 'Low - Not urgent, planning phase' },
-  { value: 'medium', label: 'Medium - Important but flexible timeline' },
-  { value: 'high', label: 'High - Urgent, need to complete soon' },
-  { value: 'critical', label: 'Critical - Time-sensitive, top priority' }
-];
-
-const COMMUNICATION_OPTIONS = [
-  { value: 'email', label: 'Email' },
-  { value: 'phone', label: 'Phone Call' },
-  { value: 'whatsapp', label: 'WhatsApp' },
-  { value: 'meeting', label: 'In-person Meeting' },
-  { value: 'video', label: 'Video Call (Zoom/Google Meet)' }
-];
-
-const INDUSTRY_OPTIONS = [
-  'Technology',
-  'Healthcare',
-  'Education',
-  'Finance & Banking',
-  'E-commerce & Retail',
-  'Real Estate',
-  'Hospitality & Tourism',
-  'Manufacturing',
-  'Media & Entertainment',
-  'Government & NGO',
-  'Professional Services',
-  'Other'
-];
-
-const BUSINESS_SCALE_OPTIONS = [
-  { value: 'startup', label: 'Startup (1-10 employees)' },
-  { value: 'small', label: 'Small Business (11-50 employees)' },
-  { value: 'medium', label: 'Medium Business (51-200 employees)' },
-  { value: 'large', label: 'Large Business (201-1000 employees)' },
-  { value: 'enterprise', label: 'Enterprise (1000+ employees)' },
-  { value: 'individual', label: 'Individual/Freelancer' }
-];
-
-const CONTENT_READINESS_OPTIONS = [
-  { value: 'not-started', label: 'Not started - We will need complete content creation' },
-  { value: 'in-progress', label: 'In progress - We have some content but need help completing it' },
-  { value: 'ready', label: 'Ready - We have all content prepared and ready to use' },
-  { value: 'need-audit', label: 'Have existing content - Needs review/audit' }
-];
-
-const IMPORTANCE_RATING_OPTIONS = [
-  { value: '1', label: 'Not Important' },
-  { value: '2', label: 'Somewhat Important' },
-  { value: '3', label: 'Important' },
-  { value: '4', label: 'Very Important' },
-  { value: '5', label: 'Critical' }
-];
-
-const QuoteForm = ({ prefilledValues = {} }) => {
-  const { register, handleSubmit, watch, formState: { errors }, setValue, getValues, trigger } = useForm();
+const QuoteForm = ({ initialValues = {}, onSubmit, onPrevious }) => {
   const { isDarkMode } = useDarkMode();
-  const { currentUser, userData } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const totalSteps = 3;
-  const [prefilled, setPrefilled] = useState(false);
-  const [prefilledService, setPrefilledService] = useState('');
-  const [prefilledPrice, setPrefilledPrice] = useState('');
-  const initialService = new URLSearchParams(location.search).get('service');
-  const [selectedService, setSelectedService] = useState(prefilledValues.serviceCategory || '');
-  const [estimatedAmount, setEstimatedAmount] = useState(0);
-
-  const { 
-    register: formRegister, 
-    handleSubmit: formHandleSubmit, 
-    watch: formWatch, 
-    setValue: formSetValue, 
-    formState: { errors: formErrors } 
-  } = useForm({
-    mode: 'onChange',
-    defaultValues: {
-      name: currentUser?.displayName || '',
-      email: currentUser?.email || '',
-      phone: '',
-      company: '',
-      industry: '',
-      businessScale: '',
-      website: '',
-      preferredCommunication: '',
-      hearAboutUs: '',
-      serviceCategory: prefilledValues.serviceCategory || '',
-      serviceType: prefilledValues.serviceType || '',
-      projectGoals: '',
-      projectDescription: '',
-      currentChallenges: '',
-      targetAudience: '',
-      successMetrics: '',
-      budget: prefilledValues.budget || '',
-      timeline: '',
-      priority: '',
-      projectStartDate: '',
-      projectEndDate: '',
-      brandColors: '',
-      contentReadiness: '',
-      increaseSales: '',
-      improveUserExperience: '',
-      enhanceBrandImage: '',
-      expandMarketReach: '',
-      reduceOperationalCosts: '',
-      features: '',
-      competitors: '',
-      designReferences: '',
-      additionalNotes: '',
-      terms: false
-    }
+  
+  // Form fields state
+  const [formValues, setFormValues] = useState({
+    name: initialValues.name || '',
+    email: initialValues.email || '',
+    phone: initialValues.phone || '',
+    company: initialValues.company || '',
+    serviceCategory: initialValues.serviceCategory || '',
+    serviceType: initialValues.serviceType || '',
+    estimatedBudget: initialValues.estimatedBudget || '',
+    projectDescription: initialValues.projectDescription || '',
+    timeline: initialValues.timeline || '',
+    additionalInfo: initialValues.additionalInfo || '',
+    referralSource: initialValues.referralSource || '',
+    preferredContactMethod: initialValues.preferredContactMethod || 'email',
+    tosAgreed: initialValues.tosAgreed || false
   });
-
-  const watchServiceCategory = formWatch('serviceCategory');
-  const watchServiceType = formWatch('serviceType');
-
-  // Watch values for conditional rendering
-  const serviceCategory = watch('serviceCategory');
-  const budget = watch('budget');
-
-  // Check URL for service parameter and get location state data
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const serviceParam = params.get('service');
-    const priceParam = params.get('price');
+  
+  // Form validation state
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Field change handler
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
     
-    // Check location state (passed from ServiceDetailPage) first
-    const locationState = location.state || {};
-    const { service: stateService, serviceId, category } = locationState;
+    setFormValues(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
     
-    // Flag to track if we should auto-advance to step 2
-    let shouldAdvanceToStep2 = false;
-    let fieldsWerePrefilled = false;
+    // Clear error for this field when user makes changes
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: null }));
+    }
+  };
+  
+  // Validate the form
+  const validateForm = () => {
+    const newErrors = {};
     
-    // Prefer state data over URL parameters
-    const serviceToUse = stateService || serviceParam;
-    
-    if (serviceToUse) {
-      setPrefilledService(serviceToUse);
-      
-      try {
-        console.log("Looking for service match for:", serviceToUse);
-        console.log("Service ID from state:", serviceId);
-        console.log("Service category from state:", category);
-        
-        // First try to use the serviceId from state if available
-        let foundService = null;
-        if (serviceId) {
-          foundService = services.find(s => s.id === serviceId);
-          console.log("Matched by ID:", foundService ? "yes" : "no");
-        }
-        
-        // If no service found by ID, try exact match with service name or path
-        if (!foundService) {
-          foundService = services.find(s => 
-            (s.title && s.title.toLowerCase() === serviceToUse.toLowerCase().replace(/-/g, ' ')) ||
-            s.id === serviceToUse.toLowerCase().replace(/\s+/g, '-') || 
-            (s.path && s.path.includes(serviceToUse.toLowerCase().replace(/\s+/g, '-')))
-          );
-          console.log("Matched by title/path:", foundService ? "yes" : "no");
-        }
-        
-        // Try special case for Logo Design
-        if (!foundService && (serviceToUse.toLowerCase().includes('logo') || 
-                             (serviceId && serviceId.toLowerCase().includes('logo')))) {
-          foundService = services.find(s => 
-            s.id === 'graphic-design' || 
-            (s.subServices && s.subServices.some(sub => sub.toLowerCase().includes('logo')))
-          );
-          console.log("Matched Logo Design special case:", foundService ? "yes" : "no");
-        }
-        
-        // If still no match, try partial match
-        if (!foundService) {
-          foundService = services.find(s => 
-            (s.title && serviceToUse && s.title.toLowerCase().includes(serviceToUse.toLowerCase().replace(/-/g, ' '))) ||
-            (s.id && serviceToUse && s.id.toLowerCase().includes(serviceToUse.toLowerCase().replace(/\s+/g, '-')))
-          );
-          console.log("Matched by partial match:", foundService ? "yes" : "no");
-        }
-        
-        if (foundService) {
-          console.log("Found matching service:", foundService);
-          setPrefilledService(foundService.title);
-          
-          // Use category from state if available, otherwise from foundService
-          const serviceCategory = category || foundService.category || 'Design & Creative';
-          formSetValue('serviceCategory', serviceCategory);
-          
-          // Set project types based on the category
-          const servicesWithSameCategory = services.filter(s => s.category === serviceCategory);
-          
-          // Set project types
-          const types = servicesWithSameCategory.map(s => s.title);
-          formSetValue('serviceType', foundService.title);
-          
-          // Auto-fill required fields in step 1 to allow advancing to step 2
-          shouldAdvanceToStep2 = true;
-          fieldsWerePrefilled = true;
-        } else {
-          // If no matching service found, create a generic entry with the param
-          console.log("No matching service found for:", serviceToUse);
-          setPrefilledService(serviceToUse.replace(/-/g, ' '));
-          
-          // Try to extract a category from the service param
-          let categoryGuess = category || 'Other';
-          if (!category) {
-            if (serviceToUse.toLowerCase().includes('web') || serviceToUse.toLowerCase().includes('app')) {
-              categoryGuess = 'Development';
-            } else if (serviceToUse.toLowerCase().includes('design') || 
-                     serviceToUse.toLowerCase().includes('brand') || 
-                     serviceToUse.toLowerCase().includes('logo')) {
-              categoryGuess = 'Design & Creative';
-            } else if (serviceToUse.toLowerCase().includes('market') || 
-                     serviceToUse.toLowerCase().includes('seo')) {
-              categoryGuess = 'Marketing';
-            }
-          }
-          
-          formSetValue('serviceCategory', categoryGuess);
-          
-          // Set service type
-          const serviceTypeGuess = serviceToUse.replace(/-/g, ' ');
-          formSetValue('serviceType', serviceTypeGuess);
-          
-          fieldsWerePrefilled = true;
-          shouldAdvanceToStep2 = true;
-        }
-      } catch (error) {
-        console.error("Error processing service parameter:", error);
-        // Still set the service name for display
-        setPrefilledService(serviceToUse.replace(/-/g, ' '));
+    // Required fields
+    const requiredFields = ['name', 'email', 'phone', 'projectDescription'];
+    requiredFields.forEach(field => {
+      if (!formValues[field]?.trim()) {
+        newErrors[field] = 'This field is required';
       }
+    });
+    
+    // Email validation
+    if (formValues.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)) {
+      newErrors.email = 'Please enter a valid email address';
     }
     
-    // Handle price parameter if present
-    if (priceParam) {
-      setPrefilledPrice(priceParam);
-      
-      try {
-        // Find the closest matching budget option
-        const matchingBudget = BUDGET_OPTIONS.find(option => 
-          option.value === priceParam || priceParam === option.value
-        );
-        
-        if (matchingBudget) {
-          formSetValue('budget', matchingBudget.value);
-        } else {
-          // If no exact match, create a custom budget option based on the URL parameter
-          // First, add the custom price to the budget options
-          const customBudget = priceParam;
-          if (!BUDGET_OPTIONS.some(option => option.value === customBudget)) {
-            BUDGET_OPTIONS.push({ value: customBudget, label: customBudget });
-          }
-          // Then set the budget value
-          formSetValue('budget', customBudget);
-        }
-        
-        shouldAdvanceToStep2 = true;
-        fieldsWerePrefilled = true;
-      } catch (error) {
-        console.error("Error processing price parameter:", error);
-        // Still set the price for display
-        setPrefilledPrice(priceParam);
-      }
+    // Phone validation - allow various formats
+    if (formValues.phone && !/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/.test(formValues.phone)) {
+      newErrors.phone = 'Please enter a valid phone number';
     }
     
-    // Set prefilled flag to prevent duplicate setting on re-renders
-    setPrefilled(fieldsWerePrefilled);
+    // Terms of service agreement
+    if (!formValues.tosAgreed) {
+      newErrors.tosAgreed = 'You must agree to the terms of service';
+    }
     
-    // Auto-advance to step 2 if all required fields in step 1 are filled
-    if (shouldAdvanceToStep2 && !prefilled) {
-      // Give time for the form to update before advancing
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
+  // Form submission handler
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      setIsSubmitting(true);
+      
+      // Call the parent component's onSubmit handler
+      onSubmit && onSubmit(formValues);
+      
+      // Reset submission state after a delay
       setTimeout(() => {
-        setCurrentStep(2);
-      }, 100);
-    }
-  }, [location.search, location.state, prefilled, formSetValue, services]);
-
-  // Update project types when service category changes
-  useEffect(() => {
-    if (watchServiceCategory) {
-      const serviceWithSameCategory = services.filter(s => s.category === watchServiceCategory);
-      const types = serviceWithSameCategory.map(s => s.title);
-      formSetValue('serviceType', types[0]);
-    }
-  }, [watchServiceCategory, formSetValue, watchServiceType]);
-
-  // Set initial values from prefilledValues when component mounts
-  useEffect(() => {
-    if (prefilledValues && Object.keys(prefilledValues).length > 0) {
-      // Set form values based on prefilled values
-      Object.entries(prefilledValues).forEach(([key, value]) => {
-        setValue(key, value);
-      });
-
-      // Update any dependent states
-      if (prefilledValues.serviceCategory) {
-        setSelectedService(prefilledValues.serviceCategory);
-      }
-      
-      if (prefilledValues.budget) {
-        setEstimatedAmount(getEstimatedAmount(prefilledValues.budget));
-      }
-    }
-  }, [prefilledValues, setValue]);
-
-  // Update selectedService when serviceCategory changes
-  useEffect(() => {
-    if (watchServiceCategory) {
-      setSelectedService(watchServiceCategory);
-    }
-  }, [watchServiceCategory]);
-
-  // Update estimated amount when budget changes
-  useEffect(() => {
-    const currentBudget = formWatch('budget');
-    if (currentBudget) {
-      setEstimatedAmount(getEstimatedAmount(currentBudget));
-    }
-  }, [formWatch]);
-
-  // Form navigation functions
-  const nextStep = () => {
-    setCurrentStep(currentStep + 1);
-    window.scrollTo(0, 0);
-  };
-
-  const prevStep = () => {
-    setCurrentStep(currentStep - 1);
-    window.scrollTo(0, 0);
-  };
-
-  // Check if current step is valid before allowing next step
-  const canProceedToNextStep = () => {
-    if (currentStep === 1) {
-      return !formErrors.name && !formErrors.email && !formErrors.phone;
-    }
-    if (currentStep === 2) {
-      return !formErrors.serviceCategory && !formErrors.serviceType && !formErrors.timeline && !formErrors.budget;
-    }
-    return true;
-  };
-
-  // Generate service categories from ServiceData
-  const serviceCategories = [...new Set(services.map(service => service.category))];
-
-  // Get features based on selected service type
-  const getServiceFeatures = () => {
-    try {
-      // Return empty array if no service type is selected
-      if (!watchServiceType) return [];
-      
-      console.log("Getting features for service type:", watchServiceType);
-      
-      // Special direct handling for common service types
-      const serviceTypeLower = watchServiceType.toLowerCase();
-      
-      // Special handling for Logo Design
-      if (serviceTypeLower.includes('logo')) {
-        console.log("Logo Design detected, providing logo design features");
-        return [
-          "Multiple Design Concepts",
-          "Unlimited Revisions",
-          "All File Formats (JPG, PNG, PDF, SVG)",
-          "Color Variations",
-          "Brand Guidelines",
-          "Source Files",
-          "High Resolution",
-          "Vector Files",
-          "3D Mockups",
-          "Social Media Versions"
-        ];
-      }
-      
-      // Direct handling for web development
-      if (serviceTypeLower.includes('web') && (serviceTypeLower.includes('development') || serviceTypeLower.includes('design'))) {
-        return [
-          "Responsive Design",
-          "Custom Design",
-          "Content Management System",
-          "SEO Optimization",
-          "User Experience Design",
-          "Mobile Friendly",
-          "Fast Loading Speed",
-          "Contact Forms",
-          "Social Media Integration",
-          "Google Analytics"
-        ];
-      }
-      
-      // Find the selected service object by exact title match
-      const selectedServiceObj = services.find(s => s && s.title === watchServiceType);
-      
-      // If found and has features, return them
-      if (selectedServiceObj && selectedServiceObj.features) {
-        console.log("Service found:", selectedServiceObj.title, "Features:", selectedServiceObj.features);
-        return selectedServiceObj.features;
-      }
-      
-      // If no exact match, try finding by partial match or related service
-      console.log("No exact service match found, trying alternatives");
-      
-      // Try to find a service with a similar title (case insensitive)
-      const similarService = services.find(s => 
-        s && s.title && watchServiceType && 
-        s.title.toLowerCase().includes(serviceTypeLower) || 
-        serviceTypeLower.includes(s.title.toLowerCase())
-      );
-      
-      // Return features from the similar service
-      if (similarService && similarService.features) {
-        console.log("Using features from similar service:", similarService.title);
-        return similarService.features;
-      }
-      
-      // Try finding a service that contains this as a subService
-      const parentService = services.find(s => 
-        s && s.subServices && s.subServices.some(sub => 
-          sub.toLowerCase() === serviceTypeLower || 
-          sub.toLowerCase().includes(serviceTypeLower) || 
-          serviceTypeLower.includes(sub.toLowerCase())
-        )
-      );
-      
-      if (parentService && parentService.features) {
-        console.log("Using features from parent service:", parentService.title);
-        return parentService.features;
-      }
-      
-      // Fallback based on service type keywords
-      // Graphics & Design services
-      if (serviceTypeLower.includes('design') || 
-          serviceTypeLower.includes('brand') || 
-          serviceTypeLower.includes('graphic')) {
-        console.log("Using default design features");
-        return [
-          "Brand Guidelines Compliance",
-          "Multiple Design Concepts",
-          "Print-Ready Files",
-          "Source Files Included",
-          "High Resolution",
-          "Revisions Included",
-          "Express Delivery Available",
-          "Commercial Use Rights"
-        ];
-      }
-      
-      // Development services
-      if (serviceTypeLower.includes('develop') || 
-          serviceTypeLower.includes('code') || 
-          serviceTypeLower.includes('app')) {
-        console.log("Using default development features");
-        return [
-          "Custom Development",
-          "Responsive Design",
-          "Cross-Browser Compatibility",
-          "Clean Code",
-          "Documentation",
-          "Testing & QA",
-          "Deployment",
-          "Support & Maintenance"
-        ];
-      }
-      
-      // Marketing services
-      if (serviceTypeLower.includes('market') || 
-          serviceTypeLower.includes('seo') || 
-          serviceTypeLower.includes('social')) {
-        console.log("Using default marketing features");
-        return [
-          "Strategy Development",
-          "Performance Tracking",
-          "Regular Reporting",
-          "Content Creation",
-          "Audience Targeting",
-          "Analytics Integration",
-          "Optimization",
-          "ROI Focus"
-        ];
-      }
-      
-      // Return empty array as last resort
-      console.log("No matching features found, returning empty array");
-      return [];
-    } catch (error) {
-      console.error("Error in getServiceFeatures:", error);
-      // Return empty array on error
-      return [];
+        setIsSubmitting(false);
+      }, 2000);
     }
   };
-
-  // Update the onSubmit function to include isQuickQuote flag
-  const onSubmit = async (data) => {
-    setIsSubmitting(true);
-    setFormData({ ...formData, ...data });
+  
+  // Timeline options
+  const timelineOptions = [
+    { value: 'asap', label: 'As soon as possible' },
+    { value: '1-2-weeks', label: '1-2 weeks' },
+    { value: '2-4-weeks', label: '2-4 weeks' },
+    { value: '1-2-months', label: '1-2 months' },
+    { value: '3-6-months', label: '3-6 months' },
+    { value: 'flexible', label: 'Flexible / Not sure yet' }
+  ];
+  
+  // Referral source options
+  const referralOptions = [
+    { value: 'search-engine', label: 'Search Engine (Google, Bing, etc.)' },
+    { value: 'social-media', label: 'Social Media' },
+    { value: 'friend-referral', label: 'Friend or Colleague' },
+    { value: 'existing-client', label: 'I\'m an existing client' },
+    { value: 'advertisement', label: 'Advertisement' },
+    { value: 'other', label: 'Other' }
+  ];
+  
+  // Generate field class based on error state
+  const getFieldClass = (fieldName) => {
+    const baseClass = "w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-colors";
     
-    try {
-      console.log('Submitting quote request:', data);
-      
-      // Get the user ID from Firebase auth or create a temporary ID for non-logged-in users
-      const userId = userData?.uid || currentUser?.uid || `temp-${Date.now()}`;
-      
-      // Create a structured quote object
-      const quoteData = {
-        userId,
-        service: data.serviceType || data.serviceCategory,
-        category: data.category || getServiceCategory(data.serviceType || data.serviceCategory),
-        description: data.projectDescription,
-        requirements: data.projectRequirements || [],
-        budget: data.budget,
-        timeline: data.timeline,
-        features: data.features || [],
-        priority: data.priority,
-        contactDetails: {
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          company: data.company
-        },
-        amount: estimatedAmount || getEstimatedAmount(data.budget),
-        status: 'pending',
-        isQuickQuote: Object.keys(prefilledValues).length > 0,
-        additionalRequirements: data.additionalRequirements,
-        contactName: data.name,
-        contactEmail: data.email,
-        contactPhone: data.phone,
-        submittedAt: new Date().toISOString()
-      };
-      
-      // Save the quote to our storage
-      await createQuote(quoteData);
-      
-      // Navigate to thank you page
-      navigate('/thank-you');
-    } catch (error) {
-      console.error('Error submitting quote:', error);
-      alert('There was an error submitting your quote. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+    if (errors[fieldName]) {
+      return `${baseClass} border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20 focus:ring-red-500`;
     }
-  };
-  
-  // Helper function to estimate an amount based on budget range
-  const getEstimatedAmount = (budget) => {
-    switch(budget) {
-      case 'under-1000': return Math.floor(Math.random() * 1000);
-      case '1000-5000': return Math.floor(Math.random() * 4000) + 1000;
-      case '5000-10000': return Math.floor(Math.random() * 5000) + 5000;
-      case '10000-20000': return Math.floor(Math.random() * 10000) + 10000;
-      case '20000-50000': return Math.floor(Math.random() * 30000) + 20000;
-      case '50000-plus': return Math.floor(Math.random() * 50000) + 50000;
-      default: return 0;
-    }
-  };
-  
-  // Helper function to get service category
-  const getServiceCategory = (serviceName) => {
-    const service = services.find(s => s.title === serviceName);
-    return service?.category || 'Other';
+    
+    return `${baseClass} border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-conison-magenta dark:text-white`;
   };
 
-  // Success state UI
-  if (isSubmitting) {
-    return (
-      <div className="text-center p-8 bg-green-50 dark:bg-green-900 rounded-lg">
-        <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-green-100 dark:bg-green-800">
-          <svg className="w-8 h-8 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-          </svg>
+  return (
+    <form onSubmit={handleSubmit} id="quote-form">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {/* Personal Information */}
+        <div className="md:col-span-2">
+          <h3 className="text-lg font-semibold mb-4 dark:text-white">Personal Information</h3>
         </div>
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Quote Request Submitted Successfully!</h3>
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
-          Thank you for your request. We'll be in touch with you shortly with a personalized quote.
-        </p>
-        <div className="animate-pulse">
-          <p className="text-sm text-gray-500 dark:text-gray-400">Redirecting you to our thank you page...</p>
+        
+        {/* Name Field */}
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Full Name <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formValues.name}
+            onChange={handleChange}
+            className={getFieldClass('name')}
+            placeholder="Your full name"
+          />
+          {errors.name && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name}</p>
+          )}
         </div>
-      </div>
-    );
-  }
-
-  // Form step indicator
-  const ProgressIndicator = () => (
-    <div className="mb-8">
-      <div className="flex items-center justify-between mb-2">
-        {[1, 2, 3].map((stepNumber) => (
-          <div 
-            key={stepNumber}
-            className={`flex items-center justify-center w-8 h-8 rounded-full ${
-              currentStep === stepNumber 
-                ? 'bg-conison-magenta text-white' 
-                : currentStep > stepNumber 
-                  ? 'bg-green-500 text-white' 
-                  : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
-            }`}
+        
+        {/* Email Field */}
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Email Address <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formValues.email}
+            onChange={handleChange}
+            className={getFieldClass('email')}
+            placeholder="your.email@example.com"
+          />
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
+          )}
+        </div>
+        
+        {/* Phone Field */}
+        <div>
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Phone Number <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            value={formValues.phone}
+            onChange={handleChange}
+            className={getFieldClass('phone')}
+            placeholder="+1 (123) 456-7890"
+          />
+          {errors.phone && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.phone}</p>
+          )}
+        </div>
+        
+        {/* Company Field */}
+        <div>
+          <label htmlFor="company" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Company/Organization
+          </label>
+          <input
+            type="text"
+            id="company"
+            name="company"
+            value={formValues.company}
+            onChange={handleChange}
+            className={getFieldClass('company')}
+            placeholder="Your company name (if applicable)"
+          />
+        </div>
+        
+        {/* Project Information */}
+        <div className="md:col-span-2 mt-6">
+          <h3 className="text-lg font-semibold mb-4 dark:text-white">Project Information</h3>
+        </div>
+        
+        {/* Service Category Field - Read-only if provided from parent */}
+        <div>
+          <label htmlFor="serviceCategory" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Service Category
+          </label>
+          <input
+            type="text"
+            id="serviceCategory"
+            name="serviceCategory"
+            value={formValues.serviceCategory}
+            onChange={handleChange}
+            className={`${getFieldClass('serviceCategory')} ${initialValues.serviceCategory ? 'bg-gray-50 dark:bg-gray-600' : ''}`}
+            placeholder="e.g., Web Development, Graphic Design"
+            readOnly={!!initialValues.serviceCategory}
+          />
+        </div>
+        
+        {/* Service Type Field - Read-only if provided from parent */}
+        <div>
+          <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Service Type
+          </label>
+          <input
+            type="text"
+            id="serviceType"
+            name="serviceType"
+            value={formValues.serviceType}
+            onChange={handleChange}
+            className={`${getFieldClass('serviceType')} ${initialValues.serviceType ? 'bg-gray-50 dark:bg-gray-600' : ''}`}
+            placeholder="e.g., E-commerce Website, Logo Design"
+            readOnly={!!initialValues.serviceType}
+          />
+        </div>
+        
+        {/* Estimated Budget Field - Read-only if provided from parent */}
+        <div>
+          <label htmlFor="estimatedBudget" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Estimated Budget
+          </label>
+          <input
+            type="text"
+            id="estimatedBudget"
+            name="estimatedBudget"
+            value={formValues.estimatedBudget}
+            onChange={handleChange}
+            className={`${getFieldClass('estimatedBudget')} ${initialValues.estimatedBudget ? 'bg-gray-50 dark:bg-gray-600' : ''}`}
+            placeholder="e.g., $1,000 - $5,000"
+            readOnly={!!initialValues.estimatedBudget}
+          />
+        </div>
+        
+        {/* Timeline Field */}
+        <div>
+          <label htmlFor="timeline" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Project Timeline
+          </label>
+          <select
+            id="timeline"
+            name="timeline"
+            value={formValues.timeline}
+            onChange={handleChange}
+            className={getFieldClass('timeline')}
           >
-            {currentStep > stepNumber ? (
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-            ) : (
-              stepNumber
-            )}
+            <option value="" disabled>Select timeline...</option>
+            {timelineOptions.map(option => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        </div>
+        
+        {/* Project Description Field */}
+        <div className="md:col-span-2">
+          <label htmlFor="projectDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Project Description <span className="text-red-500">*</span>
+          </label>
+          <textarea
+            id="projectDescription"
+            name="projectDescription"
+            value={formValues.projectDescription}
+            onChange={handleChange}
+            rows="5"
+            className={getFieldClass('projectDescription')}
+            placeholder="Please describe your project requirements, goals, and any specific features you need."
+          ></textarea>
+          {errors.projectDescription && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.projectDescription}</p>
+          )}
+        </div>
+        
+        {/* Additional Information Field */}
+        <div className="md:col-span-2">
+          <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Additional Information
+          </label>
+          <textarea
+            id="additionalInfo"
+            name="additionalInfo"
+            value={formValues.additionalInfo}
+            onChange={handleChange}
+            rows="3"
+            className={getFieldClass('additionalInfo')}
+            placeholder="Any other details that might help us understand your project better."
+          ></textarea>
+        </div>
+        
+        {/* Preferred Contact Method */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Preferred Contact Method
+          </label>
+          <div className="mt-2 space-y-2">
+            <div className="flex items-center">
+              <input
+                id="contact-email"
+                name="preferredContactMethod"
+                type="radio"
+                value="email"
+                checked={formValues.preferredContactMethod === 'email'}
+                onChange={handleChange}
+                className="h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300"
+              />
+              <label htmlFor="contact-email" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                Email
+              </label>
+            </div>
+            <div className="flex items-center">
+              <input
+                id="contact-phone"
+                name="preferredContactMethod"
+                type="radio"
+                value="phone"
+                checked={formValues.preferredContactMethod === 'phone'}
+                onChange={handleChange}
+                className="h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300"
+              />
+              <label htmlFor="contact-phone" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                Phone
+              </label>
+            </div>
           </div>
-        ))}
+        </div>
+        
+        {/* Referral Source Field */}
+        <div>
+          <label htmlFor="referralSource" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            How did you hear about us?
+          </label>
+          <select
+            id="referralSource"
+            name="referralSource"
+            value={formValues.referralSource}
+            onChange={handleChange}
+            className={getFieldClass('referralSource')}
+          >
+            <option value="">Select an option...</option>
+            {referralOptions.map(option => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        </div>
+        
+        {/* Terms of Service Agreement */}
+        <div className="md:col-span-2">
+          <div className="flex items-start">
+            <div className="flex items-center h-5">
+              <input
+                id="tosAgreed"
+                name="tosAgreed"
+                type="checkbox"
+                checked={formValues.tosAgreed}
+                onChange={handleChange}
+                className="h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300 rounded"
+              />
+            </div>
+            <div className="ml-3 text-sm">
+              <label htmlFor="tosAgreed" className="font-medium text-gray-700 dark:text-gray-300">
+                I agree to the <a href="/terms" className="text-conison-magenta hover:underline">Terms of Service</a> and <a href="/privacy" className="text-conison-magenta hover:underline">Privacy Policy</a> <span className="text-red-500">*</span>
+              </label>
+              {errors.tosAgreed && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.tosAgreed}</p>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200 dark:bg-gray-600">
-        <div 
-          style={{ width: `${(currentStep / 3) * 100}%` }} 
-          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-conison-magenta transition-all duration-500"
-        ></div>
-      </div>
-      <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
-        <div className={currentStep >= 1 ? "font-semibold text-conison-magenta dark:text-conison-magenta" : ""}>Contact Information</div>
-        <div className={currentStep >= 2 ? "font-semibold text-conison-magenta dark:text-conison-magenta" : ""}>Project Requirements</div>
-        <div className={currentStep >= 3 ? "font-semibold text-conison-magenta dark:text-conison-magenta" : ""}>Project Details</div>
-      </div>
-    </div>
-  );
-
-  // Navigation buttons
-  const NavigationButtons = ({ showPrevious = true, showNext = true, showSubmit = false }) => (
-    <div className="flex justify-between">
-      {showPrevious && (
-        <button
-          type="button"
-          onClick={prevStep}
-          className="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
-        >
-          Previous
-        </button>
-      )}
       
-      {showNext && (
-        <button
-          type="button"
-          onClick={nextStep}
-          disabled={!canProceedToNextStep()}
-          className={`px-6 py-2 bg-conison-magenta hover:bg-opacity-90 text-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-conison-magenta focus:ring-opacity-50 ${
-            !canProceedToNextStep() ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
-        >
-          Next Step
-        </button>
-      )}
-      
-      {showSubmit && (
+      {/* Form Actions */}
+      <div className="flex justify-between items-center mt-8">
+        {onPrevious && (
+          <button
+            type="button"
+            onClick={onPrevious}
+            className="px-5 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          >
+            <span className="flex items-center">
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+              </svg>
+              Back
+            </span>
+          </button>
+        )}
+        
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`px-6 py-2 bg-conison-magenta hover:bg-opacity-90 text-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-conison-magenta focus:ring-opacity-50 ${
-            isSubmitting ? "opacity-75 cursor-not-allowed" : ""
-          }`}
+          className={`px-6 py-3 bg-conison-magenta text-white rounded-lg shadow-md hover:shadow-lg transition-all ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''}`}
         >
           {isSubmitting ? (
             <span className="flex items-center">
@@ -865,573 +423,16 @@ const QuoteForm = ({ prefilledValues = {} }) => {
               Submitting...
             </span>
           ) : (
-            "Submit Quote Request"
+            <span className="flex items-center">
+              Submit Quote Request
+              <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </span>
           )}
         </button>
-      )}
-    </div>
-  );
-
-  // Form step components
-  const ContactInfoStep = () => {
-    console.log("ContactInfoStep rendering...");
-    return (
-    <div className="space-y-4 animate-fadeIn">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Contact Information</h3>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormInput 
-          id="name"
-          label="Full Name"
-          register={formRegister}
-          errors={formErrors}
-          validation={{ required: "Name is required" }}
-          placeholder="Your full name"
-          required={true}
-        />
-        
-        <FormInput 
-          id="email"
-          label="Email Address"
-          type="email"
-          register={formRegister}
-          errors={formErrors}
-          validation={{ 
-            required: "Email is required",
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: "Invalid email address"
-            }
-          }}
-          placeholder="Your email address"
-          required={true}
-        />
       </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormInput 
-          id="phone"
-          label="Phone Number"
-          type="tel"
-          register={formRegister}
-          errors={formErrors}
-          validation={{ 
-            required: "Phone number is required",
-            pattern: {
-              value: /^[0-9+\s()-]{10,15}$/,
-              message: "Please enter a valid phone number"
-            }
-          }}
-          placeholder="Your phone number"
-          required={true}
-        />
-        
-        <FormInput 
-          id="company"
-          label="Company/Organization"
-          register={formRegister}
-          errors={formErrors}
-          placeholder="Your company or organization"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {Array.isArray(INDUSTRY_OPTIONS) && INDUSTRY_OPTIONS.length > 0 && (
-          <FormSelect 
-            id="industry"
-            label="Industry/Business Type"
-            options={INDUSTRY_OPTIONS}
-            register={formRegister}
-            errors={formErrors}
-            placeholder="Select your industry"
-          />
-        )}
-        
-        {Array.isArray(BUSINESS_SCALE_OPTIONS) && BUSINESS_SCALE_OPTIONS.length > 0 && (
-          <FormSelect 
-            id="businessScale"
-            label="Business Scale"
-            options={BUSINESS_SCALE_OPTIONS}
-            register={formRegister}
-            errors={formErrors}
-            placeholder="Select your business size"
-          />
-        )}
-      </div>
-
-      <FormInput 
-        id="website"
-        label="Website or Social Media URL"
-        register={formRegister}
-        errors={formErrors}
-        placeholder="https://"
-        validation={{
-          pattern: {
-            value: /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
-            message: "Please enter a valid URL"
-          }
-        }}
-      />
-
-      {Array.isArray(COMMUNICATION_OPTIONS) && COMMUNICATION_OPTIONS.length > 0 && (
-        <FormRadioGroup
-          id="preferredCommunication"
-          label="Preferred Method of Communication"
-          options={COMMUNICATION_OPTIONS}
-          register={formRegister}
-          errors={formErrors}
-          validation={{ required: "Please select a preferred communication method" }}
-          required={true}
-        />
-      )}
-      
-      {Array.isArray(HEAR_ABOUT_US_OPTIONS) && HEAR_ABOUT_US_OPTIONS.length > 0 && (
-        <FormSelect
-          id="hearAboutUs"
-          label="How did you hear about us?"
-          options={HEAR_ABOUT_US_OPTIONS}
-          register={formRegister}
-          errors={formErrors}
-          placeholder="Please select"
-        />
-      )}
-      
-      <NavigationButtons showPrevious={false} />
-    </div>
-    );
-  };
-
-  const ProjectRequirementsStep = () => (
-    <div className="space-y-4 animate-fadeIn">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Project Requirements</h3>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormSelect
-          id="serviceCategory"
-          label="Service Category"
-          options={serviceCategories || []}
-          register={formRegister}
-          errors={formErrors}
-          validation={{ required: "Please select a service category" }}
-          placeholder="Select service category"
-          required={true}
-        />
-        
-        <FormSelect
-          id="serviceType"
-          label="Project Type"
-          options={getServiceFeatures() || []}
-          register={formRegister}
-          errors={formErrors}
-          validation={{ required: "Please select a project type" }}
-          placeholder="Select project type"
-          disabled={!watchServiceCategory}
-          required={true}
-        />
-      </div>
-      
-      <FormTextarea
-        id="projectGoals"
-        label="Project Goals & Objectives"
-        register={formRegister}
-        errors={formErrors}
-        validation={{ 
-          required: "Please provide your project goals",
-          minLength: {
-            value: 20,
-            message: "Please provide more details (minimum 20 characters)"
-          }
-        }}
-        placeholder="What are you trying to achieve with this project? What problems are you trying to solve?"
-        helpText="Clear goals help us deliver a solution that meets your specific needs."
-        required={true}
-      />
-      
-      <FormTextarea
-        id="currentChallenges"
-        label="Current Challenges"
-        register={formRegister}
-        errors={formErrors}
-        placeholder="What challenges are you currently facing with your existing solution or process?"
-        helpText="Understanding your pain points helps us address them specifically in our solution."
-      />
-      
-      <FormTextarea
-        id="projectDescription"
-        label="Project Description"
-        register={formRegister}
-        errors={formErrors}
-        validation={{ 
-          required: "Please provide a description of your project",
-          minLength: {
-            value: 30,
-            message: "Please provide more details (minimum 30 characters)"
-          }
-        }}
-        placeholder="Describe your project requirements, goals, and any specific features you need..."
-        helpText="The more details you provide, the more accurate our quote will be."
-        required={true}
-      />
-      
-      <FormTextarea
-        id="targetAudience"
-        label="Target Audience"
-        register={formRegister}
-        errors={formErrors}
-        placeholder="Describe who will be using your product/service (age, demographics, needs, etc.)"
-        helpText="Understanding your audience helps us design the perfect solution for them."
-      />
-      
-      <FormTextarea
-        id="successMetrics"
-        label="Success Metrics"
-        register={formRegister}
-        errors={formErrors}
-        placeholder="How will you measure the success of this project? What specific goals or metrics are important?"
-        helpText="Defining clear success metrics helps us focus on delivering outcomes that matter to you."
-      />
-      
-      {Array.isArray(IMPORTANCE_RATING_OPTIONS) && IMPORTANCE_RATING_OPTIONS.length > 0 && (
-        <div className="p-5 bg-gray-50 dark:bg-gray-800 rounded-lg mb-4">
-          <h4 className="text-md font-medium mb-3 text-gray-800 dark:text-white">Business Goals Importance</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            Rate each business goal based on its importance to this project (1 = Not Important, 5 = Critical)
-          </p>
-          
-          <div className="space-y-6">
-            <FormRating
-              id="increaseSales"
-              label="Increase Sales/Conversions"
-              options={IMPORTANCE_RATING_OPTIONS || []}
-              register={formRegister}
-              errors={formErrors}
-            />
-              
-            <FormRating
-              id="improveUserExperience"
-              label="Improve User Experience"
-              options={IMPORTANCE_RATING_OPTIONS || []}
-              register={formRegister}
-              errors={formErrors}
-            />
-              
-            <FormRating
-              id="enhanceBrandImage"
-              label="Enhance Brand Image"
-              options={IMPORTANCE_RATING_OPTIONS || []}
-              register={formRegister}
-              errors={formErrors}
-            />
-              
-            <FormRating
-              id="expandMarketReach"
-              label="Expand Market Reach"
-              options={IMPORTANCE_RATING_OPTIONS || []}
-              register={formRegister}
-              errors={formErrors}
-            />
-              
-            <FormRating
-              id="reduceOperationalCosts"
-              label="Reduce Operational Costs"
-              options={IMPORTANCE_RATING_OPTIONS || []}
-              register={formRegister}
-              errors={formErrors}
-            />
-          </div>
-        </div>
-      )}
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormSelect
-          id="budget"
-          label="Budget Range"
-          options={BUDGET_OPTIONS || []}
-          register={formRegister}
-          errors={formErrors}
-          validation={{ required: "Please select a budget range" }}
-          placeholder="Select your budget range"
-          required={true}
-        />
-        
-        <FormSelect
-          id="timeline"
-          label="Timeline"
-          options={TIMELINE_OPTIONS || []}
-          register={formRegister}
-          errors={formErrors}
-          placeholder="Select preferred timeline"
-        />
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormInput 
-          id="projectStartDate"
-          label="Preferred Start Date"
-          type="date"
-          register={formRegister}
-          errors={formErrors}
-          helpText="When would you like to start the project?"
-        />
-        
-        <FormInput 
-          id="projectEndDate"
-          label="Target Completion Date"
-          type="date"
-          register={formRegister}
-          errors={formErrors}
-          helpText="When do you need the project completed by?"
-        />
-      </div>
-      
-      <FormSelect
-        id="priority"
-        label="Project Priority"
-        options={PRIORITY_OPTIONS || []}
-        register={formRegister}
-        errors={formErrors}
-        placeholder="Select project priority"
-      />
-      
-      <NavigationButtons />
-    </div>
-  );
-
-  const ProjectDetailsStep = () => {
-    console.log("ProjectDetailsStep rendering...");
-    console.log("Current service type:", watchServiceType);
-    console.log("Features available:", getServiceFeatures());
-    
-    return (
-    <div className="space-y-4 animate-fadeIn">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Project Details</h3>
-      
-      {/* Display features based on selected service type */}
-      {watchServiceType && getServiceFeatures().length > 0 && (
-        <FormCheckboxGroup
-          label="Features Needed"
-          name="features"
-          options={getServiceFeatures()}
-          register={formRegister}
-        />
-      )}
-      
-      <FormTextarea
-        id="competitors"
-        label="Competitors"
-        register={formRegister}
-        errors={formErrors}
-        placeholder="List any competitors whose products/services are similar to what you're looking for. Include their websites if available."
-        helpText="This helps us understand the market and ensure your solution stands out."
-        rows={3}
-      />
-
-      <FormTextarea
-        id="designReferences"
-        label="Design References"
-        register={formRegister}
-        errors={formErrors}
-        placeholder="Share links to websites, apps, or designs that you like. Explain what aspects you appreciate about each."
-        helpText="Visual references help us understand your aesthetic preferences."
-        rows={3}
-      />
-      
-      <FormTextarea
-        id="brandColors"
-        label="Brand Colors & Style Preferences"
-        register={formRegister}
-        errors={formErrors}
-        placeholder="Describe your brand colors, style preferences, or attach your brand guidelines if available."
-        helpText="Understanding your brand identity helps us create designs that align with your overall brand image."
-        rows={3}
-      />
-      
-      {/* Additional fields based on service type */}
-      {watchServiceType && watchServiceType.includes("Website") && (
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Do you have any existing website?
-            </label>
-            <div className="flex space-x-4">
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="existing-website-yes"
-                  value="yes"
-                  {...formRegister("existingWebsite")}
-                  className="h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label htmlFor="existing-website-yes" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                  Yes
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="existing-website-no"
-                  value="no"
-                  {...formRegister("existingWebsite")}
-                  className="h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label htmlFor="existing-website-no" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                  No
-                </label>
-              </div>
-            </div>
-          </div>
-          
-          <FormSelect
-            id="contentReadiness"
-            label="Content Readiness"
-            options={CONTENT_READINESS_OPTIONS}
-            register={formRegister}
-            errors={formErrors}
-            placeholder="Select content status"
-            helpText="Let us know if you need help with content creation (text, images, videos, etc.)"
-          />
-          
-          <FormInput
-            id="domainName"
-            label="Domain Name (if you have one)"
-            register={formRegister}
-            errors={formErrors}
-            placeholder="e.g., example.com"
-            helpText="If you already own a domain name, please provide it here"
-          />
-        </div>
-      )}
-      
-      {/* Attachments */}
-      <div>
-        <label htmlFor="attachments" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Attachments
-        </label>
-        <input
-          type="file"
-          id="attachments"
-          multiple
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-        />
-        <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          You can attach design files, reference materials, or any documents that help explain your requirements.
-        </div>
-      </div>
-      
-      {/* Additional Notes */}
-      <FormTextarea
-        id="additionalNotes"
-        label="Additional Notes"
-        register={formRegister}
-        errors={formErrors}
-        placeholder="Any other details or questions you'd like to share..."
-        rows={3}
-      />
-      
-      {/* Terms and privacy consent */}
-      <div className="mt-4">
-        <div className="flex items-start">
-          <input
-            type="checkbox"
-            id="terms"
-            {...formRegister("terms", { required: "You must agree to the terms and privacy policy" })}
-            className="mt-1 h-4 w-4 text-conison-magenta focus:ring-conison-magenta border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
-          />
-          <label htmlFor="terms" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-            I agree to the <a href="/terms" className="text-conison-cyan hover:underline dark:text-conison-cyan">Terms of Service</a> and <a href="/privacy" className="text-conison-cyan hover:underline dark:text-conison-cyan">Privacy Policy</a>
-          </label>
-        </div>
-        {formErrors.terms && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{formErrors.terms.message}</p>
-        )}
-      </div>
-      
-      <NavigationButtons showNext={false} showSubmit={true} />
-    </div>
-    );
-  };
-
-  return (
-    <div className="quote-form">
-      {/* Display pre-selected service header if applicable */}
-      {(prefilledService || prefilledPrice) && (
-        <div className={`mb-8 p-6 rounded-lg ${isDarkMode ? 'bg-gradient-to-br from-blue-900/50 to-indigo-900/50' : 'bg-gradient-to-br from-blue-50 to-indigo-50'}`}>
-          <h2 className="text-xl font-bold mb-3 dark:text-white">Request a Quote for</h2>
-          <div className="flex flex-col md:flex-row md:items-center">
-            {prefilledService && (
-              <div className="flex items-center mb-3 md:mb-0 md:mr-6">
-                <div className={`w-10 h-10 rounded-full ${isDarkMode ? 'bg-conison-magenta/20' : 'bg-conison-magenta/10'} flex items-center justify-center mr-3`}>
-                  <svg className="w-5 h-5 text-conison-magenta dark:text-conison-magenta" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                  </svg>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">Service:</span>
-                  <p className="font-medium text-gray-900 dark:text-white">{prefilledService}</p>
-                </div>
-              </div>
-            )}
-            
-            {prefilledPrice && (
-              <div className="flex items-center">
-                <div className={`w-10 h-10 rounded-full ${isDarkMode ? 'bg-green-800' : 'bg-green-100'} flex items-center justify-center mr-3`}>
-                  <svg className="w-5 h-5 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">Price Range:</span>
-                  <p className="font-medium text-gray-900 dark:text-white">{prefilledPrice}</p>
-                </div>
-              </div>
-            )}
-          </div>
-          <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
-            Please complete the form below to get a detailed quote for your project.
-          </p>
-        </div>
-      )}
-
-      <ProgressIndicator />
-
-      {/* Display prefilled notification */}
-      {prefilled && (
-        <div className="mb-6 p-4 bg-conison-yellow/10 dark:bg-conison-yellow/5 border-l-4 border-conison-yellow text-conison-gray dark:text-conison-yellow rounded animate-fadeIn">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-conison-yellow" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium">
-                Some fields have been pre-filled based on your selection.
-                Feel free to modify them if needed.
-              </p>
-            </div>
-            <div className="ml-auto pl-3">
-              <div className="-mx-1.5 -my-1.5">
-                <button
-                  onClick={() => setPrefilled(false)}
-                  className="inline-flex bg-conison-cyan/10 dark:bg-conison-cyan/10 rounded-md p-1.5 text-conison-cyan dark:text-conison-cyan hover:bg-conison-cyan/20 dark:hover:bg-conison-cyan/20 transition-colors"
-                >
-                  <span className="sr-only">Dismiss</span>
-                  <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <form onSubmit={formHandleSubmit(onSubmit)}>
-        {currentStep === 1 && <ContactInfoStep />}
-        {currentStep === 2 && <ProjectRequirementsStep />}
-        {currentStep === 3 && <ProjectDetailsStep />}
-      </form>
-    </div>
+    </form>
   );
 };
 

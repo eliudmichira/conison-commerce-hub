@@ -869,8 +869,8 @@ const PortfolioPage = () => {
       <section className="relative py-24 overflow-hidden">
         <div className={`absolute inset-0 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
           <div className="absolute inset-0 opacity-10">
-            <div className="absolute -top-40 -left-40 w-96 h-96 bg-purple-600 rounded-full blur-3xl"></div>
-            <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-600 rounded-full blur-3xl"></div>
+            <div className="absolute -top-40 -left-40 w-96 h-96 bg-red-600 rounded-full blur-3xl"></div>
+            <div className="absolute -top-40 -right-40 w-96 h-96 bg-red-600 rounded-full blur-3xl"></div>
           </div>
           <motion.div 
             className="absolute inset-0 opacity-5"
@@ -889,7 +889,7 @@ const PortfolioPage = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-block px-4 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-sm text-purple-700 dark:text-purple-300 font-medium text-sm mb-6"
+              className="inline-block px-4 py-1 rounded-full bg-gradient-to-r from-red-500/20 to-blue-500/20 backdrop-blur-sm text-red-700 dark:text-red-300 font-medium text-sm mb-6"
             >
               Our Case Studies
             </motion.div>
@@ -899,7 +899,7 @@ const PortfolioPage = () => {
               transition={{ duration: 0.6, delay: 0.1 }}
               className={`text-4xl sm:text-5xl md:text-6xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
             >
-              Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">Portfolio</span>
+              Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-blue-600">Portfolio</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -1022,8 +1022,8 @@ const PortfolioPage = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={`block w-full pl-10 pr-10 py-2 border rounded-lg text-sm ${
                   isDarkMode 
-                    ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:ring-purple-500 focus:border-purple-500' 
-                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-purple-500 focus:border-purple-500'
+                    ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:ring-red-500 focus:border-red-500' 
+                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-red-500 focus:border-red-500'
                 }`}
               />
               {searchTerm && (
@@ -1061,7 +1061,7 @@ const PortfolioPage = () => {
                         aria-pressed={activeCategory === category.id}
                         className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                           activeCategory === category.id
-                            ? 'bg-purple-600 text-white shadow-sm'
+                            ? 'bg-red-600 text-white shadow-sm'
                             : isDarkMode
                               ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -1133,8 +1133,8 @@ const PortfolioPage = () => {
                 onClick={handleResetFilters}
                 className={`px-6 py-2 rounded-lg text-white font-medium ${
                   isDarkMode 
-                    ? 'bg-purple-600 hover:bg-purple-700' 
-                    : 'bg-purple-600 hover:bg-purple-700'
+                    ? 'bg-red-600 hover:bg-red-700' 
+                    : 'bg-red-600 hover:bg-red-700'
                 } transition-colors`}
               >
                 Reset filters
@@ -1289,8 +1289,8 @@ const PortfolioPage = () => {
                           onClick={() => setExpandedProject(project)}
                           className={`inline-flex items-center font-medium self-start ${
                             isDarkMode 
-                              ? 'text-purple-400 hover:text-purple-300' 
-                              : 'text-purple-600 hover:text-purple-700'
+                              ? 'text-red-400 hover:text-red-300' 
+                              : 'text-red-600 hover:text-red-700'
                           } group/btn`}
                         >
                           View Case Study
@@ -1473,8 +1473,8 @@ const PortfolioPage = () => {
                               onClick={() => setExpandedProject(project)}
                               className={`inline-flex items-center px-4 py-2 rounded-lg font-medium ${
                                 isDarkMode 
-                                  ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                                  : 'bg-purple-600 hover:bg-purple-700 text-white'
+                                  ? 'bg-red-600 hover:bg-red-700 text-white' 
+                                  : 'bg-red-600 hover:bg-red-700 text-white'
                               } transition-colors group/btn`}
                             >
                               Case Study
@@ -1550,8 +1550,8 @@ const PortfolioPage = () => {
                   onClick={() => setExpandedProject(project)}
                   className={`inline-flex items-center font-medium ${
                     isDarkMode 
-                      ? 'text-purple-400 hover:text-purple-300' 
-                      : 'text-purple-600 hover:text-purple-700'
+                      ? 'text-red-400 hover:text-red-300' 
+                      : 'text-red-600 hover:text-red-700'
                   } group/btn`}
                 >
                   View Project
@@ -1604,7 +1604,7 @@ const PortfolioPage = () => {
             isDarkMode ? 'bg-gray-800' : 'bg-white'
           } p-8 md:p-12 shadow-xl`}>
             <div className="absolute inset-0 overflow-hidden opacity-10">
-              <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-600 rounded-full blur-3xl"></div>
+              <div className="absolute -top-40 -right-40 w-96 h-96 bg-red-600 rounded-full blur-3xl"></div>
               <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-600 rounded-full blur-3xl"></div>
             </div>
             
@@ -1619,7 +1619,7 @@ const PortfolioPage = () => {
                 
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button 
-                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                    className="bg-red-600 hover:bg-red-700 text-white"
                     size="lg"
                   >
                     Get in Touch
@@ -1923,8 +1923,8 @@ const PortfolioPage = () => {
                       rel="noopener noreferrer"
                       className={`flex items-center justify-center w-full px-4 py-2.5 rounded-lg font-medium ${
                         isDarkMode 
-                          ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                          : 'bg-purple-600 hover:bg-purple-700 text-white'
+                          ? 'bg-red-600 hover:bg-red-700 text-white' 
+                          : 'bg-red-600 hover:bg-red-700 text-white'
                       } transition-colors mt-6`}
                     >
                       Visit Project

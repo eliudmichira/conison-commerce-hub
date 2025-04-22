@@ -1,7 +1,7 @@
 // App.js
 import React, { useEffect, memo, useMemo } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
 
 // Contexts
 import { DarkModeProvider } from './context/DarkModeContext';
@@ -56,7 +56,10 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import ClientManagement from './pages/admin/ClientManagement';
 import QuoteManagement from './pages/admin/QuoteManagement';
 import ProjectManagement from './pages/admin/ProjectManagement';
+import ProjectCreationPage from './pages/admin/ProjectCreationPage';
 import PaymentManagement from './pages/admin/PaymentManagement';
+import AnalyticsPage from './pages/admin/AnalyticsPage';
+import ReportsPage from './pages/admin/ReportsPage';
 import SettingsPage from './pages/admin/SettingsPage';
 
 // Auth Components
@@ -178,7 +181,10 @@ const AppContent = () => {
             <Route path="clients" element={<ClientManagement />} />
             <Route path="quotes" element={<QuoteManagement />} />
             <Route path="projects" element={<ProjectManagement />} />
+            <Route path="projects/new" element={<ProjectCreationPage />} />
             <Route path="payments" element={<PaymentManagement />} />
+            <Route path="analytics" element={<AnalyticsPage />} />
+            <Route path="reports" element={<ReportsPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
 
@@ -208,7 +214,7 @@ const App = () => {
     <AuthProvider>
       <DarkModeProvider>
         <AppContent />
-        <ToastContainer position="top-right" autoClose={3000} />
+        <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       </DarkModeProvider>
     </AuthProvider>
   );
