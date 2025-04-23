@@ -1,160 +1,236 @@
-// Mock API using localStorage
-// This is a temporary solution until a real backend is implemented
+// Production-ready API implementation
+// This connects to the real backend API endpoints
 
-// Helper functions to generate unique IDs
-const generateId = () => Math.random().toString(36).substring(2, 15);
-const getCurrentTimestamp = () => new Date().toISOString();
+import { firebaseAuth, firestore } from '../firebase/config';
+import { collection, addDoc, updateDoc, getDocs, getDoc, doc, query, where, Timestamp, serverTimestamp } from 'firebase/firestore';
 
-// Initialize localStorage with empty collections if they don't exist
-const initializeStorage = () => {
-  if (!localStorage.getItem('quotes')) {
-    localStorage.setItem('quotes', JSON.stringify([]));
-  }
-  if (!localStorage.getItem('projects')) {
-    localStorage.setItem('projects', JSON.stringify([]));
-  }
-  if (!localStorage.getItem('payments')) {
-    localStorage.setItem('payments', JSON.stringify([]));
-  }
+// Helper function to generate reference ID for receipts
+const generateReceiptId = () => {
+  const timestamp = Date.now().toString(36);
+  const randomStr = Math.random().toString(36).substring(2, 8);
+  return `INV-${timestamp}${randomStr}`.toUpperCase();
+};
+
+// Convert Firestore timestamps to ISO strings for consistent handling
+const convertTimestamps = (data) => {
+  if (!data) return data;
   
-  // Add a test MTN payment if no payments exist yet
-  const payments = JSON.parse(localStorage.getItem('payments') || '[]');
-  if (payments.length === 0) {
-    const testPayment = {
-      id: 'test_mtn_payment',
-      userId: 'test_user',
-      transactionId: 'mtn_1234567890',
-      method: 'mtn',
-      amount: 199.99,
-      currency: 'USD',
-      status: 'completed',
-      date: new Date().toISOString(),
-      quoteId: 'test_quote',
-      service: 'Web Development',
-      customerEmail: 'test@example.com',
-      customerName: 'Test User'
-    };
-    payments.push(testPayment);
-    localStorage.setItem('payments', JSON.stringify(payments));
+  const result = { ...data };
+  Object.keys(result).forEach(key => {
+    if (result[key] instanceof Timestamp) {
+      result[key] = result[key].toDate().toISOString();
+    }
+  });
+  
+  return result;
+};
+
+// Error handling wrapper for API calls
+const handleApiCall = async (apiFunc) => {
+  try {
+    return await apiFunc();
+  } catch (error) {
+    console.error('API Error:', error);
+    throw new Error(error.message || 'An error occurred while accessing the database.');
   }
 };
 
-// Initialize storage on load
-initializeStorage();
-
-// Mock API delay to simulate network requests
-const apiDelay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
-
-// Generic CRUD operations
-const getItems = async (collection, userId) => {
-  await apiDelay();
-  const items = JSON.parse(localStorage.getItem(collection) || '[]');
-  return userId ? items.filter(item => item.userId === userId) : items;
-};
-
-const addItem = async (collection, item) => {
-  await apiDelay();
-  const items = JSON.parse(localStorage.getItem(collection) || '[]');
-  const newItem = {
-    ...item,
-    id: generateId(),
-    createdAt: getCurrentTimestamp()
-  };
-  items.push(newItem);
-  localStorage.setItem(collection, JSON.stringify(items));
-  return newItem;
-};
-
-const updateItem = async (collection, itemId, updates) => {
-  await apiDelay();
-  const items = JSON.parse(localStorage.getItem(collection) || '[]');
-  const index = items.findIndex(item => item.id === itemId);
-  
-  if (index === -1) {
-    throw new Error(`Item with ID ${itemId} not found in ${collection}`);
+// Get current user ID
+const getCurrentUserId = () => {
+  const user = firebaseAuth.currentUser;
+  if (!user) {
+    throw new Error('User not authenticated. Please sign in to continue.');
   }
-  
-  const updatedItem = {
-    ...items[index],
-    ...updates,
-    updatedAt: getCurrentTimestamp()
-  };
-  
-  items[index] = updatedItem;
-  localStorage.setItem(collection, JSON.stringify(items));
-  return updatedItem;
+  return user.uid;
 };
 
 // Quotes API
 export const getQuotes = async (userId) => {
-  if (!userId) {
-    throw new Error('User ID is required to fetch quotes');
-  }
-  return getItems('quotes', userId);
+  return handleApiCall(async () => {
+    if (!userId) {
+      userId = getCurrentUserId();
+    }
+    
+    const quotesRef = collection(firestore, 'quotes');
+    const q = query(quotesRef, where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+    
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...convertTimestamps(doc.data())
+    }));
+  });
 };
 
 export const createQuote = async (quoteData) => {
-  if (!quoteData.userId) {
-    throw new Error('User ID is required to create a quote');
-  }
-  
-  // Set a flag for quotes created from the quick quote options
-  const enhancedQuoteData = {
-    ...quoteData,
-    // Set isQuickQuote based on provided data or default to false
-    isQuickQuote: quoteData.isQuickQuote || false
-  };
-  
-  return addItem('quotes', enhancedQuoteData);
+  return handleApiCall(async () => {
+    if (!quoteData.userId) {
+      quoteData.userId = getCurrentUserId();
+    }
+    
+    // Add server timestamp for reliable sorting
+    const docData = {
+      ...quoteData,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+    
+    const docRef = await addDoc(collection(firestore, 'quotes'), docData);
+    const newQuote = await getDoc(docRef);
+    
+    return {
+      id: docRef.id,
+      ...convertTimestamps(newQuote.data())
+    };
+  });
 };
 
 export const updateQuote = async (quoteId, updates) => {
-  if (!quoteId) {
-    throw new Error('Quote ID is required to update a quote');
-  }
-  return updateItem('quotes', quoteId, updates);
+  return handleApiCall(async () => {
+    // Add server timestamp for when document was last updated
+    const updateData = {
+      ...updates,
+      updatedAt: serverTimestamp()
+    };
+    
+    const quoteRef = doc(firestore, 'quotes', quoteId);
+    await updateDoc(quoteRef, updateData);
+    
+    const updatedQuote = await getDoc(quoteRef);
+    return {
+      id: quoteId,
+      ...convertTimestamps(updatedQuote.data())
+    };
+  });
 };
 
 // Projects API
 export const getProjects = async (userId) => {
-  if (!userId) {
-    throw new Error('User ID is required to fetch projects');
-  }
-  return getItems('projects', userId);
+  return handleApiCall(async () => {
+    if (!userId) {
+      userId = getCurrentUserId();
+    }
+    
+    const projectsRef = collection(firestore, 'projects');
+    const q = query(projectsRef, where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+    
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...convertTimestamps(doc.data())
+    }));
+  });
 };
 
 export const createProject = async (projectData) => {
-  if (!projectData.userId) {
-    throw new Error('User ID is required to create a project');
-  }
-  return addItem('projects', projectData);
+  return handleApiCall(async () => {
+    if (!projectData.userId) {
+      projectData.userId = getCurrentUserId();
+    }
+    
+    // Add server timestamp for reliable sorting
+    const docData = {
+      ...projectData,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+    
+    const docRef = await addDoc(collection(firestore, 'projects'), docData);
+    const newProject = await getDoc(docRef);
+    
+    return {
+      id: docRef.id,
+      ...convertTimestamps(newProject.data())
+    };
+  });
 };
 
 export const updateProject = async (projectId, updates) => {
-  if (!projectId) {
-    throw new Error('Project ID is required to update a project');
-  }
-  return updateItem('projects', projectId, updates);
+  return handleApiCall(async () => {
+    // Add server timestamp for when document was last updated
+    const updateData = {
+      ...updates,
+      updatedAt: serverTimestamp()
+    };
+    
+    const projectRef = doc(firestore, 'projects', projectId);
+    await updateDoc(projectRef, updateData);
+    
+    const updatedProject = await getDoc(projectRef);
+    return {
+      id: projectId,
+      ...convertTimestamps(updatedProject.data())
+    };
+  });
 };
 
 // Payments API
 export const getPayments = async (userId) => {
-  if (!userId) {
-    throw new Error('User ID is required to fetch payments');
-  }
-  return getItems('payments', userId);
+  return handleApiCall(async () => {
+    if (!userId) {
+      userId = getCurrentUserId();
+    }
+    
+    const paymentsRef = collection(firestore, 'payments');
+    const q = query(paymentsRef, where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+    
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...convertTimestamps(doc.data())
+    }));
+  });
 };
 
 export const createPayment = async (paymentData) => {
-  if (!paymentData.userId) {
-    throw new Error('User ID is required to create a payment');
-  }
-  return addItem('payments', paymentData);
+  return handleApiCall(async () => {
+    if (!paymentData.userId) {
+      paymentData.userId = getCurrentUserId();
+    }
+    
+    // Generate receipt ID and timestamp for reliable sorting
+    const docData = {
+      ...paymentData,
+      receiptId: generateReceiptId(),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+    
+    const docRef = await addDoc(collection(firestore, 'payments'), docData);
+    
+    // If this payment is for a quote, update the quote status
+    if (paymentData.quoteId) {
+      const quoteRef = doc(firestore, 'quotes', paymentData.quoteId);
+      await updateDoc(quoteRef, { 
+        status: 'paid',
+        paymentId: docRef.id,
+        updatedAt: serverTimestamp()
+      });
+    }
+    
+    const newPayment = await getDoc(docRef);
+    return {
+      id: docRef.id,
+      ...convertTimestamps(newPayment.data())
+    };
+  });
 };
 
 export const updatePayment = async (paymentId, updates) => {
-  if (!paymentId) {
-    throw new Error('Payment ID is required to update a payment');
-  }
-  return updateItem('payments', paymentId, updates);
+  return handleApiCall(async () => {
+    // Add server timestamp for when document was last updated
+    const updateData = {
+      ...updates,
+      updatedAt: serverTimestamp()
+    };
+    
+    const paymentRef = doc(firestore, 'payments', paymentId);
+    await updateDoc(paymentRef, updateData);
+    
+    const updatedPayment = await getDoc(paymentRef);
+    return {
+      id: paymentId,
+      ...convertTimestamps(updatedPayment.data())
+    };
+  });
 }; 

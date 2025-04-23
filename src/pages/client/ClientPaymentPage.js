@@ -5,6 +5,45 @@ import { useClientData } from '../../context/ClientDataContext';
 import PaymentGateway from '../../components/PaymentGateway';
 import { FaArrowLeft, FaCheckCircle, FaExclamationCircle, FaFileInvoiceDollar } from 'react-icons/fa';
 
+// Helper function to safely format currency values
+const safeFormatCurrency = (value) => {
+  if (value === undefined || value === null) return "$0.00";
+  
+  try {
+    // Ensure value is a valid number
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return "$0.00";
+    
+    return numValue.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  } catch (error) {
+    console.warn("Error formatting currency:", error);
+    return "$0.00";
+  }
+};
+
+// Helper function to safely format dates
+const safeFormatDate = (dateValue) => {
+  if (!dateValue) return new Date().toLocaleDateString();
+  
+  try {
+    // Handle Firestore Timestamp objects
+    if (dateValue.seconds) {
+      return new Date(dateValue.seconds * 1000).toLocaleDateString();
+    }
+    
+    // Handle Date objects or ISO strings
+    return new Date(dateValue).toLocaleDateString();
+  } catch (error) {
+    console.warn("Error formatting date:", error);
+    return new Date().toLocaleDateString();
+  }
+};
+
 const ClientPaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -91,7 +130,7 @@ const ClientPaymentPage = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-conison-magenta"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
       </div>
     );
   }
@@ -117,7 +156,7 @@ const ClientPaymentPage = () => {
           </p>
           <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg mb-8 max-w-md mx-auto">
             <div className="flex items-center justify-center mb-4">
-              <FaFileInvoiceDollar className="h-6 w-6 text-conison-magenta mr-2" />
+              <FaFileInvoiceDollar className="h-6 w-6 text-red-600 mr-2" />
               <h3 className="font-medium text-gray-800 dark:text-white">Payment Details</h3>
             </div>
             <div className="grid grid-cols-2 gap-4 text-left">
@@ -125,11 +164,11 @@ const ClientPaymentPage = () => {
               <div className="text-gray-800 dark:text-white font-medium">{quote?.service}</div>
               
               <div className="text-gray-500 dark:text-gray-400">Amount:</div>
-              <div className="text-gray-800 dark:text-white font-medium">${quote?.amount}</div>
+              <div className="text-gray-800 dark:text-white font-medium">{safeFormatCurrency(quote?.amount)}</div>
               
               <div className="text-gray-500 dark:text-gray-400">Date:</div>
               <div className="text-gray-800 dark:text-white font-medium">
-                {new Date().toLocaleDateString()}
+                {safeFormatDate(quote?.date)}
               </div>
               
               <div className="text-gray-500 dark:text-gray-400">Reference:</div>
@@ -141,13 +180,13 @@ const ClientPaymentPage = () => {
           <div className="flex justify-center space-x-4">
             <Link
               to="/client"
-              className="bg-conison-magenta text-white font-medium py-2 px-6 rounded-md hover:bg-conison-cyan transition"
+              className="bg-gradient-to-r from-red-600 to-blue-600 text-white font-medium py-2 px-6 rounded-md hover:from-red-700 hover:to-blue-700 transition"
             >
               Go to Dashboard
             </Link>
             <Link
               to="/client/projects"
-              className="bg-white text-conison-magenta border border-conison-magenta font-medium py-2 px-6 rounded-md hover:bg-gray-50 transition"
+              className="bg-white text-red-600 border border-red-600 font-medium py-2 px-6 rounded-md hover:bg-gray-50 transition"
             >
               View Projects
             </Link>
@@ -178,7 +217,7 @@ const ClientPaymentPage = () => {
           </p>
           <Link
             to="/client/quotes"
-            className="inline-flex items-center bg-conison-magenta text-white font-medium py-2 px-6 rounded-md hover:bg-conison-cyan transition"
+            className="inline-flex items-center bg-gradient-to-r from-red-600 to-blue-600 text-white font-medium py-2 px-6 rounded-md hover:from-red-700 hover:to-blue-700 transition"
           >
             <FaArrowLeft className="mr-2" />
             Back to Quotes
@@ -194,7 +233,7 @@ const ClientPaymentPage = () => {
       {isProcessingPayment && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-conison-magenta mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mx-auto mb-4"></div>
             <p className="text-gray-800 dark:text-white font-medium">Processing your payment...</p>
             <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">Please do not close this window.</p>
           </div>
@@ -249,46 +288,34 @@ const ClientPaymentPage = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-6">Order Summary</h2>
             <div className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Service:</span>
+              <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+                <span className="text-gray-600 dark:text-gray-400">Service</span>
                 <span className="text-gray-800 dark:text-white font-medium">{quote?.service}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Description:</span>
-                <span className="text-gray-800 dark:text-white text-right">{quote?.description}</span>
+              <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+                <span className="text-gray-600 dark:text-gray-400">Quote ID</span>
+                <span className="text-gray-800 dark:text-white font-medium">#{quote?.id?.substring(0, 8)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Quote ID:</span>
-                <span className="text-gray-800 dark:text-white font-medium">{quote?.id}</span>
+              <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+                <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
+                <span className="text-gray-800 dark:text-white font-medium">{safeFormatCurrency(quote?.amount)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Quote Date:</span>
-                <span className="text-gray-800 dark:text-white font-medium">
-                  {quote && (quote.createdAt || quote.updatedAt) ? new Date(quote.createdAt || quote.updatedAt).toLocaleDateString() : 'N/A'}
-                </span>
+              <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+                <span className="text-gray-600 dark:text-gray-400">Tax</span>
+                <span className="text-gray-800 dark:text-white font-medium">$0.00</span>
               </div>
-              <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-800 dark:text-white font-medium">Total Amount:</span>
-                  <span className="text-xl text-conison-magenta dark:text-conison-cyan font-bold">
-                    ${quote?.amount ? quote.amount.toLocaleString() : '0'}
-                  </span>
-                </div>
+              <div className="flex justify-between py-4 font-bold">
+                <span className="text-gray-800 dark:text-white">Total</span>
+                <span className="text-red-600 dark:text-blue-400 text-xl">{safeFormatCurrency(quote?.amount)}</span>
               </div>
             </div>
-          </div>
-
-          <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mt-6">
-            <h3 className="font-medium text-gray-800 dark:text-white mb-2">Need Help?</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-              If you have any questions or need assistance with your payment, please contact our support team.
-            </p>
-            <Link
-              to="/contact"
-              className="text-sm text-conison-magenta hover:text-conison-cyan dark:text-conison-cyan dark:hover:text-conison-magenta font-medium focus:outline-none"
-            >
-              Contact Support →
-            </Link>
+            
+            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <h3 className="font-medium text-gray-800 dark:text-white mb-2">Payment Security</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Your payment information is processed securely. We do not store credit card details nor do we share customer details with third parties.
+              </p>
+            </div>
           </div>
         </motion.div>
       </div>

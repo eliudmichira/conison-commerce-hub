@@ -201,6 +201,19 @@ const QuoteForm = ({ initialValues = {}, onSubmit, onPrevious }) => {
           />
         </div>
         
+        {/* Budget Display (Read-only) */}
+        <div className="md:col-span-2">
+          <label htmlFor="estimatedBudget" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Estimated Budget
+          </label>
+          <div className={`${getFieldClass('estimatedBudget')} flex items-center cursor-not-allowed bg-gray-50 dark:bg-gray-600`}>
+            <span className="text-conison-magenta font-medium">{formValues.estimatedBudget}</span>
+          </div>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            This is the budget range you selected in the previous step. If you need to change it, you can go back to the previous step.
+          </p>
+        </div>
+        
         {/* Project Information */}
         <div className="md:col-span-2 mt-6">
           <h3 className="text-lg font-semibold mb-4 dark:text-white">Project Information</h3>
@@ -237,23 +250,6 @@ const QuoteForm = ({ initialValues = {}, onSubmit, onPrevious }) => {
             className={`${getFieldClass('serviceType')} ${initialValues.serviceType ? 'bg-gray-50 dark:bg-gray-600' : ''}`}
             placeholder="e.g., E-commerce Website, Logo Design"
             readOnly={!!initialValues.serviceType}
-          />
-        </div>
-        
-        {/* Estimated Budget Field - Read-only if provided from parent */}
-        <div>
-          <label htmlFor="estimatedBudget" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Estimated Budget
-          </label>
-          <input
-            type="text"
-            id="estimatedBudget"
-            name="estimatedBudget"
-            value={formValues.estimatedBudget}
-            onChange={handleChange}
-            className={`${getFieldClass('estimatedBudget')} ${initialValues.estimatedBudget ? 'bg-gray-50 dark:bg-gray-600' : ''}`}
-            placeholder="e.g., $1,000 - $5,000"
-            readOnly={!!initialValues.estimatedBudget}
           />
         </div>
         

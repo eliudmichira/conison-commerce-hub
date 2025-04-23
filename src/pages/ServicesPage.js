@@ -10,6 +10,14 @@ import {
 import servicesData from '../data/ServiceData';
 import ParticleBackground from '../components/ParticleBackground';
 
+// Define image URLs explicitly
+const IMAGES = {
+  brandss: process.env.PUBLIC_URL + '/images/services/brandss.jpg',
+  brandIdentity: process.env.PUBLIC_URL + '/images/services/Brand Identity.jpg',
+  teamBuild: process.env.PUBLIC_URL + '/images/services/team build.jpg',
+  webDesign: process.env.PUBLIC_URL + '/images/services/web design.jpg',
+};
+
 const ServicesPage = () => {
   const { isDarkMode } = useDarkMode();
   const navigate = useNavigate();
@@ -67,7 +75,7 @@ const ServicesPage = () => {
         title: 'Graphic Design',
         description: 'Professional graphic design services for all your visual communication needs.',
         icon: <FaPalette className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1626785774625-ddcddc3445e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: IMAGES.brandss,
         features: ['Logo Design', 'Brand Identity Materials', 'Print Design', 'Digital Graphics'],
         category: 'design',
         link: '/services/graphic-design'
@@ -77,7 +85,7 @@ const ServicesPage = () => {
         title: 'Branding & Identity',
         description: 'Create a memorable brand identity that sets you apart from the competition.',
         icon: <FaPalette className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: IMAGES.brandIdentity,
         features: ['Brand Strategy', 'Visual Identity Development', 'Brand Guidelines', 'Logo Design'],
         category: 'design',
         link: '/services/branding'
@@ -127,7 +135,7 @@ const ServicesPage = () => {
         title: 'Corporate IT Solutions & Software Development',
         description: 'Tailored IT solutions to streamline your business operations.',
         icon: <FaCode className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: IMAGES.teamBuild,
         features: ['Custom Software Development', 'ERP Solutions', 'CRM Implementation', 'IT Infrastructure Setup'],
         category: 'development',
         link: '/services/it-solutions'
@@ -147,7 +155,7 @@ const ServicesPage = () => {
         title: 'E-Commerce Solutions',
         description: 'Complete e-commerce solutions to help you sell your products online.',
         icon: <FaShoppingCart className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: IMAGES.webDesign,
         features: ['E-commerce Website Development', 'Shopping Cart Integration', 'Payment Gateway Setup', 'Product Catalog Management'],
         category: 'development',
         link: '/services/ecommerce'

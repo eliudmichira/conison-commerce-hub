@@ -63,7 +63,7 @@ const PaymentsPage = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-conison-magenta"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
       </div>
     );
   }
@@ -89,7 +89,7 @@ const PaymentsPage = () => {
               onClick={() => setFilter('all')}
               className={`py-4 px-6 font-medium text-sm focus:outline-none whitespace-nowrap ${
                 filter === 'all'
-                  ? 'border-b-2 border-conison-magenta text-conison-magenta'
+                  ? 'border-b-2 border-red-600 text-red-600'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
@@ -99,7 +99,7 @@ const PaymentsPage = () => {
               onClick={() => setFilter('completed')}
               className={`py-4 px-6 font-medium text-sm focus:outline-none whitespace-nowrap ${
                 filter === 'completed'
-                  ? 'border-b-2 border-conison-magenta text-conison-magenta'
+                  ? 'border-b-2 border-red-600 text-red-600'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
@@ -109,7 +109,7 @@ const PaymentsPage = () => {
               onClick={() => setFilter('pending')}
               className={`py-4 px-6 font-medium text-sm focus:outline-none whitespace-nowrap ${
                 filter === 'pending'
-                  ? 'border-b-2 border-conison-magenta text-conison-magenta'
+                  ? 'border-b-2 border-red-600 text-red-600'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
@@ -185,7 +185,7 @@ const PaymentsPage = () => {
                           {payment.status === 'completed' && (
                             <Link
                               to={`/client/payments/${payment.id}`}
-                              className="text-conison-magenta hover:text-conison-cyan dark:text-conison-cyan dark:hover:text-conison-magenta flex items-center justify-end"
+                              className="text-red-600 hover:text-blue-600 dark:text-blue-400 dark:hover:text-red-400 flex items-center justify-end"
                             >
                               <FaReceipt className="mr-1" />
                               <span>View Receipt</span>
@@ -211,7 +211,7 @@ const PaymentsPage = () => {
               </p>
               <Link
                 to="/client/quotes"
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-conison-magenta hover:bg-conison-cyan focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-conison-yellow"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
               >
                 View Quotes
               </Link>
@@ -232,7 +232,7 @@ const PaymentsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300 mb-1">Total Payments</h3>
-              <p className="text-2xl font-bold text-conison-magenta dark:text-conison-cyan">
+              <p className="text-2xl font-bold text-red-600 dark:text-blue-500">
                 {formatCurrency(payments.reduce((sum, payment) => sum + payment.amount, 0), 'USD')}
               </p>
             </div>
@@ -249,11 +249,11 @@ const PaymentsPage = () => {
             </div>
             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300 mb-1">Latest Payment</h3>
-              <p className="text-gray-800 dark:text-white">
-                {new Date(sortedPayments[0]?.date).toLocaleDateString() || 'N/A'}
+              <p className="text-xl font-bold text-gray-800 dark:text-white">
+                {sortedPayments.length > 0 && formatCurrency(sortedPayments[0].amount, sortedPayments[0].currency)}
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {getServiceName(sortedPayments[0]?.quoteId)}
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {sortedPayments.length > 0 && new Date(sortedPayments[0].date).toLocaleDateString()}
               </p>
             </div>
           </div>
@@ -264,7 +264,7 @@ const PaymentsPage = () => {
                 // In a real app, this would generate and download a PDF of all payments
                 alert('This would download a PDF of all your payment records in a real app.');
               }}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-conison-magenta"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
               <FaDownload className="mr-2 -ml-1" />
               Export Payment History

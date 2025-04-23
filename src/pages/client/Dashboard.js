@@ -6,6 +6,43 @@ import { useClientData } from '../../context/ClientDataContext';
 // Will be used for future client actions
 // import { createQuote, createProject, createPayment } from '../../api/clientApi';
 
+// Helper function to safely format currency values
+const safeFormatCurrency = (value) => {
+  if (value === undefined || value === null) return "$0.00";
+  
+  try {
+    // Ensure value is a valid number
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return "$0.00";
+    
+    return numValue.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  } catch (error) {
+    console.warn("Error formatting currency:", error);
+    return "$0.00";
+  }
+};
+
+// Helper function to safely format numbers
+const safeFormatNumber = (value) => {
+  if (value === undefined || value === null) return "0";
+  
+  try {
+    // Ensure value is a valid number
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return "0";
+    
+    return numValue.toLocaleString();
+  } catch (error) {
+    console.warn("Error formatting number:", error);
+    return "0";
+  }
+};
+
 const Dashboard = () => {
   const { currentUser, userData } = useAuth();
   const { quotes, projects, payments, loading, error, refreshData } = useClientData();
@@ -63,7 +100,7 @@ const Dashboard = () => {
         title: `Quote for ${quote.service}`,
         date: quote.createdAt || quote.updatedAt,
         status: quote.status,
-        amount: quote.amount
+        amount: quote.amount || 0 // Ensure amount is not undefined
       })),
       ...payments.map(payment => ({
         type: 'payment',
@@ -71,7 +108,7 @@ const Dashboard = () => {
         title: `Payment for ${quotes.find(q => q.id === payment.quoteId)?.service || 'Service'}`,
         date: payment.date,
         status: payment.status,
-        amount: payment.amount
+        amount: payment.amount || 0 // Ensure amount is not undefined
       })),
       ...projects.map(project => ({
         type: 'project',
@@ -79,7 +116,7 @@ const Dashboard = () => {
         title: project.name,
         date: project.startDate,
         status: project.status,
-        progress: project.progress
+        progress: project.progress || 0 // Ensure progress is not undefined
       }))
     ];
     
@@ -271,7 +308,7 @@ const Dashboard = () => {
               <h3 className="text-gray-600 dark:text-gray-400">Total Paid</h3>
               <FaMoneyBillWave className="text-green-500 text-xl" />
             </div>
-            <p className="text-2xl font-bold">${stats.totalPaid.toLocaleString()}</p>
+            <p className="text-2xl font-bold">{safeFormatCurrency(stats.totalPaid)}</p>
             <div className="mt-2">
               <Link to="/client/payments" className="text-green-500 text-sm hover:underline">
                 View payment history
@@ -296,7 +333,7 @@ const Dashboard = () => {
                     <div>
                       <h4 className="font-medium">{activity.title}</h4>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {new Date(activity.date).toLocaleDateString()}
+                        {new Date(activity.date || Date.now()).toLocaleDateString()}
                       </p>
                     </div>
                     <div className="text-right">
@@ -309,9 +346,9 @@ const Dashboard = () => {
                                 : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                             }`}
                           >
-                            {activity.status === 'in_progress' ? 'In Progress' : activity.status}
+                            {activity.status === 'in_progress' ? 'In Progress' : activity.status || 'Unknown'}
                           </span>
-                          <p className="text-sm mt-1">{activity.progress}% complete</p>
+                          <p className="text-sm mt-1">{safeFormatNumber(activity.progress)}% complete</p>
                         </div>
                       ) : activity.type === 'payment' ? (
                         <div>
@@ -322,9 +359,9 @@ const Dashboard = () => {
                                 : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                             }`}
                           >
-                            {activity.status}
+                            {activity.status || 'Pending'}
                           </span>
-                          <p className="text-sm mt-1">${activity.amount.toLocaleString()}</p>
+                          <p className="text-sm mt-1">{safeFormatCurrency(activity.amount)}</p>
                         </div>
                       ) : (
                         <div>
@@ -337,9 +374,9 @@ const Dashboard = () => {
                                   : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                             }`}
                           >
-                            {activity.status}
+                            {activity.status || 'Pending'}
                           </span>
-                          <p className="text-sm mt-1">${activity.amount.toLocaleString()}</p>
+                          <p className="text-sm mt-1">{safeFormatCurrency(activity.amount)}</p>
                         </div>
                       )}
                     </div>

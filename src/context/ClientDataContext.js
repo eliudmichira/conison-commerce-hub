@@ -34,15 +34,20 @@ export const ClientDataProvider = ({ children }) => {
 
   // Helper to get user ID safely
   const getUserId = () => {
+    // In production, we only use authenticated user ID
     return userData?.uid || currentUser?.uid;
   };
 
   // Load all client data
   const loadClientData = async () => {
     const userId = getUserId();
+    
+    // Only fetch data if user is authenticated
     if (!userId) {
       setLoading(false);
-      setError('User ID not found. Please log out and log in again.');
+      setQuotes([]);
+      setProjects([]);
+      setPayments([]);
       return;
     }
     
@@ -59,6 +64,7 @@ export const ClientDataProvider = ({ children }) => {
       setProjects(projectsData || []);
       setPayments(paymentsData || []);
     } catch (err) {
+      console.error('Error loading client data:', err);
       setError('Failed to load data from server. Please try again later.');
       // Initialize with empty arrays
       setQuotes([]);
@@ -69,8 +75,9 @@ export const ClientDataProvider = ({ children }) => {
     }
   };
 
-  // Load data when user changes
+  // Load data when user changes or on initial load
   useEffect(() => {
+    // Only load data if user is authenticated
     if (currentUser || userData) {
       loadClientData();
     } else {
@@ -87,14 +94,13 @@ export const ClientDataProvider = ({ children }) => {
     try {
       const userId = getUserId();
       if (!userId) {
-        throw new Error('User ID not found');
+        throw new Error('You must be logged in to create a quote');
       }
       
       const newQuote = await createQuote({
         ...quoteData,
         userId,
-        status: 'pending',
-        createdAt: new Date().toISOString()
+        status: 'pending'
       });
       setQuotes(prev => [...prev, newQuote]);
       return newQuote;
@@ -122,14 +128,13 @@ export const ClientDataProvider = ({ children }) => {
     try {
       const userId = getUserId();
       if (!userId) {
-        throw new Error('User ID not found');
+        throw new Error('You must be logged in to create a project');
       }
       
       const newProject = await createProject({
         ...projectData,
         userId,
-        status: 'active',
-        createdAt: new Date().toISOString()
+        status: 'active'
       });
       setProjects(prev => [...prev, newProject]);
       return newProject;
@@ -157,16 +162,19 @@ export const ClientDataProvider = ({ children }) => {
     try {
       const userId = getUserId();
       if (!userId) {
-        throw new Error('User ID not found');
+        throw new Error('You must be logged in to make a payment');
       }
       
       const newPayment = await createPayment({
         ...paymentData,
-        userId,
-        status: 'pending',
-        createdAt: new Date().toISOString()
+        userId
       });
       setPayments(prev => [...prev, newPayment]);
+      
+      // Refresh data to ensure everything is up to date
+      // This is important since payment creation also updates the quote status
+      loadClientData();
+      
       return newPayment;
     } catch (err) {
       console.error('Error creating payment:', err);

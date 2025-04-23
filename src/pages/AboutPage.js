@@ -121,9 +121,9 @@ const AboutPage = () => {
       }
     },
     {
-      name: 'Sarah Williams',
+      name: 'Elisha Arende',
       role: 'UX Designer',
-      image: '/images/Sarah.png',
+      image: process.env.PUBLIC_URL + '/images/arende.png',
       description: 'Creative designer focused on user experience and interface design.',
       social: {
         linkedin: 'https://linkedin.com',

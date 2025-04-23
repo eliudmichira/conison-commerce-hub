@@ -19,7 +19,7 @@ const AdminSidebar = () => {
 
   const menuItems = [
     { path: '/admin', label: 'Dashboard', icon: <FaHome /> },
-    { path: '/admin/users', label: 'Users', icon: <FaUsers /> },
+    { path: '/admin/clients', label: 'Clients', icon: <FaUsers /> },
     { path: '/admin/quotes', label: 'Quotes', icon: <FaFileAlt /> },
     { path: '/admin/projects', label: 'Projects', icon: <FaChartBar /> },
     { path: '/admin/payments', label: 'Payments', icon: <FaMoneyBillWave /> },
