@@ -374,7 +374,7 @@ const QuoteManagement = () => {
             </table>
           </div>
       </div>
-      
+
       {/* Detail View Modal */}
       {showDetailView && detailViewQuote && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -504,21 +504,21 @@ const QuoteManagement = () => {
                     </p>
                   </div>
                 </div>
-              </div>
-              
+            </div>
+            
               {/* Actions */}
               <div className="mt-8 flex flex-wrap justify-end space-x-4">
                 {detailViewQuote.status === 'pending' && (
                   <>
-                    <button
+              <button
                       onClick={() => {
                         handleStatusChange(detailViewQuote.id, 'approved');
                       }}
                       className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
                     >
                       <FaCheck className="inline mr-2" /> Approve Quote
-                    </button>
-                    <button
+              </button>
+              <button
                       onClick={() => {
                         handleStatusChange(detailViewQuote.id, 'rejected');
                       }}
@@ -545,12 +545,12 @@ const QuoteManagement = () => {
                   className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
                 >
                   Close
-                </button>
+              </button>
               </div>
             </div>
           </div>
-          </div>
-        )}
+        </div>
+      )}
     </div>
   );
 };

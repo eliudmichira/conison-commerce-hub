@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDarkMode } from '../context/DarkModeContext';
 import QuoteForm from '../components/QuoteForm';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
@@ -246,7 +246,7 @@ const QuoteRequestPage = () => {
       ...formValues,
       // Add required metadata
       status: 'pending',
-      createdAt: new Date(),
+      createdAt: Timestamp.fromDate(new Date()),
       userId: currentUser?.uid || 'anonymous',
       userEmail: currentUser?.email || formValues.email,
       referenceNumber: referenceNumber, // Use the generated reference number

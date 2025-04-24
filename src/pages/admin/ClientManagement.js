@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, query, orderBy, doc, updateDoc, where, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, doc, updateDoc, where, getDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { FaUserCircle, FaEnvelope, FaPhone, FaBuilding, FaSearch, FaUsers, FaSync, FaEye, FaFileInvoiceDollar, FaProjectDiagram } from 'react-icons/fa';
 import toast from 'react-hot-toast';
@@ -156,9 +156,10 @@ const ClientManagement = () => {
   const handleStatusChange = async (clientId, isActive) => {
     try {
       const clientRef = doc(db, 'users', clientId);
+      const timestamp = Timestamp.fromDate(new Date());
       await updateDoc(clientRef, { 
         isActive: isActive,
-        updatedAt: new Date()
+        updatedAt: timestamp
       });
       
       // Update local state

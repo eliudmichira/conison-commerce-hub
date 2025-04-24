@@ -107,16 +107,37 @@ const Footer = () => {
           
           <div>
             <h3 className="text-xl font-bold mb-4 text-conison-cyan dark:text-conison-cyan">Contact Us</h3>
-            <address className="not-italic">
-              <p className="mb-2">Juba Town, Near Baping Insurance Company</p>
-              <p className="mb-2">Juba, South Sudan</p>
-              <p className="mb-2">
-                <a href="tel:+211920504110" className="hover:text-conison-magenta transition-colors">+211 920 504 110</a>
-              </p>
-              <p>
-                <a href="mailto:info@conisontechnologies.com" className="hover:text-conison-magenta transition-colors">info@conisontechnologies.com</a>
-              </p>
-            </address>
+            <div className="space-y-2">
+              {/* Kenya Office */}
+              <div>
+                <h4 className="font-semibold mb-2 text-conison-magenta">Kenya</h4>
+                <address className="not-italic">
+                  <p className="mb-2">Nairobi, Kenya</p>
+                  <p className="mb-2">
+                    <a href="tel:+254796881472" className="hover:text-conison-magenta transition-colors">+254 796 881 472</a>
+                  </p>
+                </address>
+              </div>
+              
+              {/* South Sudan Office */}
+              <div>
+                <h4 className="font-semibold mb-2 text-conison-magenta">South Sudan</h4>
+                <address className="not-italic">
+                  <p className="mb-2">Office Number 7, Baping Business Centre</p>
+                  <p className="mb-2">Hai Sujun, Juba, South Sudan</p>
+                  <p className="mb-2">
+                    <a href="tel:+211920504110" className="hover:text-conison-magenta transition-colors">+211 920 504 110</a>
+                  </p>
+                </address>
+              </div>
+              
+              {/* Email */}
+              <div>
+                <p>
+                  <a href="mailto:info@conisontechnologies.com" className="hover:text-conison-magenta transition-colors">info@conisontechnologies.com</a>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
         

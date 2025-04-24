@@ -12,10 +12,13 @@ import ParticleBackground from '../components/ParticleBackground';
 
 // Define image URLs explicitly
 const IMAGES = {
-  brandss: process.env.PUBLIC_URL + '/images/services/brandss.jpg',
-  brandIdentity: process.env.PUBLIC_URL + '/images/services/Brand Identity.jpg',
-  teamBuild: process.env.PUBLIC_URL + '/images/services/team build.jpg',
-  webDesign: process.env.PUBLIC_URL + '/images/services/web design.jpg',
+  first: process.env.PUBLIC_URL + '/images/services/First.jpeg',
+  second: process.env.PUBLIC_URL + '/images/services/second.jpeg',
+  third: process.env.PUBLIC_URL + '/images/services/third.jpeg',
+  fourth: process.env.PUBLIC_URL + '/images/services/forth.jpeg',
+  webDesign: process.env.PUBLIC_URL + '/images/services/WebDesign.jpeg',
+  teamDevelopment: process.env.PUBLIC_URL + '/images/services/team-development.jpg',
+  teamPresentation: process.env.PUBLIC_URL + '/images/services/team-presentation.jpg'
 };
 
 const ServicesPage = () => {
@@ -75,7 +78,7 @@ const ServicesPage = () => {
         title: 'Graphics Design',
         description: 'Professional graphic design services for all your visual communication needs.',
         icon: <FaPalette className="w-8 h-8" />,
-        image: IMAGES.brandss,
+        image: IMAGES.first,
         features: ['Logo Design', 'Brand Identity Materials', 'Print Design', 'Digital Graphics'],
         category: 'design',
         link: '/services/graphic-design'
@@ -85,7 +88,7 @@ const ServicesPage = () => {
         title: 'Branding & Identity',
         description: 'Create a memorable brand identity that sets you apart from the competition.',
         icon: <FaPalette className="w-8 h-8" />,
-        image: IMAGES.brandIdentity,
+        image: IMAGES.second,
         features: ['Brand Strategy', 'Visual Identity Development', 'Brand Guidelines', 'Logo Design'],
         category: 'design',
         link: '/services/branding'
@@ -95,7 +98,7 @@ const ServicesPage = () => {
         title: 'Web & App Development',
         description: 'Custom websites and applications designed to meet your specific business needs.',
         icon: <FaCode className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: IMAGES.webDesign,
         features: ['Custom Website Development', 'E-commerce Solutions', 'Content Management Systems', 'Web Application Development'],
         category: 'development',
         link: '/services/web-development'
@@ -105,7 +108,7 @@ const ServicesPage = () => {
         title: 'Digital Marketing',
         description: 'Strategic marketing campaigns that drive traffic, leads, and conversions for sustainable growth.',
         icon: <FaChartLine className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: IMAGES.third,
         features: ['Search Engine Optimization', 'Social Media Marketing', 'Pay-Per-Click Advertising', 'Email Marketing'],
         category: 'marketing',
         link: '/services/digital-marketing'
@@ -115,7 +118,7 @@ const ServicesPage = () => {
         title: 'Motion Graphics & Video Editing',
         description: 'Engaging video content that effectively communicates your message.',
         icon: <FaVideo className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: IMAGES.fourth,
         features: ['Motion Graphics Design', 'Video Editing', 'Animation', 'Visual Effects'],
         category: 'design',
         link: '/services/motion-graphics'
@@ -125,7 +128,7 @@ const ServicesPage = () => {
         title: 'Photography & Videography',
         description: 'Professional photography and videography services for all your visual needs.',
         icon: <FaVideo className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: IMAGES.teamPresentation,
         features: ['Product Photography', 'Corporate Photography', 'Event Photography', 'Aerial Photography'],
         category: 'design',
         link: '/services/photography'
@@ -135,7 +138,7 @@ const ServicesPage = () => {
         title: 'Corporate IT Solutions & Software Development',
         description: 'Tailored IT solutions to streamline your business operations.',
         icon: <FaCode className="w-8 h-8" />,
-        image: IMAGES.teamBuild,
+        image: IMAGES.teamDevelopment,
         features: ['Custom Software Development', 'ERP Solutions', 'CRM Implementation', 'IT Infrastructure Setup'],
         category: 'development',
         link: '/services/it-solutions'
@@ -145,7 +148,7 @@ const ServicesPage = () => {
         title: 'Cybersecurity & Data Protection',
         description: 'Comprehensive security solutions to protect your digital assets and sensitive information.',
         icon: <FaShieldAlt className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: IMAGES.first,
         features: ['Security Audits', 'Penetration Testing', 'Data Encryption', 'Secure Network Design'],
         category: 'development',
         link: '/services/cybersecurity'
@@ -155,7 +158,7 @@ const ServicesPage = () => {
         title: 'E-Commerce Solutions',
         description: 'Complete e-commerce solutions to help you sell your products online.',
         icon: <FaShoppingCart className="w-8 h-8" />,
-        image: IMAGES.webDesign,
+        image: IMAGES.second,
         features: ['E-commerce Website Development', 'Shopping Cart Integration', 'Payment Gateway Setup', 'Product Catalog Management'],
         category: 'development',
         link: '/services/ecommerce'
@@ -165,7 +168,7 @@ const ServicesPage = () => {
         title: 'AI & Automation Services',
         description: 'Leverage the power of AI to automate and enhance your business processes.',
         icon: <FaRobot className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: IMAGES.third,
         features: ['AI Chatbot Development', 'Workflow Automation', 'Marketing Automation', 'Process Optimization'],
         category: 'ai',
         link: '/services/ai-automation'
@@ -175,7 +178,7 @@ const ServicesPage = () => {
         title: 'Business Consultation & Training',
         description: 'Expert business consultation and training to help you achieve your goals.',
         icon: <FaLightbulb className="w-8 h-8" />,
-        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        image: IMAGES.fourth,
         features: ['Business Strategy Development', 'Digital Transformation Consulting', 'Marketing Strategy', 'Process Optimization'],
         category: 'consulting',
         link: '/services/business-consulting'
